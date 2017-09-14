@@ -21,7 +21,7 @@ class ChassisTheme {
 	}
 	
 	get customProperties () {
-		return this.json['custom-properties']
+		return this.json.hasOwnProperty('custom-properties') ? this.json['custom-properties'] : {}
 	}
 	
 	get json () {
