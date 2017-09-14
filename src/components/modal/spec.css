@@ -1,0 +1,5 @@
+chassis-modal {
+	@state default {
+		$(selector) {}
+	}
+}

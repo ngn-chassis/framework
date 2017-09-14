@@ -1,0 +1,56 @@
+a.button {
+  @state default {
+    $(selector) {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 $(margin-right) $(margin-bottom) 0;
+      padding: 0 $(padding-x);
+      line-height: $(line-height);
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    $(selector) svg.icon {
+      transform: $(icon-offset);
+    }
+    
+    $(selector).pill {
+      padding-left: $(pill-padding-x);
+      padding-right: $(pill-padding-x);
+      border-radius: $(pill-border-radius);
+    }
+    
+    $(selector).multi-line {
+      padding-top: $(multi-line-padding-y);
+      padding-bottom: $(multi-line-padding-y);
+      line-height: $(multi-line-line-height);
+      white-space: $(multi-line-white-space);
+    }
+  }
+
+  @state visited {
+    $(selector):visited {}
+  }
+
+  @state hover {
+    $(selector):hover {}
+  }
+
+  @state active {
+    $(selector):active {}
+  }
+
+  @state disabled {
+    $(selector)[disabled], $(selector).disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+}

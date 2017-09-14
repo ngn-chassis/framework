@@ -1,0 +1,10 @@
+svg.icon {
+	@state default {
+		$(selector) {
+			width: $(width);
+			height: $(height);
+			vertical-align: middle;
+			pointer-events: none;
+		}
+	}
+}

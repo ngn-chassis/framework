@@ -1,0 +1,5 @@
+chassis-overlay {
+	@state default {
+		$(selector) {}
+	}
+}

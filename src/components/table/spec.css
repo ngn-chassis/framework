@@ -1,0 +1,23 @@
+table {
+	@state default {
+		$(selector) {
+			table-layout: fixed;
+			width: 100%;
+			border-collapse: collapse;
+	    border-spacing: 0;
+		}
+		
+		$(selector) th, $(selector) td {
+			overflow: hidden;
+			padding: 0 $(cell-padding-x);
+			line-height: $(cell-line-height);
+			text-align: left;
+			text-overflow: ellipsis;
+			vertical-align: top;
+		}
+		
+		$(selector) caption {
+			text-align: left;
+		}
+	}
+}

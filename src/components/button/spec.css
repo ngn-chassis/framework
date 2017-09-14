@@ -1,0 +1,78 @@
+/* TODO: Generate docs from the notes below */
+
+/* All spec info must be contained inside a component rule as below */
+button {
+  /* This rule can contain @state rules and an @legacy rule */
+  /*
+    The first element inside each @state rule MUST be the default selector
+    for the state. Component extensions rely on this being the first so they
+    can properly generate selectors.
+   */
+  @state default {
+    $(selector) {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      @chassis inline-block-layout;
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    $(selector) svg.icon {
+      transform: $(icon-offset);
+    }
+    
+    $(selector).pill {
+      padding-left: $(pill-padding-x);
+      padding-right: $(pill-padding-x);
+      border-radius: $(pill-border-radius);
+    }
+    
+    $(selector).multi-line {
+      padding-top: $(multi-line-padding-y);
+      padding-bottom: $(multi-line-padding-y);
+      line-height: $(multi-line-line-height);
+      white-space: $(multi-line-white-space);
+    }
+  }
+
+  @state visited {
+    $(selector):visited {}
+  }
+
+  @state hover {
+    $(selector):hover {}
+  }
+
+  @state active {
+    $(selector):active {}
+  }
+
+  @state disabled {
+    $(selector)[disabled], $(selector).disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+  
+  @legacy {
+    @chassis ie-only {
+      $(selector), $(selector):focus, $(selector):active {
+        background: none;
+        border: none;
+        outline: none;
+        color: inherit;
+      }
+
+      $(selector) span {
+        position: relative;
+      }
+    }
+  }
+}

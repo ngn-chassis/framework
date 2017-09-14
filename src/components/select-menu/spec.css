@@ -1,0 +1,51 @@
+chassis-select {
+  @state default {
+    $(selector) {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      @chassis inline-block-layout;
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    $(selector) svg.icon {
+      transform: $(icon-offset);
+    }
+
+    $(selector).pill {
+      padding-left: $(pill-padding-x);
+      padding-right: $(pill-padding-x);
+      border-radius: $(pill-border-radius);
+    }
+
+    $(selector).multi-line {
+      padding-top: $(multi-line-padding-y);
+      padding-bottom: $(multi-line-padding-y);
+      line-height: $(multi-line-line-height);
+      white-space: $(multi-line-white-space);
+    }
+
+    $(selector) chassis-option {
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+
+  @state hover {
+    $(selector):hover {}
+  }
+
+  @state disabled {
+    $(selector)[disabled], $(selector).disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+}
