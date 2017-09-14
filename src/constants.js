@@ -16,6 +16,7 @@ class ChassisConstants {
 	// added to the style sheet; This must be correct for proper cascade behavior.
 	static get components () {
 		return new Map([
+			['all', ['link', 'svg-icon', 'button', 'button-link', 'tag', 'table', 'overlay', 'modal', 'form-field', 'form-toggle', 'select-menu']],
 			['link', ChassisLinkComponent],
 			['svg-icon', ChassisSvgIconComponent],
 			['button', ChassisButtonComponent],
