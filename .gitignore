@@ -1,0 +1,9 @@
+.*
+!.gitignore
+!.npmignore
+!.codeclimate.yml
+_*
+*.log
+*.svg
+node_modules
+env.json
