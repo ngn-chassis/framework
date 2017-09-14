@@ -1,0 +1,26 @@
+{
+  "name": "@chassis/core",
+  "version": "1.0.0",
+  "description": "CSS Pre-Processor and Framework for Modern UI Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngnjs/chassis.git"
+  },
+  "keywords": [
+    "css",
+    "preprocessor",
+    "pre-processor",
+    "framework",
+    "postcss"
+  ],
+  "author": "Graham Butler",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/ngnjs/chassis/issues"
+  },
+  "homepage": "https://github.com/ngnjs/chassis#readme"
+}
