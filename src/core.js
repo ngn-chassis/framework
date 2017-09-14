@@ -1,6 +1,3 @@
-const postcss = require('postcss')
-const customProperties = require('postcss-custom-properties')
-
 class ChassisCore {
 	constructor (chassis) {
 		this.chassis = chassis
