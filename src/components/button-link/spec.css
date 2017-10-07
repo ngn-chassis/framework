@@ -13,17 +13,17 @@ a.button {
       cursor: pointer;
       user-select: none;
     }
-    
+
     $(selector) svg.icon {
       transform: $(icon-offset);
     }
-    
+
     $(selector).pill {
       padding-left: $(pill-padding-x);
       padding-right: $(pill-padding-x);
       border-radius: $(pill-border-radius);
     }
-    
+
     $(selector).multi-line {
       padding-top: $(multi-line-padding-y);
       padding-bottom: $(multi-line-padding-y);

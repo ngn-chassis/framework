@@ -30,7 +30,7 @@ class ChassisCore {
 	get reset () {
 		let { utils } = this.chassis
 		let { fontSize, lineHeight } = this.baseTypography.root
-		
+
 		return this._parseSpecSheet('../style-sheets/reset.css', {
 			'root-line-height': utils.units.toEms(lineHeight, fontSize)
 		})
@@ -38,9 +38,9 @@ class ChassisCore {
 
 	get customProperties () {
 		let { settings, theme, utils } = this.chassis
-		
+
 		// TODO: Add component properties
-		
+
 		return utils.css.newRule(':root', [
 			...utils.files.parseStyleSheet('../style-sheets/copic-greys.css').nodes,
 			utils.css.newDeclObj('--ui-min-width', `${settings.layout.minWidth}px`),
@@ -96,7 +96,7 @@ class ChassisCore {
 	get html () {
 		let { constants, settings, theme, utils } = this.chassis
 		let { fontSize, lineHeight } = this.baseTypography.root
-		
+
 		let root = this._applyTheme('html', utils.css.newRule('html.chassis', [
 			utils.css.newDeclObj('font-size', `${fontSize}px`)
 		]))
@@ -139,7 +139,7 @@ class ChassisCore {
 				)
 			]), rules)
 		}
-		
+
 		this._applyTheme('legend', utils.css.newRule('.chassis legend', [
 			utils.css.newDeclObj(
 				'font-size',
@@ -280,20 +280,20 @@ class ChassisCore {
 	get inlineComponentReset () {
 		return this._parseSpecSheet('../style-sheets/inline-component-reset.css')
 	}
-	
+
 	get inlineBlockComponentReset () {
 		return this._parseSpecSheet('../style-sheets/inline-block-component-reset.css')
 	}
-	
+
 	get blockComponentReset () {
 		return this._parseSpecSheet('../style-sheets/block-component-reset.css')
 	}
-	
+
 	_parseSpecSheet (path, variables = {}) {
 		let { utils } = this.chassis
-		
+
 		let tree = utils.files.parseStyleSheet(path)
-		
+
 		if (!variables) {
 			return tree
 		}
@@ -302,65 +302,65 @@ class ChassisCore {
 			if (node.type === 'atrule') {
 				node.params = utils.string.resolveVariables(node.params, variables)
 			}
-			
+
 			if (node.type === 'rule') {
 				node.selector = utils.string.resolveVariables(node.selector, variables)
 			}
-			
+
 			if (node.type === 'decl') {
 				node.prop = utils.string.resolveVariables(node.prop, variables)
 				node.value = utils.string.resolveVariables(node.value, variables)
 			}
     })
-		
+
 		return tree
 	}
-	
+
 	_applyTheme (element, defaultRule, root = this.chassis.utils.css.newRoot([])) {
 		let { theme, utils } = this.chassis
-	
+
 		let selectors = defaultRule.selector.split(',').map((selector) => selector.trim())
 		let themeData = theme.getElement(element)
-	
+
 		if (!themeData) {
 			return root.append(defaultRule)
 		}
-	
+
 		let propKeys = Object.keys(themeData.properties)
 		let ruleKeys = Object.keys(themeData.rules)
-	
+
 		if (propKeys.length > 0) {
 			let decls = []
-	
+
 			for (let property in themeData.properties) {
 				decls.push(utils.css.newDecl(property, themeData.properties[property]))
 			}
-	
+
 			defaultRule.nodes = utils.css.mergeDecls(defaultRule.nodes, decls)
 		}
-	
+
 		root.append(defaultRule)
-	
+
 		if (ruleKeys.length > 0) {
 			let rulesets = this._appendNestedRulesets(root, selectors, themeData.rules)
 		}
-	
+
 		return root
 	}
-	
+
 	_appendNestedRulesets (root, selectors, nestedRules) {
 		let { utils } = this.chassis
-	
+
 		Object.keys(nestedRules).forEach((nestedRule) => {
 			let nestedSelector = selectors.map((selector) => `${selector} ${nestedRule}`).join(', ')
 			let { properties, rules } = nestedRules[nestedRule]
-	
+
 			let decls = Object.keys(properties).map((property) => {
 				return utils.css.newDeclObj(property, properties[property])
 			})
-	
+
 			root.append(utils.css.newRule(nestedSelector, decls))
-	
+
 			if (Object.keys(rules).length > 0) {
 				this._appendNestedRulesets(root, [nestedSelector], rules)
 			}

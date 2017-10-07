@@ -32,13 +32,17 @@ class ChassisAtRules {
 	get 'ie-only' () {
 		return (data) => this.browserMixins.ieOnly(data)
 	}
-	
+
 	get 'import' () {
 		return (data) => this.styleSheetMixins.import(data)
 	}
 
 	get 'include' () {
 		return (data) => this.componentMixins.include(data)
+	}
+
+	get 'init' () {
+		return (data) => data.atRule.remove()
 	}
 
 	get 'font-size' () {

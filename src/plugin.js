@@ -23,7 +23,7 @@ class ChassisPostCss {
 	constructor (cfg) {
 		this.utils = ChassisUtilities
 		this.constants = ChassisConstants
-		
+
 		cfg = this._cleanseCfg(NGN.coalesce(cfg, {}))
 
 		this.settings = new ChassisSettings(this)
@@ -57,14 +57,22 @@ class ChassisPostCss {
 		// this.utils.console.printTree(this.settings.data)
 		// this.utils.console.printTree(this.theme.json)
 		return (root, result) => {
+			let skip = !root.some((node) => {
+				return node.type === 'atrule' && node.params === 'init'
+			})
+
+			if (skip) {
+				return root
+			}
+
 			let output = this.core.css.append(new ChassisStyleSheet(this, root).css)
-			
+
 			output.walkAtRules('chassis-post', (atRule) => {
 				let data = Object.assign({
 					root: this.tree,
 					atRule
 				}, this.atRules.getProperties(atRule))
-				
+
 				this.post.process(data)
 			})
 
@@ -103,7 +111,7 @@ class ChassisPostCss {
 
 			delete cleansedCfg.customProperties
 		}
-		
+
 		if (cleansedCfg.hasOwnProperty('typography')) {
 			if (cleansedCfg.typography.hasOwnProperty('scaleRatio')) {
 				switch (typeof cleansedCfg.typography.scaleRatio) {
@@ -115,13 +123,13 @@ class ChassisPostCss {
 							delete cleansedCfg.typography.scaleRatio
 						}
 						break;
-						
+
 					case 'number':
 						if (cleansedCfg.typography.scaleRatio < 1 || cleansedCfg.typography.scaleRatio > 2) {
 							console.warn(`[WARNING] Chassis Typography: In general, decimals between 1 and 2 work best for type scale ratios. The selected type scale ratio, ${cleansedCfg.typography.scaleRatio}, may produce undesirable results.`);
 						}
 						break;
-						
+
 					default:
 						console.error(`[ERROR] Chassis Typography: Scale Ratio must be a decimal (ideally between 1 and 2) or a string. Reverting to default...`)
 				}
