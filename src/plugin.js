@@ -61,11 +61,8 @@ class ChassisPostCss {
 				return node.type === 'atrule' && node.params === 'init'
 			})
 
-			if (skip) {
-				return root
-			}
-
-			let output = this.core.css.append(new ChassisStyleSheet(this, root).css)
+			let input = new ChassisStyleSheet(this, root).css
+			let output = skip ? input : this.core.css.append(input)
 
 			output.walkAtRules('chassis-post', (atRule) => {
 				let data = Object.assign({
@@ -145,7 +142,7 @@ class ChassisPostCss {
 			console.error(this.settings.invalidDataAttributes.join(', '))
 
 			if (this.settings.invalidDataAttributes.includes('theme')) {
-				console.error(`[ERROR] "${this.settings.theme}" is not a valid theme file. Chassis themes must have a ".css" or ".js" extension. Reverting to default theme...`)
+				console.error(`[ERROR] "${this.settings.theme}" is not a valid theme file. Chassis themes must have a ".ct" extension. Reverting to default theme...`)
 				this.settings.theme = this.constants.theme.defaultFilePath
 			}
 		}

@@ -92,13 +92,13 @@ class ChassisSpecSheet {
 			switch (atRule.name) {
 				case 'state':
 					if (customSpec) {
-						let customState = this._findMatchingState(state, customSpec)
+						let customState = this._findMatchingState(atRule, customSpec)
 
 						if (!customState) {
 							return
 						}
 
-						this._applyCustomizedState(state, customState)
+						this._applyCustomizedState(atRule, customState)
 					}
 
 					return atRule.nodes.forEach((node) => root.append(node.clone()))

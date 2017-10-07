@@ -22,7 +22,7 @@ class ChassisSettings extends NGN.EventEmitter {
 						'block': []
 					}
 				},
-				
+
 				importBasePath: {
 					type: String,
 					default: './',
@@ -41,7 +41,7 @@ class ChassisSettings extends NGN.EventEmitter {
 					default: chassis.constants.theme.defaultFilePath,
 					validate (filepath) {
 						let filename = chassis.utils.files.getFileName(filepath)
-						return chassis.utils.files.getFileExtension(filename) === '.css'
+						return chassis.utils.files.getFileExtension(filename) === '.ct'
 					}
 				},
 
@@ -78,19 +78,19 @@ class ChassisSettings extends NGN.EventEmitter {
 			virtuals: {
 				componentResetSelectorLists () {
 					let selectors = {}
-					
+
 					for (let list in this.componentResetSelectors) {
 						selectors[list] = this.componentResetSelectors[list].map((selectorString) => {
 							selectorString = `.chassis ${selectorString.trim()}`
-							
+
 							if (selectorString.includes(',')) {
 								return selectorString.split(',').map((selector) => selector.trim()).join(', .chassis ')
 							}
-						
+
 							return selectorString
 						}).join(', ')
 					}
-					
+
 					return selectors
 				}
  			}
