@@ -142,7 +142,7 @@ class ChassisPostCss {
 			console.error(this.settings.invalidDataAttributes.join(', '))
 
 			if (this.settings.invalidDataAttributes.includes('theme')) {
-				console.error(`[ERROR] "${this.settings.theme}" is not a valid theme file. Chassis themes must have a ".ct" extension. Reverting to default theme...`)
+				console.error(`[ERROR] Chassis Theme: "${this.settings.theme}" is not a valid theme file. Chassis themes must have a ".theme" extension.`)
 				this.settings.theme = this.constants.theme.defaultFilePath
 			}
 		}
