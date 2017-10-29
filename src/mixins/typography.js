@@ -27,14 +27,14 @@ class ChassisTypographyMixins {
     let addHeightRule = args.includes('add-height-rule')
 
     let stripMargin = args.includes('no-margin')
-    let stripMarginBottom = args.includes('no-margin-bottom')
-    let stripMarginRight = args.includes('no-margin-right')
+    let stripMarginBottom = args.includes('no-margin-bottom') || args.includes('no-margin-y')
+    let stripMarginRight = args.includes('no-margin-right') || args.includes('no-margin-x')
 
     let stripPadding = args.includes('no-padding')
-    let stripPaddingTop = args.includes('no-padding-top')
-    let stripPaddingRight = args.includes('no-padding-right')
-    let stripPaddingBottom = args.includes('no-padding-bottom')
-    let stripPaddingLeft = args.includes('no-padding-left')
+    let stripPaddingTop = args.includes('no-padding-top') || args.includes('no-padding-y')
+    let stripPaddingRight = args.includes('no-padding-right') || args.includes('no-padding-x')
+    let stripPaddingBottom = args.includes('no-padding-bottom') || args.includes('no-padding-y')
+    let stripPaddingLeft = args.includes('no-padding-left') || args.includes('no-padding-x')
 
     let multiLine = args.includes('multi-line')
     let stripLineHeight = multiLine || args.includes('no-line-height')
