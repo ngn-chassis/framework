@@ -1,3 +1,14 @@
+NOTE TO SELF: Use viewport units for HORIZONTAL padding on the outside of a UI,
+like for gutters, but use percentages on interior elements. This way, the
+padding remains in proportion to the container if the font size or container
+dimensions are changed, rather than in proportion to the viewport itself, which
+doesn't make sense.
+
+IE11
+- Links have permanent underlines
+- Form controls need a height rule
+- Textareas have the wrong font and display the wrong number of lines
+
 MISC
 - image replacement mixin
 - maybe some flexbox mixins if they can be done elegantly
@@ -14,7 +25,7 @@ BUGS
 
 COMPONENTS
 - Nesting doesn't work beyond one level. Maybe add unnesting operation in spec
-  sheets, or simply disallow nesting inside spec sheeets. 
+  sheets, or simply disallow nesting inside spec sheets.
 
 COMPONENT EXTENSION
 - consider ways of combining rulesets to shrink the size of the css
@@ -32,12 +43,3 @@ AUTO-TYPOGRAPHY SYSTEM
 - Possible solution is to make sure the scale ratio value is utilized in all
   calculations- right now, some values are just using Math.sin or log or
   something without respect to the actual scale ratio value.
-  
-FORM COMPONENTS
-- Add height rule to inputs, matching line-height, for IE11
-
-NOTE TO SELF: Use viewport units for HORIZONTAL padding on the outside of a UI,
-like for gutters, but use percentages on interior elements. This way, the
-padding remains in proportion to the container if the font size or container
-dimensions are changed, rather than in proportion to the viewport itself, which
-doesn't make sense.

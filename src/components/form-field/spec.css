@@ -52,8 +52,7 @@ chassis-control {
 		}
 
 		$(selector)[type="field"] input,
-		$(selector)[type="field"] textarea,
-		$(selector)[type="field"] chassis-select {
+		$(selector)[type="field"] textarea {
 			margin: $(input-margin-top) 0 0;
 		}
 

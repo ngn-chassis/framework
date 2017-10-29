@@ -24,6 +24,8 @@ class ChassisTypographyMixins {
     let margin = [null, `${typography.calculateInlineMarginX(lineHeightInEms)}em`, `${typography.calculateInlineMarginY(lineHeightInEms)}em`, null]
     let padding = [null, `${typography.calculateInlinePaddingX(lineHeightInEms)}em`, null, `${typography.calculateInlinePaddingX(lineHeightInEms)}em`]
 
+    let addHeightRule = args.includes('add-height-rule')
+
     let stripMargin = args.includes('no-margin')
     let stripMarginBottom = args.includes('no-margin-bottom')
     let stripMarginRight = args.includes('no-margin-right')
@@ -36,6 +38,10 @@ class ChassisTypographyMixins {
 
     let multiLine = args.includes('multi-line')
     let stripLineHeight = multiLine || args.includes('no-line-height')
+
+    if (addHeightRule) {
+      decls.push(utils.css.newDecl('height', `${calcLineHeight}em`))
+    }
 
     if (stripMargin) {
       margin = null
@@ -91,7 +97,7 @@ class ChassisTypographyMixins {
     }
 
     if (!stripLineHeight && !multiLine) {
-      decls.push(utils.css.newDecl('line-height', `${calcLineHeight}em`))
+      decls.push(utils.css.newDecl('line-height', calcLineHeight))
     }
 
     atRule.replaceWith(decls)

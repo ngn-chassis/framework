@@ -4,7 +4,6 @@ chassis-select {
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      @chassis inline-block-layout;
       vertical-align: middle;
       text-align: center;
       white-space: nowrap;
@@ -12,26 +11,20 @@ chassis-select {
       user-select: none;
     }
 
-    $(selector) svg.icon {
+    $(selector) select-title svg.icon,
+    $(selector) chassis-option svg.icon {
       transform: $(icon-offset);
     }
 
-    $(selector).pill {
-      padding-left: $(pill-padding-x);
-      padding-right: $(pill-padding-x);
+    $(selector).pill select-title {
       border-radius: $(pill-border-radius);
     }
 
-    $(selector).multi-line {
+    $(selector).multi-line select-title {
       padding-top: $(multi-line-padding-y);
       padding-bottom: $(multi-line-padding-y);
       line-height: $(multi-line-line-height);
       white-space: $(multi-line-white-space);
-    }
-
-    $(selector) chassis-option {
-      justify-content: flex-start;
-      align-items: center;
     }
   }
 

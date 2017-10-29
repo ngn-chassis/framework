@@ -2,13 +2,12 @@ chassis-control {
 	@state default {
 		$(selector)[type="toggle"] label {
 			display: inline-block;
-			width: 100%;
 		}
-		
+
 		$(selector)[type="toggle"] input {
 			margin: 0 $(control-margin-right) 0 0;
 		}
-		
+
 		/* TODO: Add validation states, sub-label */
 	}
 }

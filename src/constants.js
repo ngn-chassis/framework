@@ -14,6 +14,8 @@ class ChassisConstants {
 	// Order is important!
 	// The order specified here determines the order in which components will be
 	// added to the style sheet; This must be correct for proper cascade behavior.
+	// TODO: Instead of specifying "all" components manually, do it with a function
+	// in the mixin
 	static get components () {
 		return new Map([
 			['all', ['link', 'svg-icon', 'button', 'button-link', 'tag', 'table', 'overlay', 'modal', 'form-field', 'form-toggle', 'select-menu']],
