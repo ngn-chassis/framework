@@ -1,6 +1,7 @@
 chassis-select {
   @state default {
     $(selector) {
+      position: relative;
       flex-direction: column;
       vertical-align: middle;
       cursor: pointer;
@@ -24,7 +25,14 @@ chassis-select {
 
     $(selector).pill {
       border-radius: $(pill-border-radius);
-      overflow: auto;
+    }
+
+    $(selector)[open].pill {
+      border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
+    }
+
+    $(selector)[open].pill .options {
+      border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
     }
 
     $(selector).pill chassis-select-title,
@@ -32,6 +40,13 @@ chassis-select {
     $(selector).pill .optgroup-label {
       padding-right: $(pill-padding-x);
       padding-left: $(pill-padding-x);
+    }
+  }
+
+  @state open {
+    $(selector)[open] .options {
+      max-height: 100%;
+      overflow: auto;
     }
   }
 

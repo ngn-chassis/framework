@@ -52,11 +52,12 @@ chassis-control {
 		}
 
 		$(selector)[type="field"] input,
-		$(selector)[type="field"] textarea {
+		$(selector)[type="field"] textarea,
+		$(selector)[type="select"] chassis-select {
 			margin: $(input-margin-top) 0 0;
 		}
 
-		select,
+		$(selector)[type="select"] select,
 		$(selector)[type="select"] select[multiple] {
 			vertical-align: top;
     }

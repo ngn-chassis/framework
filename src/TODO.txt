@@ -7,6 +7,12 @@ doesn't make sense.
 MIXINS
 - Add 'no-padding-x', 'no-padding-y', 'no-margin-x', and 'no-margin-y' args to
   inline-block-layout mixin
+- Consider adding "padding-base(fontSizeAlias)" and "margin-base(fontSizeAlias)"
+  to inline-block-layout mixin. For example, if the font-size of chassis-select-title
+  is set to root but chassis-option is set to small, the padding on either side
+  of each option won't line up with the title
+- Another possible solution for the above is to simply take the horizontal
+  padding off chassis-option and put it on chassis-select .options
 
 IE11
 - Links have permanent underlines
