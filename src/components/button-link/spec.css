@@ -4,12 +4,9 @@ a.button {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      margin: 0 $(margin-right) $(margin-bottom) 0;
-      padding: 0 $(padding-x);
-      line-height: $(line-height);
+      @chassis inline-block-layout multi-line;
       vertical-align: middle;
       text-align: center;
-      white-space: nowrap;
       cursor: pointer;
       user-select: none;
     }
@@ -22,13 +19,6 @@ a.button {
       padding-left: $(pill-padding-x);
       padding-right: $(pill-padding-x);
       border-radius: $(pill-border-radius);
-    }
-
-    $(selector).multi-line {
-      padding-top: $(multi-line-padding-y);
-      padding-bottom: $(multi-line-padding-y);
-      line-height: $(multi-line-line-height);
-      white-space: $(multi-line-white-space);
     }
   }
 

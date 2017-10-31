@@ -1,0 +1,27 @@
+input[type="radio"] {
+  @state default {
+    $(selector) {
+
+    }
+  }
+
+  @state hover {
+    $(selector):hover {
+
+    }
+  }
+
+  @state focus {
+    $(selector):focus {
+
+    }
+  }
+
+  @state disabled {
+    $(selector):disabled,
+    $(selector)[disabled],
+    $(selector).disabled {
+
+    }
+  }
+}

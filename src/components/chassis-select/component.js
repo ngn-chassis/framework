@@ -1,4 +1,4 @@
-class ChassisSelectMenuComponent {
+class ChassisSelectComponent {
   constructor (chassis) {
     this.chassis = chassis
     this.resetType = 'none'
@@ -23,4 +23,4 @@ class ChassisSelectMenuComponent {
   }
 }
 
-module.exports = ChassisSelectMenuComponent
+module.exports = ChassisSelectComponent

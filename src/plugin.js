@@ -58,7 +58,7 @@ class ChassisPostCss {
 		// this.utils.console.printTree(this.theme.json)
 		return (root, result) => {
 			let skip = !root.some((node) => {
-				return node.type === 'atrule' && node.params === 'init'
+				return node.type === 'atrule' && node.name === 'chassis' && node.params === 'init'
 			})
 
 			let input = new ChassisStyleSheet(this, root).css

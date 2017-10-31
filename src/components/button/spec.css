@@ -13,29 +13,21 @@ button {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      @chassis inline-block-layout;
+      @chassis inline-block-layout multi-line;
       vertical-align: middle;
       text-align: center;
-      white-space: nowrap;
       cursor: pointer;
       user-select: none;
     }
-    
+
     $(selector) svg.icon {
       transform: $(icon-offset);
     }
-    
+
     $(selector).pill {
       padding-left: $(pill-padding-x);
       padding-right: $(pill-padding-x);
       border-radius: $(pill-border-radius);
-    }
-    
-    $(selector).multi-line {
-      padding-top: $(multi-line-padding-y);
-      padding-bottom: $(multi-line-padding-y);
-      line-height: $(multi-line-line-height);
-      white-space: $(multi-line-white-space);
     }
   }
 
@@ -60,7 +52,7 @@ button {
   @state focus {
     $(selector):focus {}
   }
-  
+
   @legacy {
     @chassis ie-only {
       $(selector), $(selector):focus, $(selector):active {

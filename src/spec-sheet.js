@@ -1,4 +1,6 @@
+const postcss = require('postcss')
 const nesting = require('postcss-nesting')
+const processNot = require('postcss-selector-not')
 
 class ChassisSpecSheet {
 	constructor (chassis, type, spec, instance) {
@@ -11,7 +13,7 @@ class ChassisSpecSheet {
 
 		this.spec.walkComments((comment) => comment.remove())
 
-		this.selectors = this.spec.nodes[0].selector.split(',')
+		this.selectors = this._generateSelectorList()
 
 		if (chassis.componentExtensions.hasOwnProperty(type)) {
       this.selectors.push(...chassis.componentExtensions[type]);
@@ -22,6 +24,10 @@ class ChassisSpecSheet {
 		})
 
 		this.spec.walkAtRules('state', (atRule) => this.states.push(atRule.params))
+	}
+
+	_generateSelectorList () {
+		return this.spec.nodes[0].selector.split(',')
 	}
 
 	get css () {

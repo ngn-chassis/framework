@@ -8,55 +8,30 @@ chassis-control {
 			display: inline-block;
 		}
 
-		input[type="date"],
-		input[type="datetime-local"],
-		input[type="email"],
-		input[type="file"],
-		input[type="month"],
-		input[type="number"],
-		input[type="password"],
-		input[type="range"],
-		input[type="search"],
-		input[type="tel"],
-		input[type="text"],
-		input[type="time"],
-		input[type="url"],
-		input[type="week"],
 		$(selector)[type="field"] input {
 			flex: 1 1 auto;
 			width: 100%;
-			padding: 0;
+			max-width: 100%;
 			margin: 0;
-			@chassis inline-block-layout no-margin;
-
-			/* Reset */
-			background: transparent;
-			border: none;
 		}
 
-		textarea,
 		$(selector)[type="field"] textarea {
 			flex: 1 1 auto;
 			width: 100%;
 			max-width: 100%;
 			margin: 0;
-			@chassis inline-block-layout multi-line no-margin;
-			overflow: auto;
-
-			/* Reset */
-			vertical-align: top;
-			resize: vertical;
-
-			background: transparent;
-			border: none;
 		}
 
-		$(selector)[type="field"] input,
+    $(selector)[type="toggle"] input {
+			margin: 0 $(toggle-margin-right) 0 0;
+		}
+
 		$(selector)[type="field"] textarea,
 		$(selector)[type="select"] chassis-select {
 			margin: $(input-margin-top) 0 0;
 		}
 
+		$(selector)[type="field"] textarea,
 		$(selector)[type="select"] select,
 		$(selector)[type="select"] select[multiple] {
 			vertical-align: top;

@@ -1,0 +1,27 @@
+input:not([type="checkbox"]):not([type="radio"]) {
+	@state default {
+		$(selector) {
+			@chassis inline-block-layout multi-line;
+
+			/* Reset */
+			background: transparent;
+			border: none;
+		}
+	}
+
+	@state hover {
+		$(selector):hover {}
+	}
+
+	@state focus {
+		$(selector):focus {}
+	}
+
+	@state disabled {
+		$(selector):disabled,
+    $(selector)[disabled],
+		$(selector).disabled {
+      pointer-events: none;
+    }
+  }
+}

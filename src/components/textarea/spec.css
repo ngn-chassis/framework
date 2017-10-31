@@ -1,0 +1,31 @@
+textarea {
+	@state default {
+		$(selector) {
+			@chassis inline-block-layout multi-line;
+			overflow: auto;
+
+			/* Reset */
+			vertical-align: top;
+			resize: vertical;
+
+			background: transparent;
+			border: none;
+		}
+	}
+
+  @state hover {
+		$(selector):hover {}
+	}
+
+	@state focus {
+		$(selector):focus {}
+	}
+
+	@state disabled {
+		$(selector):disabled,
+    $(selector)[disabled],
+		$(selector).disabled {
+      pointer-events: none;
+    }
+  }
+}

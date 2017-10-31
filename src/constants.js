@@ -1,15 +1,3 @@
-const ChassisButtonComponent = require('./components/button/component.js')
-const ChassisButtonLinkComponent = require('./components/button-link/component.js')
-const ChassisSvgIconComponent = require('./components/svg-icon/component.js')
-const ChassisLinkComponent = require('./components/link/component.js')
-const ChassisModalComponent = require('./components/modal/component.js')
-const ChassisOverlayComponent = require('./components/overlay/component.js')
-const ChassisTableComponent = require('./components/table/component.js')
-const ChassisTagComponent = require('./components/tag/component.js')
-const ChassisFormFieldComponent = require('./components/form-field/component.js')
-const ChassisFormToggleComponent = require('./components/form-toggle/component.js')
-const ChassisSelectMenuComponent = require('./components/select-menu/component.js')
-
 class ChassisConstants {
 	// Order is important!
 	// The order specified here determines the order in which components will be
@@ -18,20 +6,21 @@ class ChassisConstants {
 	// in the mixin
 	static get components () {
 		return new Map([
-			['all', ['link', 'svg-icon', 'button', 'button-link', 'tag', 'table', 'overlay', 'modal', 'form-field', 'form-toggle', 'select-menu']],
-			['link', ChassisLinkComponent],
-			['svg-icon', ChassisSvgIconComponent],
-			['button', ChassisButtonComponent],
-			['button-link', ChassisButtonLinkComponent],
+			['all', ['link', 'svg-icon', 'button', 'button-link', 'tag', 'table', 'overlay', 'modal', 'input', 'textarea', 'chassis-select', 'chassis-control']],
+			['link', require('./components/link/component.js')],
+			['svg-icon', require('./components/svg-icon/component.js')],
+			['button', require('./components/button/component.js')],
+			['button-link', require('./components/button-link/component.js')],
 			['buttons', ['button', 'button-link']],
-			['tag', ChassisTagComponent],
-			['table', ChassisTableComponent],
-			['overlay', ChassisOverlayComponent],
-			['modal', ChassisModalComponent],
-			['form-field', ChassisFormFieldComponent],
-			['form-toggle', ChassisFormToggleComponent],
-			['select-menu', ChassisSelectMenuComponent],
-			['form-controls', ['form-field', 'form-toggle', 'select-menu']]
+			['tag', require('./components/tag/component.js')],
+			['table', require('./components/table/component.js')],
+			['overlay', require('./components/overlay/component.js')],
+			['modal', require('./components/modal/component.js')],
+			['input', require('./components/input/component.js')],
+			['textarea', require('./components/textarea/component.js')],
+			['chassis-select', require('./components/chassis-select/component.js')],
+			['chassis-control', require('./components/chassis-control/component.js')],
+			['form-controls', ['input', 'textarea', 'chassis-select', 'chassis-control']]
 		])
 	}
 
