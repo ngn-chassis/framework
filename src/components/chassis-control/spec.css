@@ -40,5 +40,11 @@ chassis-control {
 		/* TODO: Add validation states, sub-label */
 	}
 
-
+	@state disabled {
+		$(selector).disabled,
+		$(selector)[disabled],
+		$(selector):disabled {
+			pointer-events: none;
+		}
+	}
 }
