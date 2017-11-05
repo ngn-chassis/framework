@@ -13,6 +13,10 @@ chassis-select {
       white-space: $(multi-line-white-space);
     }
 
+    $(selector) chassis-options {
+      overflow: auto;
+    }
+
     $(selector) chassis-option,
     $(selector) .optgroup-label {
       @chassis inline-block-layout multi-line no-margin;
@@ -27,11 +31,11 @@ chassis-select {
       border-radius: $(pill-border-radius);
     }
 
-    $(selector)[open].pill {
-      border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
+    $(selector).pill chassis-select-title {
+      border-radius: $(pill-border-radius);
     }
 
-    $(selector)[open].pill .options {
+    $(selector).pill chassis-options {
       border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
     }
 
@@ -44,9 +48,11 @@ chassis-select {
   }
 
   @state open {
-    $(selector)[open] .options {
-      max-height: 100%;
-      overflow: auto;
+    $(selector)[open] {}
+
+    $(selector)[open].pill,
+    $(selector)[open].pill chassis-select-title {
+      border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
     }
   }
 
