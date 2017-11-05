@@ -18,7 +18,7 @@ chassis-select {
     }
 
     $(selector) chassis-option,
-    $(selector) .optgroup-label {
+    $(selector) chassis-optgroup-label {
       @chassis inline-block-layout multi-line no-margin;
     }
 
@@ -41,7 +41,7 @@ chassis-select {
 
     $(selector).pill chassis-select-title,
     $(selector).pill chassis-option,
-    $(selector).pill .optgroup-label {
+    $(selector).pill chassis-optgroup-label {
       padding-right: $(pill-padding-x);
       padding-left: $(pill-padding-x);
     }
@@ -49,6 +49,10 @@ chassis-select {
 
   @state open {
     $(selector)[open] {}
+
+    $(selector)[open] chassis-options {
+      @chassis inline-block-layout no-line-height no-margin-right no-padding;
+    }
 
     $(selector)[open].pill,
     $(selector)[open].pill chassis-select-title {
