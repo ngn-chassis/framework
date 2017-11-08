@@ -10,7 +10,6 @@ chassis-select {
 
     $(selector) chassis-select-title {
       @chassis inline-block-layout multi-line no-margin;
-      white-space: $(multi-line-white-space);
     }
 
     $(selector) chassis-options {
