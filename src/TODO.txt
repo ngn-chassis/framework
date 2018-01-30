@@ -4,6 +4,9 @@ padding remains in proportion to the container if the font size or container
 dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
+BUTTONS
+- Icons screw up the height of the buttons.
+
 MIXINS
 - Add 'no-padding-x', 'no-padding-y', 'no-margin-x', and 'no-margin-y' args to
   inline-block-layout mixin

@@ -6,7 +6,7 @@ class ChassisConstants {
 	// in the mixin
 	static get components () {
 		return new Map([
-			['all', ['link', 'svg-icon', 'button', 'button-link', 'tag', 'table', 'overlay', 'modal', 'input', 'textarea', 'chassis-select', 'chassis-control']],
+			// ['all', ['link', 'svg-icon', 'button', 'button-link', 'tag', 'table', 'overlay', 'modal', 'input', 'textarea', 'chassis-select', 'chassis-control']],
 			['link', require('./components/link/component.js')],
 			['svg-icon', require('./components/svg-icon/component.js')],
 			['button', require('./components/button/component.js')],
@@ -57,18 +57,19 @@ class ChassisConstants {
 			})(),
 			scale: {
 				ratios: {
-					'minor 2nd': 1 + (1 / 12),
-					'major 2nd': 1 + (2 / 12),
-					'minor 3rd': 1 + (3 / 12),
-					'major 3rd': 1 + (4 / 12),
-					'perfect 4th': 1 + (5 / 12),
-					'tritone': 1 + (6 / 12),
-					'perfect 5th': 1 + (7 / 12),
-					'golden ratio': 1.61803398875,
-					'minor 6th': 1 + (8 / 12),
-					'major 6th': 1 + (9 /12),
-					'minor 7th': 1 + (10 / 12),
-					'major 7th': 1 + (11 / 12)
+					'minor 2nd':    16 / 15,
+					'major 2nd':    9 / 8,
+					'minor 3rd':    6 / 5,
+					'major 3rd':    5 / 4,
+					'perfect 4th':  4 / 3,
+					'tritone':      45 / 32,
+					'perfect 5th':  3 / 2,
+					'minor 6th':    8 / 5,
+					'golden ratio': (1 + Math.sqrt(5)) / 2,
+					'major 6th':    5 / 3,
+					'minor 7th':    16 / 9,
+					'major 7th':    15 / 8,
+					'octave':       2
 				},
 				threshold: 640 // The viewport width above which font size should start to increment from base
 			},

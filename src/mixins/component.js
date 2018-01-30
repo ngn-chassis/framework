@@ -37,15 +37,25 @@ class ChassisComponentMixins {
 		let { settings } = this.chassis
 		let { args, atRule, source } = arguments[0]
 
-		let requestedComponents = args.filter((type) => {
-			let componentExists = this.components.has(type)
+		let requestedComponents = []
 
-			if (!componentExists) {
-				console.warn(`[WARNING] Line ${source.line}: Component "${type}" not found.`)
+		if (args.includes('all')) {
+			for (let [key, value] of this.components) {
+				if (!Array.isArray(value)) {
+					requestedComponents.push(key)
+				}
 			}
+		} else {
+			requestedComponents = args.filter((type) => {
+				let componentExists = this.components.has(type)
 
-			return componentExists
-		})
+				if (!componentExists) {
+					console.warn(`[WARNING] Line ${source.line}: Component "${type}" not found.`)
+				}
+
+				return componentExists
+			})
+		}
 
 		// Order component includes for correct cascade behavior
 		let sorted = []
