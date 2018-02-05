@@ -77,7 +77,7 @@ class ChassisComponentMixins {
 				settings.componentResetSelectors[component.instance.resetType].push(...component.defaultSpec.selectors)
 			}
 
-			return component.themed
+			return component.themedCss
 		})
 
 		atRule.replaceWith(css)
@@ -103,7 +103,7 @@ class ChassisComponentMixins {
 			settings.componentResetSelectors[component.instance.resetType].push(...atRule.parent.selector.split(','))
 		}
 
-		atRule.parent.replaceWith(component.unthemed)
+		atRule.parent.replaceWith(component.unthemedCss)
 	}
 }
 

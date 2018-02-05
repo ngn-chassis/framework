@@ -8,12 +8,13 @@ class ChassisSpecSheet {
 		this.type = type
 		this.spec = spec
 		this.overridesLinks = instance.overridesLinks === true
-
 		this.states = []
 
+		// Strip comments from spec sheet
 		this.spec.walkComments((comment) => comment.remove())
 
-		this.selectors = this._generateSelectorList()
+		// Get selector list from first line of spec sheet
+		this.selectors = this.spec.nodes[0].selector.split(',')
 
 		if (chassis.componentExtensions.hasOwnProperty(type)) {
       this.selectors.push(...chassis.componentExtensions[type]);
@@ -23,11 +24,147 @@ class ChassisSpecSheet {
 			selectors: this.selectors
 		})
 
+		// Store states
 		this.spec.walkAtRules('state', (atRule) => this.states.push(atRule.params))
-	}
 
-	_generateSelectorList () {
-		return this.spec.nodes[0].selector.split(',')
+		Object.defineProperties(this, {
+			_applyCustomizedState: NGN.privateconst((state, customState) => {
+				let { utils } = this.chassis
+
+				if (!this.states.includes(customState.params)) {
+					console.warn(`[WARNING] Chassis "${this.type}" component does not support "${customState.params}" state. Discarding...`)
+					return
+				}
+
+				let customRules = customState.nodes.filter((node) => node.type === 'rule')
+				let customDecls = customState.nodes.filter((node) => node.type === 'decl')
+				let overrides = null
+
+				if (this.overridesLinks) {
+					overrides = this._generateLinkOverrides(state)
+				}
+
+				state.walkRules((rule, index) => {
+					// Default state is always first
+					if (index === 0) {
+						this._mergeDecls(rule, customDecls)
+
+						if (overrides) {
+							this._mergeDecls(rule, overrides)
+						}
+					}
+
+					let customRuleIndex
+
+					let match = customRules.find((customRule, i) => {
+						customRuleIndex = i
+						return customRule.selector.replace('&', '').trim() === rule.selector.replace('$(selector)', '').trim()
+					})
+
+					if (match) {
+						customRules.splice(customRuleIndex, 1)
+						this._mergeRules(rule, match)
+					}
+				})
+
+				customRules.forEach((customRule) => {
+					customRule.selector = `${state.nodes[0].selector} ${customRule.selector.replace('&', '').trim()}`
+				})
+
+				state.nodes.push(...customRules)
+			}),
+
+			_generateLinkOverrides: NGN.privateconst((state) => {
+				let { linkOverrides, theme, utils } = this.chassis
+				let linkStateOverrides = linkOverrides[state.params]
+
+				if (!linkStateOverrides) {
+					return
+				}
+
+				let defaultTheme = theme.getComponent(this.type)
+				let defaultState = defaultTheme['default']
+				let currentState = defaultTheme[state.params]
+				let linkDecls = utils.css.generateDeclsFromTheme(linkStateOverrides)
+				let defaultStateDecls = utils.css.generateDeclsFromTheme(defaultState)
+				let currentStateDecls = utils.css.generateDeclsFromTheme(currentState)
+				let linkUniqueDecls = utils.css.getUniqueProps(linkDecls, currentStateDecls)
+
+				// TODO: Handle nested rulesets
+		    // let defaultRules = theme.getRules(defaultTheme)
+		    // let stateRules = theme.getRules(stateTheme)
+
+				if (state.params === 'default') {
+					return linkUniqueDecls.map((prop) => utils.css.newDecl(prop, 'unset'))
+				}
+
+				let overrides = []
+
+				// Props common between link.${state} and component.${state}
+				let commonDecls = utils.css.getCommonProps(linkDecls, currentStateDecls)
+
+				// If both link.${state} AND component.default themes include a property,
+				// AND it is not already included in the component.${state} theme, add this override:
+				// property: component.default value;
+				if (commonDecls.length > 0) {
+					let defaultOverrides = commonDecls.map((prop) => {
+						return currentStateDecls.find((decl) => decl.prop === prop)
+					}).filter((entry) => entry !== undefined)
+
+					overrides.push(...defaultOverrides)
+				}
+
+				// If a property is included in link.${state} theme but not default button theme,
+				// AND it is NOT already included in the button.${state} theme,
+				// unset it in ${state} button theme
+				if (linkUniqueDecls.length > 0) {
+					let unset = linkUniqueDecls.filter((prop) => {
+						return !commonDecls.includes(prop)
+					}).filter((prop) => {
+						return !currentStateDecls.some((decl) => decl.prop === prop)
+					})
+
+					// Check for properties in the default theme which should be applied
+					// instead of unsetting the property, and if present, add them to overrides
+					let indexesToRemove = []
+
+					unset.forEach((prop, index) => {
+						let matchInDefaultDecls = defaultStateDecls.find((decl) => decl.prop === prop)
+
+						if (matchInDefaultDecls) {
+							indexesToRemove.push(index)
+							overrides.push(matchInDefaultDecls)
+						}
+					})
+
+					// Remove properties from unset if they are already present in the default theme
+					indexesToRemove.forEach((index) => {
+						unset.splice(index, 1)
+					})
+
+					if (unset.length > 0) {
+						overrides.push(...unset.map((prop) => {
+							// "unset" is not supported in IE11, so we're using "initial"
+							// These properties are guaranteed to be inherited since they are
+							// applied to a tags- hence, even if this value were set to "unset"
+							// it would always evaluate to "initial" anyway
+							return utils.css.newDecl(prop, 'initial')
+						}))
+					}
+				}
+
+				return overrides.length > 0 ? overrides : null
+			}),
+
+			_processAtRule: NGN.privateconst((atRule) => {
+				let data = Object.assign({
+					root: this.tree,
+					atRule
+				}, this.chassis.atRules.getProperties(atRule))
+
+				this.chassis.atRules.process(data)
+			})
+		})
 	}
 
 	get css () {
@@ -43,7 +180,11 @@ class ChassisSpecSheet {
 			selectors: customSpec.nodes[0].selector.split(',')
 		})
 
-		return this.resolveVariables(template, customVariables)
+		let resolved = this.resolveVariables(template, customVariables)
+
+		resolved.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+
+		return resolved
 	}
 
 	getUnthemedCss (customSpec) {
@@ -53,12 +194,20 @@ class ChassisSpecSheet {
 			selectors: customSpec.nodes[0].selector.split(',')
 		})
 
-		return this.resolveVariables(template, customVariables)
+		let resolved = this.resolveVariables(template, customVariables)
+
+		resolved.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+
+		return resolved
 	}
 
 	getThemedCss (theme) {
 		let template = this.generateTemplate(theme)
-		return this.resolveVariables(template)
+		let resolved = this.resolveVariables(template)
+
+		resolved.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+
+		return resolved
 	}
 
 	generateCustomTemplate (customSpec) {
@@ -135,134 +284,6 @@ class ChassisSpecSheet {
 		})
 
 		return root
-	}
-
-	_generateLinkOverrides (state) {
-		let { linkOverrides, theme, utils } = this.chassis
-
-		let linkStateOverrides = linkOverrides[state.params]
-
-		if (!linkStateOverrides) {
-			return
-		}
-
-		let defaultTheme = theme.getComponent(this.type)
-
-		let defaultState = defaultTheme['default']
-		let currentState = defaultTheme[state.params]
-
-		let linkDecls = utils.css.generateDeclsFromTheme(linkStateOverrides)
-		let defaultStateDecls = utils.css.generateDeclsFromTheme(defaultState)
-		let currentStateDecls = utils.css.generateDeclsFromTheme(currentState)
-
-		let linkUniqueDecls = utils.css.getUniqueProps(linkDecls, currentStateDecls)
-
-		// TODO: Handle nested rulesets
-    // let defaultRules = theme.getRules(defaultTheme)
-    // let stateRules = theme.getRules(stateTheme)
-
-		if (state.params === 'default') {
-			return linkUniqueDecls.map((prop) => utils.css.newDecl(prop, 'unset'))
-		}
-
-		let overrides = []
-
-		// Props common between link.${state} and component.${state}
-		let commonDecls = utils.css.getCommonProps(linkDecls, currentStateDecls)
-
-		// If both link.${state} AND component.default themes include a property,
-		// AND it is not already included in the component.${state} theme, add this override:
-		// property: component.default value;
-		if (commonDecls.length > 0) {
-			let defaultOverrides = commonDecls.map((prop) => {
-				return currentStateDecls.find((decl) => decl.prop === prop)
-			}).filter((entry) => entry !== undefined)
-
-			overrides.push(...defaultOverrides)
-		}
-
-		// If a property is included in link.${state} theme but not default button theme,
-		// AND it is NOT already included in the button.${state} theme,
-		// unset it in ${state} button theme
-		if (linkUniqueDecls.length > 0) {
-			let unset = linkUniqueDecls.filter((prop) => {
-				return !commonDecls.includes(prop)
-			}).filter((prop) => {
-				return !currentStateDecls.some((decl) => decl.prop === prop)
-			})
-
-			// Check for properties in the default theme which should be applied
-			// instead of unsetting the property, and if present, add them to overrides
-			let indexesToRemove = []
-
-			unset.forEach((prop, index) => {
-				let matchInDefaultDecls = defaultStateDecls.find((decl) => decl.prop === prop)
-
-				if (matchInDefaultDecls) {
-					indexesToRemove.push(index)
-					overrides.push(matchInDefaultDecls)
-				}
-			})
-
-			// Remove properties from unset if they are already present in the default theme
-			indexesToRemove.forEach((index) => {
-				unset.splice(index, 1)
-			})
-
-			if (unset.length > 0) {
-				overrides.push(...unset.map((prop) => {
-					return utils.css.newDecl(prop, 'unset')
-				}))
-			}
-		}
-
-		return overrides.length > 0 ? overrides : null
-	}
-
-	_applyCustomizedState (state, customState) {
-		let { utils } = this.chassis
-
-		if (!this.states.includes(customState.params)) {
-			console.warn(`[WARNING] Chassis "${this.type}" component does not support "${customState.params}" state. Discarding...`)
-			return
-		}
-
-		let customRules = customState.nodes.filter((node) => node.type === 'rule')
-		let customDecls = customState.nodes.filter((node) => node.type === 'decl')
-		let overrides = null
-
-		if (this.overridesLinks) {
-			overrides = this._generateLinkOverrides(state)
-		}
-
-		state.walkRules((rule, index) => {
-			// Default state is always first
-			if (index === 0) {
-				this._mergeDecls(rule, customDecls)
-
-				if (overrides) {
-					this._mergeDecls(rule, overrides)
-				}
-			}
-
-			let customRuleIndex
-
-			let match = customRules.find((customRule, i) => {
-				customRuleIndex = i
-				return customRule.selector.replace('&', '').trim() === rule.selector.replace('$(selector)', '').trim()
-			})
-
-			if (match) {
-				customRules.splice(customRuleIndex, 1)
-				this._mergeRules(rule, match)
-			}
-		})
-
-		customRules.forEach((customRule) => {
-			customRule.selector = `${state.nodes[0].selector} ${customRule.selector.replace('&', '').trim()}`
-		})
-
-		state.nodes.push(...customRules)
 	}
 
 	_findMatchingState (state, customSpec) {

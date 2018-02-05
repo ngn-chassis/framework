@@ -8,55 +8,90 @@ class ChassisStyleSheet {
 		this.tree = tree
 		this.isNamespaced = namespaced
 
-		this.css = this._generateCss()
-	}
+		Object.defineProperties(this, {
+			_atRules: NGN.private({}),
 
-	_processAtRule (atRule) {
-		let data = Object.assign({
-			root: this.tree,
-			atRule
-		}, this.chassis.atRules.getProperties(atRule))
+			_processAtRule: NGN.privateconst((atRule) => {
+				let data = Object.assign({
+					root: this.tree,
+					atRule
+				}, this.chassis.atRules.getProperties(atRule))
 
-		this.chassis.atRules.process(data)
+				this.chassis.atRules.process(data)
+			}),
+
+			_generateNamespacedSelector: NGN.privateconst((selector) => {
+				selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
+
+				if (selector.includes(',')) {
+					selector = selector.split(',').map((chunk) => chunk.trim()).join(', .chassis ')
+				}
+
+				return selector
+			}),
+
+			_processAtRules: NGN.privateconst((type) => {
+				if (this._atRules.hasOwnProperty(type)) {
+					this._atRules[type].forEach((atRule) => {
+						this._processAtRule(atRule)
+					})
+				}
+			}),
+
+			_storeAtRule: NGN.privateconst((atRule) => {
+				let params = atRule.params.split(' ')
+				let container = params[0]
+				let containers = ['import', 'include', 'new', 'extend']
+
+				if (containers.includes(container)) {
+					if (!this._atRules.hasOwnProperty(container)) {
+						this._atRules[container] = []
+					}
+
+					this._atRules[container].push(atRule)
+					return
+				}
+
+				if (!this._atRules.hasOwnProperty('other')) {
+					this._atRules.other = []
+				}
+
+				this._atRules.other.push(atRule)
+			}),
+
+			_storeAtRules: NGN.privateconst(() => {
+				this._atRules = {}
+				this.tree.walkAtRules('chassis', (atRule) => this._storeAtRule(atRule))
+			})
+		})
 	}
 
 	// TODO: Account for multiple "include" mixins
-	_generateCss () {
+	get css () {
+		this._storeAtRules()
+
 		// Process imports first
-		this.tree.walkAtRules('chassis', (atRule, index) => {
-			if (atRule.params.startsWith('import')) {
-				this._processAtRule(atRule)
-			}
-		})
+		this._processAtRules('import')
 
 		// Process all but 'include', 'new' and 'extend' mixins as those need to be
 		// processed after the unnest operation to properly resolve nested selectors
-		this.tree.walkAtRules('chassis', (atRule) => {
-			if (!(atRule.params.startsWith('include') || atRule.params.startsWith('new') || atRule.params.startsWith('extend'))) {
-				this._processAtRule(atRule)
-			}
-		})
+		this._processAtRules('other')
 
 		// in cssnext, nesting isn't handled correctly, so we're short-circuiting it
 		// by handling unnesting here
 		this.tree = postcss.parse(nesting.process(this.tree))
+		this._storeAtRules()
 
-		// Process remaining 'new' and 'extend' mixins
-		this.tree.walkAtRules('chassis', (atRule) => {
-			if (atRule.params.startsWith('new') || atRule.params.startsWith('extend')) {
-				this._processAtRule(atRule)
-			}
-		})
+		// Process remaining 'new', 'extend', and 'include' mixins
+		this._processAtRules('new')
+		this._processAtRules('extend')
+		this._processAtRules('include')
 
-		// Process remaining 'include' mixins
-		this.tree.walkAtRules('chassis', (atRule) => {
-			if (atRule.params.startsWith('include')) {
-				this._processAtRule(atRule)
-			}
-		})
+		// Process remaining other mixins
+		this._processAtRules('other')
 
-		// Process all remaining mixins
-		this.tree.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+		// Process nesting again
+		this.tree = postcss.parse(nesting.process(this.tree))
 
 		// Process ":not()" instances before namespace is prepended
 		this.tree = postcss.parse(processNot.process(this.tree))
@@ -73,13 +108,8 @@ class ChassisStyleSheet {
 				return
 			}
 
-			// TODO: Once this is figured out, make a utility for namespacing a selector
 			if (this.isNamespaced) {
-				rule.selector = rule.selector === 'html' || rule.selector === ':root'  ? rule.selector.trim() : `.chassis ${rule.selector.trim()}`
-
-				if (rule.selector.includes(',')) {
-					rule.selector = rule.selector.split(',').map((selector) => selector.trim()).join(', .chassis ')
-				}
+				rule.selector = this._generateNamespacedSelector(rule.selector)
 			}
 		})
 

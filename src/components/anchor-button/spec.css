@@ -12,7 +12,7 @@ a.button {
     }
 
     $(selector) svg.icon {
-      transform: $(icon-offset);
+      transform: $(icon-offset-left);
     }
 
     $(selector).pill {

@@ -2,6 +2,21 @@
 
 /* All spec info must be contained inside a component rule as below */
 button {
+  @legacy {
+    @chassis ie-only {
+      $(selector), $(selector):focus, $(selector):active {
+        background: none;
+        border: none;
+        outline: none;
+        color: inherit;
+      }
+
+      $(selector) span {
+        position: relative;
+      }
+    }
+  }
+
   /* This rule can contain @state rules and an @legacy rule */
   /*
     The first element inside each @state rule MUST be the default selector
@@ -51,20 +66,5 @@ button {
 
   @state focus {
     $(selector):focus {}
-  }
-
-  @legacy {
-    @chassis ie-only {
-      $(selector), $(selector):focus, $(selector):active {
-        background: none;
-        border: none;
-        outline: none;
-        color: inherit;
-      }
-
-      $(selector) span {
-        position: relative;
-      }
-    }
   }
 }

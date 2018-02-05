@@ -56,5 +56,5 @@ summary {
 
 input, textarea, button {
 	font-size: inherit;
-	line-height: inherit;
+	line-height: $(root-line-height);
 }

@@ -2,26 +2,26 @@ a {
 	@state default {
 		$(selector) {}
 	}
-	
+
 	@state visited {
 		$(selector):visited {}
 	}
-	
+
 	@state hover {
 		$(selector):hover {}
 	}
-	
+
 	@state active {
 		$(selector):active {}
 	}
-	
+
 	@state disabled {
 		$(selector)[disabled], $(selector).disabled {
 			cursor: default;
 			pointer-events: none;
 		}
 	}
-	
+
 	@state focus {
 		$(selector):focus {}
 	}
