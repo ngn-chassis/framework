@@ -1,6 +1,6 @@
 {
   "name": "@chassis/core",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "CSS Pre-Processor and Framework for Modern UI Development",
   "main": "index.js",
   "scripts": {
