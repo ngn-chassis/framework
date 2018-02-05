@@ -2,8 +2,7 @@ class ChassisAnchorButtonComponent {
   constructor (chassis) {
     this.chassis = chassis
     this.resetType = 'inline-block'
-
-    this.overridesLinks = true
+    this.overrides = 'anchor'
   }
 
   get variables () {

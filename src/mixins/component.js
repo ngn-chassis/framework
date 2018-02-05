@@ -73,6 +73,11 @@ class ChassisComponentMixins {
 		let css = NGN.dedupe(sorted).map((type) => {
 			let component = new ChassisComponent(this.chassis, type)
 
+			// console.log(type);
+			// console.log(component.themedCss.toString());
+			// console.log('============================');
+			// console.log(component.unthemedCss.toString());
+
 			if (component.instance.resetType !== 'none') {
 				settings.componentResetSelectors[component.instance.resetType].push(...component.defaultSpec.selectors)
 			}

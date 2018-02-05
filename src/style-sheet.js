@@ -11,15 +11,6 @@ class ChassisStyleSheet {
 		Object.defineProperties(this, {
 			_atRules: NGN.private({}),
 
-			_processAtRule: NGN.privateconst((atRule) => {
-				let data = Object.assign({
-					root: this.tree,
-					atRule
-				}, this.chassis.atRules.getProperties(atRule))
-
-				this.chassis.atRules.process(data)
-			}),
-
 			_generateNamespacedSelector: NGN.privateconst((selector) => {
 				selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
 
@@ -30,12 +21,39 @@ class ChassisStyleSheet {
 				return selector
 			}),
 
+			_processAtRule: NGN.privateconst((atRule) => {
+				let data = Object.assign({
+					root: this.tree,
+					atRule
+				}, this.chassis.atRules.getProperties(atRule))
+
+				this.chassis.atRules.process(data)
+			}),
+
 			_processAtRules: NGN.privateconst((type) => {
 				if (this._atRules.hasOwnProperty(type)) {
 					this._atRules[type].forEach((atRule) => {
 						this._processAtRule(atRule)
 					})
+
+					delete this._atRules[type]
 				}
+			}),
+
+			_processImports: NGN.privateconst(() => {
+				this.tree.walkAtRules('chassis', (atRule) => {
+					if (atRule.params.startsWith('import')) {
+						this._processAtRule(atRule)
+					}
+				})
+			}),
+
+			_processNesting: NGN.privateconst(() => {
+				this.tree = postcss.parse(nesting.process(this.tree))
+			}),
+
+			_processNot: NGN.privateconst(() => {
+				this.tree = postcss.parse(processNot.process(this.tree))
 			}),
 
 			_storeAtRule: NGN.privateconst((atRule) => {
@@ -68,10 +86,8 @@ class ChassisStyleSheet {
 
 	// TODO: Account for multiple "include" mixins
 	get css () {
+		this._processImports()
 		this._storeAtRules()
-
-		// Process imports first
-		this._processAtRules('import')
 
 		// Process all but 'include', 'new' and 'extend' mixins as those need to be
 		// processed after the unnest operation to properly resolve nested selectors
@@ -79,7 +95,11 @@ class ChassisStyleSheet {
 
 		// in cssnext, nesting isn't handled correctly, so we're short-circuiting it
 		// by handling unnesting here
-		this.tree = postcss.parse(nesting.process(this.tree))
+		this._processNesting()
+
+		// After unnesting operation, re-store at-rule references
+		// TODO: Find out why this is necessary, since it seems like the nesting
+		// shouldn't affect which at-rules are present.
 		this._storeAtRules()
 
 		// Process remaining 'new', 'extend', and 'include' mixins
@@ -87,14 +107,8 @@ class ChassisStyleSheet {
 		this._processAtRules('extend')
 		this._processAtRules('include')
 
-		// Process remaining other mixins
-		this._processAtRules('other')
-
-		// Process nesting again
-		this.tree = postcss.parse(nesting.process(this.tree))
-
 		// Process ":not()" instances before namespace is prepended
-		this.tree = postcss.parse(processNot.process(this.tree))
+		this._processNot()
 
 		// Cleanup empty rulesets and prepend .chassis namespace to all selectors
 		// except 'html' and ':root'
@@ -112,7 +126,7 @@ class ChassisStyleSheet {
 				rule.selector = this._generateNamespacedSelector(rule.selector)
 			}
 		})
-
+		
 		return this.tree
 	}
 }

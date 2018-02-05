@@ -41,11 +41,7 @@ class Chassis {
 		this.core = new ChassisCore(this)
 		this.componentExtensions = {}
 
-		// List of CSS properties that are applied to <a> tags. Other components that
-		// use <a> tags with an additional class or attribute will need to unset or
-		// override these properties to avoid picking up unintended styling from
-		// default links.
-		this.linkOverrides = {}
+		this.componentOverrides = {}
 
 		// this.utils.console.printTree(this.settings.data)
 		// this.utils.console.printTree(this.theme.json)
