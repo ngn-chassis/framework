@@ -1,8 +1,13 @@
 chassis-control {
 	@state default {
-		$(selector)[type="field"] {
+		$(selector)[type="field"],
+		$(selector)[type="select"] {
 			margin-bottom: $(margin-bottom);
 		}
+
+		/* $(selector) * {
+			outline: none;
+		} */
 
 		$(selector)[type="field"] label {
 			display: inline-block;
@@ -41,8 +46,8 @@ chassis-control {
 	}
 
 	@state disabled {
+		$(selector)[disabled]:not([disabled*="false"]),
 		$(selector).disabled,
-		$(selector)[disabled],
 		$(selector):disabled {
 			pointer-events: none;
 		}

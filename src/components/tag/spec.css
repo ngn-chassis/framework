@@ -6,8 +6,8 @@
 			align-items: center;
 			margin: 0;
 			padding: $(padding);
-			/* font-size: $(font-size); */
-			/* line-height: $(line-height); */
+			font-size: $(font-size);
+			line-height: $(line-height);
 			vertical-align: baseline;
 		}
 
