@@ -87,11 +87,6 @@ class ChassisStyleSheet {
 	// TODO: Account for multiple "include" mixins
 	get css () {
 		this._processImports()
-		this._storeAtRules()
-
-		// Process all but 'include', 'new' and 'extend' mixins as those need to be
-		// processed after the unnest operation to properly resolve nested selectors
-		this._processAtRules('other')
 
 		// in cssnext, nesting isn't handled correctly, so we're short-circuiting it
 		// by handling unnesting here
@@ -102,6 +97,10 @@ class ChassisStyleSheet {
 		// shouldn't affect which at-rules are present.
 		this._storeAtRules()
 
+		// Process all but 'include', 'new' and 'extend' mixins as those need to be
+		// processed after the unnest operation to properly resolve nested selectors
+		this._processAtRules('other')
+
 		// Process remaining 'new', 'extend', and 'include' mixins
 		this._processAtRules('new')
 		this._processAtRules('extend')
@@ -109,6 +108,8 @@ class ChassisStyleSheet {
 
 		// Process ":not()" instances before namespace is prepended
 		this._processNot()
+
+		this._processNesting()
 
 		// Cleanup empty rulesets and prepend .chassis namespace to all selectors
 		// except 'html' and ':root'
@@ -126,7 +127,7 @@ class ChassisStyleSheet {
 				rule.selector = this._generateNamespacedSelector(rule.selector)
 			}
 		})
-		
+
 		return this.tree
 	}
 }

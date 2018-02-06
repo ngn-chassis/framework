@@ -36,7 +36,6 @@ button {
     }
 
     $(selector) svg.icon {
-      height: 100%;
       transform: $(icon-offset);
     }
 
