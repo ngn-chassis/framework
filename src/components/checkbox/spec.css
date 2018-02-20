@@ -19,7 +19,6 @@ input[type="checkbox"] {
 
   @state disabled {
     $(selector):disabled,
-    $(selector)[disabled],
     $(selector).disabled {
 
     }

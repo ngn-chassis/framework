@@ -23,7 +23,6 @@ textarea {
 
 	@state disabled {
 		$(selector):disabled,
-    $(selector)[disabled],
 		$(selector).disabled {
       pointer-events: none;
     }

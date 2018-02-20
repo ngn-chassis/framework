@@ -16,7 +16,8 @@ a {
 	}
 
 	@state disabled {
-		$(selector)[disabled], $(selector).disabled {
+		$(selector):disabled, 
+		$(selector).disabled {
 			cursor: default;
 			pointer-events: none;
 		}

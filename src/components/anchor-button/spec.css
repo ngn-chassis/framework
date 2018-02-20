@@ -34,13 +34,14 @@ a.button {
     $(selector):active {}
   }
 
-  @state disabled {
-    $(selector)[disabled], $(selector).disabled {
-      pointer-events: none;
-    }
-  }
-
   @state focus {
     $(selector):focus {}
+  }
+
+  @state disabled {
+    $(selector):disabled,
+    $(selector).disabled {
+      pointer-events: none;
+    }
   }
 }

@@ -46,7 +46,6 @@ chassis-control {
 	}
 
 	@state disabled {
-		$(selector)[disabled]:not([disabled*="false"]),
 		$(selector).disabled,
 		$(selector):disabled {
 			pointer-events: none;
