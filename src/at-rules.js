@@ -17,6 +17,10 @@ class ChassisAtRules {
 		this.viewportMixins = new ChassisViewportMixins(chassis)
 	}
 
+	get 'apply' () {
+		return (data) => this.typographyMixins.applyProps(data)
+	}
+
 	get 'constrain-width' () {
 		return (data) => this.layoutMixins.constrainWidth(data)
 	}
@@ -47,10 +51,6 @@ class ChassisAtRules {
 
 	get 'font-size' () {
 		return (data) => this.typographyMixins.fontSize(data)
-	}
-
-	get 'inline-block-layout' () {
-		return (data) => this.typographyMixins.inlineBlockLayout(data)
 	}
 
 	get 'new' () {

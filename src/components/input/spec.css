@@ -14,7 +14,7 @@ input[type="url"],
 input[type="week"] {
 	@state default {
 		$(selector) {
-			@chassis inline-block-layout multi-line;
+			@chassis apply inline-block;
 
 			/* Reset */
 			background: transparent;

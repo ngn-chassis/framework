@@ -1,7 +1,7 @@
 textarea {
 	@state default {
 		$(selector) {
-			@chassis inline-block-layout multi-line;
+			@chassis apply inline-block;
 			overflow: auto;
 
 			/* Reset */

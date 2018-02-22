@@ -10,7 +10,7 @@ table {
 		$(selector) th,
 		$(selector) td {
 			overflow: hidden;
-			@chassis inline-block-layout no-margin multi-line;
+			@chassis apply inline-block padding;
 			text-align: left;
 			text-overflow: ellipsis;
 			vertical-align: top;

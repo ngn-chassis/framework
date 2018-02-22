@@ -9,7 +9,7 @@ chassis-select {
     }
 
     $(selector) chassis-select-title {
-      @chassis inline-block-layout multi-line no-margin;
+      @chassis apply inline-block padding;
     }
 
     $(selector) chassis-options {
@@ -18,7 +18,7 @@ chassis-select {
 
     $(selector) chassis-option,
     $(selector) chassis-optgroup-label {
-      @chassis inline-block-layout multi-line no-margin;
+      @chassis apply inline-block padding;
     }
 
     $(selector) chassis-select-title svg.icon,
@@ -50,7 +50,7 @@ chassis-select {
     $(selector)[open] {}
 
     $(selector)[open] chassis-options {
-      @chassis inline-block-layout no-line-height no-margin-right no-padding;
+      @chassis apply inline-block margin-bottom;
     }
 
     $(selector)[open].pill,
