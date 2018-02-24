@@ -4,6 +4,7 @@ chassis-select {
       position: relative;
       flex-direction: column;
       vertical-align: middle;
+      outline: none;
       cursor: pointer;
       user-select: none;
     }

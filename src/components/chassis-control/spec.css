@@ -23,7 +23,13 @@ chassis-control {
 			margin: 0;
 		}
 
+		$(selector)[type="toggle"] {
+			display: flex;
+			align-items: baseline;
+		}
+
     $(selector)[type="toggle"] input {
+			display: inline-block;
 			margin: 0 $(toggle-margin-right) 0 0;
 		}
 
