@@ -28,7 +28,7 @@ button {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      @chassis apply inline-block;
+      @chassis apply inline-block padding;
       vertical-align: middle;
       text-align: center;
       cursor: pointer;
