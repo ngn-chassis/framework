@@ -70,6 +70,7 @@ class ChassisLayoutMixins {
 	zIndex () {
 		let { settings, utils } = this.chassis
     let { args, atRule, source } = arguments[0]
+
 		let index = settings.zIndex[args[0]]
 
 		if (!index) {
