@@ -8,7 +8,7 @@ class ChassisComponent {
     this.instance = new (chassis.constants.components.get(type))(chassis)
 
     this.theme = chassis.theme.getComponentSpec(type)
-    this.defaultSpec = new ChassisSpecSheet(this.chassis, type, chassis.utils.files.parseStyleSheet(`../components/${type}/spec.css`), this.instance)
+    this.defaultSpec = new ChassisSpecSheet(this.chassis, type, chassis.utils.file.parseStyleSheet(`../components/${type}/spec.css`), this.instance)
     this.customSpec = customSpec
 
     Object.defineProperties(this, {

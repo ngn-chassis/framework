@@ -8,7 +8,7 @@ class ChassisSvgIconComponent {
 		let { settings, utils } = this.chassis
 		let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
 
-		let lineHeightInEms = utils.units.toEms(lineHeight, fontSize)
+		let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
 
 		return {
 			'width': 'auto',

@@ -8,7 +8,7 @@ class ChassisControlComponent {
     let { layout, settings, typography, utils } = this.chassis
 		let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
 
-		let lineHeightMultiplier = utils.units.toEms(lineHeight, fontSize)
+		let lineHeightMultiplier = utils.unit.pxToEm(lineHeight, fontSize)
 		let calcLineHeight = typography.calculateInlineHeight(lineHeightMultiplier)
 
 		return {

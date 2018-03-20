@@ -8,11 +8,11 @@ class ChassisTheme {
 		this.components = []
 		this.componentSpecs = []
 
-		this.filename = chassis.utils.files.getFileName(chassis.settings.theme)
+		this.filename = chassis.utils.file.getFileName(chassis.settings.theme)
 
-		let pathIsAbsolute = chassis.utils.files.pathIsAbsolute(chassis.settings.theme)
+		let pathIsAbsolute = chassis.utils.file.pathIsAbsolute(chassis.settings.theme)
 
-		this.tree = chassis.utils.files.parseStyleSheet(chassis.settings.theme, !pathIsAbsolute)
+		this.tree = chassis.utils.file.parseStyleSheet(chassis.settings.theme, !pathIsAbsolute)
 
 		this.hasCustomProperties = this.tree.some((rule) => rule.selector === 'custom-properties')
 		this.hasRootBlock = this.tree.some((rule) => rule.selector === ':root')

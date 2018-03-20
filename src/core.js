@@ -32,7 +32,7 @@ class ChassisCore {
 		let { fontSize, lineHeight } = this.baseTypography.root
 
 		return this._parseSpecSheet('../style-sheets/reset.css', {
-			'root-line-height': utils.units.toEms(lineHeight, fontSize)
+			'root-line-height': utils.unit.pxToEm(lineHeight, fontSize)
 		})
 	}
 
@@ -42,7 +42,7 @@ class ChassisCore {
 		// TODO: Add component properties
 
 		return utils.css.newRule(':root', [
-			...utils.files.parseStyleSheet('../style-sheets/copic-greys.css').nodes,
+			...utils.file.parseStyleSheet('../style-sheets/copic-greys.css').nodes,
 			utils.css.newDeclObj('--ui-min-width', `${settings.layout.minWidth}px`),
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
@@ -127,15 +127,15 @@ class ChassisCore {
 			this._applyTheme(`h${i}`, utils.css.newRule(`.chassis h${i}`, [
 				utils.css.newDeclObj(
 					'font-size',
-					`${utils.units.toEms(this.baseTypography[headingSizeAliases[i]].fontSize, root.fontSize)}em`
+					`${utils.unit.pxToEm(this.baseTypography[headingSizeAliases[i]].fontSize, root.fontSize)}em`
 				),
 				utils.css.newDeclObj(
 					'line-height',
-					`${utils.units.toEms(this.baseTypography[headingSizeAliases[i]].lineHeight, this.baseTypography[headingSizeAliases[i]].fontSize)}`
+					`${utils.unit.pxToEm(this.baseTypography[headingSizeAliases[i]].lineHeight, this.baseTypography[headingSizeAliases[i]].fontSize)}`
 				),
 				utils.css.newDeclObj(
 					'margin-bottom',
-					`${utils.units.toEms(typography.calculateMarginBottom(this.baseTypography[headingSizeAliases[i]].lineHeight), this.baseTypography[headingSizeAliases[i]].fontSize)}em`
+					`${utils.unit.pxToEm(typography.calculateMarginBottom(this.baseTypography[headingSizeAliases[i]].lineHeight), this.baseTypography[headingSizeAliases[i]].fontSize)}em`
 				)
 			]), rules)
 		}
@@ -143,15 +143,15 @@ class ChassisCore {
 		this._applyTheme('legend', utils.css.newRule('.chassis legend', [
 			utils.css.newDeclObj(
 				'font-size',
-				`${utils.units.toEms(this.baseTypography[formLegendAlias].fontSize, root.fontSize)}rem`
+				`${utils.unit.pxToEm(this.baseTypography[formLegendAlias].fontSize, root.fontSize)}rem`
 			),
 			utils.css.newDeclObj(
 				'line-height',
-				`${utils.units.toEms(this.baseTypography[formLegendAlias].lineHeight, this.baseTypography[formLegendAlias].fontSize)}`
+				`${utils.unit.pxToEm(this.baseTypography[formLegendAlias].lineHeight, this.baseTypography[formLegendAlias].fontSize)}`
 			),
 			utils.css.newDeclObj(
 				'margin-bottom',
-				`${utils.units.toEms(typography.calculateMarginBottom(this.baseTypography[formLegendAlias].lineHeight), this.baseTypography[formLegendAlias].fontSize)}em`
+				`${utils.unit.pxToEm(typography.calculateMarginBottom(this.baseTypography[formLegendAlias].lineHeight), this.baseTypography[formLegendAlias].fontSize)}em`
 			)
 		]), rules)
 
@@ -180,12 +180,12 @@ class ChassisCore {
 				htmlRule.append(utils.css.newDecl('font-size', `${fontSize}px`))
 			}
 
-			htmlRule.append(utils.css.newDecl('line-height', `${utils.units.toEms(lineHeight, fontSize)}`))
+			htmlRule.append(utils.css.newDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`))
 
 			mediaQuery.nodes.push(htmlRule)
 
 			let bodyRule = utils.css.newRule('.chassis body', [
-				utils.css.newDecl('line-height', `${utils.units.toEms(lineHeight, fontSize)}`)
+				utils.css.newDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`)
 			])
 
 			mediaQuery.nodes.push(bodyRule)
@@ -197,11 +197,11 @@ class ChassisCore {
 				mediaQuery.nodes.push(utils.css.newRule(`.chassis h${i}`, [
 					utils.css.newDeclObj(
 						'line-height',
-						`${utils.units.toEms(range.typography[headingSizeAliases[i]].lineHeight, range.typography[headingSizeAliases[i]].fontSize)}`
+						`${utils.unit.pxToEm(range.typography[headingSizeAliases[i]].lineHeight, range.typography[headingSizeAliases[i]].fontSize)}`
 					),
 					utils.css.newDeclObj(
 						'margin-bottom',
-						`${utils.units.toEms(typography.calculateMarginBottom(range.typography[headingSizeAliases[i]].lineHeight), range.typography[headingSizeAliases[i]].fontSize)}em`
+						`${utils.unit.pxToEm(typography.calculateMarginBottom(range.typography[headingSizeAliases[i]].lineHeight), range.typography[headingSizeAliases[i]].fontSize)}em`
 					)
 				]))
 			}
@@ -209,36 +209,36 @@ class ChassisCore {
 			mediaQuery.nodes.push(utils.css.newRule('.chassis legend', [
 				utils.css.newDeclObj(
 					'line-height',
-					`${utils.units.toEms(range.typography[formLegendAlias].lineHeight, range.typography[formLegendAlias].fontSize)}`
+					`${utils.unit.pxToEm(range.typography[formLegendAlias].lineHeight, range.typography[formLegendAlias].fontSize)}`
 				),
 				utils.css.newDeclObj(
 					'margin-bottom',
-					`${utils.units.toEms(typography.calculateMarginBottom(range.typography[formLegendAlias].lineHeight), range.typography[formLegendAlias].fontSize)}em`
+					`${utils.unit.pxToEm(typography.calculateMarginBottom(range.typography[formLegendAlias].lineHeight), range.typography[formLegendAlias].fontSize)}em`
 				)
 			]))
 
 			mediaQuery.nodes.push(utils.css.newRule(this.selectors.outerContainers, [
 				utils.css.newDeclObj(
 					'margin-bottom',
-					`${utils.units.toEms(layout.calculateMarginBottom(range.typography.root.lineHeight, 'outer'), range.typography.root.fontSize)}em`
+					`${utils.unit.pxToEm(layout.calculateMarginBottom(range.typography.root.lineHeight, 'outer'), range.typography.root.fontSize)}em`
 				)
 			]))
 
 			mediaQuery.nodes.push(utils.css.newRule(this.selectors.innerContainers, [
 				utils.css.newDeclObj(
 					'margin-bottom',
-					`${utils.units.toEms(layout.calculateMarginBottom(range.typography.root.lineHeight, 'inner'), range.typography.root.fontSize)}em`
+					`${utils.unit.pxToEm(layout.calculateMarginBottom(range.typography.root.lineHeight, 'inner'), range.typography.root.fontSize)}em`
 				)
 			]))
 
 			mediaQuery.nodes.push(utils.css.newRule('.chassis p', [
 				utils.css.newDeclObj(
 					'margin-bottom',
-					`${utils.units.toEms(range.typography.root.lineHeight, range.typography.root.fontSize)}em`
+					`${utils.unit.pxToEm(range.typography.root.lineHeight, range.typography.root.fontSize)}em`
 				),
 				utils.css.newDecl(
 					'line-height',
-					`${utils.units.toEms(lineHeight, fontSize)}`
+					`${utils.unit.pxToEm(lineHeight, fontSize)}`
 				)
 			]))
 
@@ -254,7 +254,7 @@ class ChassisCore {
 
 		return this._parseSpecSheet('../style-sheets/outer-containers.css', {
 			'selectors': this.selectors.outerContainers,
-			'margin-bottom': `${utils.units.toEms(layout.calculateMarginBottom(lineHeight, 'outer'), fontSize)}em`
+			'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'outer'), fontSize)}em`
 		})
 	}
 
@@ -264,7 +264,7 @@ class ChassisCore {
 
 		return this._parseSpecSheet('../style-sheets/inner-containers.css', {
 			'selectors': this.selectors.innerContainers,
-			'margin-bottom': `${utils.units.toEms(layout.calculateMarginBottom(lineHeight, 'inner'), fontSize)}em`
+			'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'inner'), fontSize)}em`
 		})
 	}
 
@@ -273,7 +273,7 @@ class ChassisCore {
 		let { fontSize, lineHeight } = this.baseTypography.root
 
 		return this._parseSpecSheet('../style-sheets/paragraph.css', {
-			'margin-bottom': `${utils.units.toEms(lineHeight, fontSize)}em`
+			'margin-bottom': `${utils.unit.pxToEm(lineHeight, fontSize)}em`
 		})
 	}
 
@@ -292,7 +292,7 @@ class ChassisCore {
 	_parseSpecSheet (path, variables = {}) {
 		let { utils } = this.chassis
 
-		let tree = utils.files.parseStyleSheet(path)
+		let tree = utils.file.parseStyleSheet(path)
 
 		if (!variables) {
 			return tree

@@ -45,7 +45,7 @@ class ChassisTypographyMixins {
       'padding-left'
     ])
 
-    let lineHeightMult = utils.units.toEms(lineHeight, fontSize)
+    let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
     let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
 
     // 'rtl' argument is standalone since it only affects the value of properties,
@@ -233,7 +233,7 @@ class ChassisTypographyMixins {
 
     let decls = []
 
-    let lineHeightMult = utils.units.toEms(lineHeight, fontSize)
+    let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
     let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
 
     if (props.hasOwnProperty('margin')) {
@@ -265,7 +265,7 @@ class ChassisTypographyMixins {
 
     let decls = []
 
-    let lineHeightInEms = utils.units.toEms(lineHeight, fontSize)
+    let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
     let calcLineHeight = typography.calculateInlineHeight(lineHeightInEms)
 
     let margin = [null, `${typography.calculateInlineMarginX(lineHeightInEms)}em`, `${typography.calculateInlineMarginY(lineHeightInEms)}em`, null]
@@ -396,7 +396,7 @@ class ChassisTypographyMixins {
 
 		let decl = utils.css.newDecl(
 			'font-size',
-			`${utils.units.toEms(typography.calculateFontSize(alias, multiplier), typography.calculateFontSize('root'))}rem`
+			`${utils.unit.pxToEm(typography.calculateFontSize(alias, multiplier), typography.calculateFontSize('root'))}rem`
 		)
 
 		atRule.replaceWith(decl)

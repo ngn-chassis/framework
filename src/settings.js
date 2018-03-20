@@ -28,7 +28,7 @@ class ChassisSettings extends NGN.EventEmitter {
 					type: String,
 					default: './',
 					validate (filepath) {
-						return chassis.utils.files.isDirectory(filepath)
+						return chassis.utils.file.isDirectory(filepath)
 					}
 				},
 
@@ -41,8 +41,8 @@ class ChassisSettings extends NGN.EventEmitter {
 					type: String,
 					default: chassis.constants.theme.defaultFilePath,
 					validate (filepath) {
-						let filename = chassis.utils.files.getFileName(filepath)
-						return chassis.utils.files.getFileExtension(filename) === '.theme'
+						let filename = chassis.utils.file.getFileName(filepath)
+						return chassis.utils.file.getFileExtension(filename) === '.theme'
 					}
 				},
 

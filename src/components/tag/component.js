@@ -11,29 +11,29 @@ class ChassisTagComponent {
     let { fontSize, lineHeight } = this.baseTypography.small
 		let { scaleRatio } = settings.typography
 
-    let lineHeightMultiplier = utils.units.toEms(lineHeight, fontSize)
+    let lineHeightMultiplier = utils.unit.pxToEm(lineHeight, fontSize)
     let inlineHeight = typography.calculateInlineHeight(lineHeightMultiplier)
 		let paddingRoot = Math.log(lineHeightMultiplier) / 2
 
 		let iconDimension = `${lineHeightMultiplier / scaleRatio}em`
-		let iconOffset = `-${paddingRoot - utils.units.toEms(fontSize / (scaleRatio * 10), fontSize)}em`
+		let iconOffset = `-${paddingRoot - utils.unit.pxToEm(fontSize / (scaleRatio * 10), fontSize)}em`
 
 		if (iconOffset < 0) {
 			iconOffset = 0
 		}
 
-		let paddingXInPixels = utils.units.precisionRound(utils.units.toPx(scaleRatio > 1 ? scaleRatio - 1 : scaleRatio, fontSize), 0)
-		let paddingX = `${utils.units.precisionRound(utils.units.toEms(paddingXInPixels, fontSize), 3)}em`
+		let paddingXInPixels = utils.math.precisionRound(utils.unit.emToPx(scaleRatio > 1 ? scaleRatio - 1 : scaleRatio, fontSize), 0)
+		let paddingX = `${utils.math.precisionRound(utils.unit.pxToEm(paddingXInPixels, fontSize), 3)}em`
 
 		let paddingYInitial = paddingRoot * paddingX
 		let paddingY = '1px'
 
-		if (utils.units.toPx(paddingYInitial) > 1) {
-			paddingY = `${utils.units.precisionRound(paddingYInitial, 3)}em`
+		if (utils.unit.emToPx(paddingYInitial) > 1) {
+			paddingY = `${utils.math.precisionRound(paddingYInitial, 3)}em`
 		}
 
     return {
-			'font-size': `${utils.units.toEms(fontSize, this.baseTypography.root.fontSize)}em`,
+			'font-size': `${utils.unit.pxToEm(fontSize, this.baseTypography.root.fontSize)}em`,
       'line-height': `${lineHeightMultiplier}`,
 			'padding': `${paddingY} ${paddingX}`,
 			'icon-width': iconDimension,

@@ -4,15 +4,15 @@ class ChassisStyleSheetMixins {
 
     Object.defineProperties(this, {
       _getDirectory: NGN.privateconst((path) => {
-        return this.chassis.utils.files.parseDirectory(path, false)
+        return this.chassis.utils.file.parseDirectory(path, false)
       }),
 
       _getImportedContent: NGN.privateconst((input) => {
         let { settings, utils } = this.chassis
 
         let importPath = ''
-        let file = `_${utils.files.getFileName(input)}`
-        let path = `${utils.files.getFilePath(input)}`
+        let file = `_${utils.file.getFileName(input)}`
+        let path = `${utils.file.getFilePath(input)}`
 
         if (path) {
           importPath = `${settings.importBasePath}/${path}/${file}`
@@ -24,8 +24,8 @@ class ChassisStyleSheetMixins {
           importPath += '.css'
         }
 
-        if (utils.files.fileExists(importPath, false)) {
-          return utils.files.parseStyleSheet(importPath, false)
+        if (utils.file.fileExists(importPath, false)) {
+          return utils.file.parseStyleSheet(importPath, false)
         }
       })
     })
@@ -40,7 +40,7 @@ class ChassisStyleSheetMixins {
     let input = args[0]
     let dirPath = `${settings.importBasePath}/${input}`
 
-    let content = utils.files.isDirectory(dirPath) ?
+    let content = utils.file.isDirectory(dirPath) ?
       this._getDirectory(dirPath) :
       this._getImportedContent(input)
 
