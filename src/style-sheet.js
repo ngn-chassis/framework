@@ -1,6 +1,7 @@
 const postcss = require('postcss')
 const nesting = require('postcss-nesting')
 const processNot = require('postcss-selector-not')
+const valueParser = require('postcss-value-parser')
 
 class ChassisStyleSheet {
 	constructor (chassis, tree, namespaced = true) {
@@ -10,6 +11,7 @@ class ChassisStyleSheet {
 
 		Object.defineProperties(this, {
 			_atRules: NGN.private({}),
+			_functions: NGN.private({}),
 
 			_generateNamespacedSelector: NGN.privateconst((selector) => {
 				selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
@@ -21,7 +23,7 @@ class ChassisStyleSheet {
 				return selector
 			}),
 
-			_processAtRule: NGN.privateconst((atRule) => {
+			_processAtRule: NGN.privateconst(atRule => {
 				let data = Object.assign({
 					root: this.tree,
 					atRule
@@ -30,14 +32,28 @@ class ChassisStyleSheet {
 				this.chassis.atRules.process(data)
 			}),
 
-			_processAtRules: NGN.privateconst((type) => {
+			_processAtRules: NGN.privateconst(type => {
 				if (this._atRules.hasOwnProperty(type)) {
-					this._atRules[type].forEach((atRule) => {
+					this._atRules[type].forEach(atRule => {
 						this._processAtRule(atRule)
 					})
 
 					delete this._atRules[type]
 				}
+			}),
+
+			_processFunctions: NGN.privateconst(type => {
+				this.tree.walkDecls(decl => {
+					let parsed = valueParser(decl.value)
+
+					if (parsed.nodes.some(node => node.type === 'function')) {
+						decl.value = this.chassis.functions.process({
+							root: this.tree,
+							raw: decl,
+							parsed
+						})
+					}
+				})
 			}),
 
 			_processImports: NGN.privateconst(() => {
@@ -110,6 +126,8 @@ class ChassisStyleSheet {
 		this._processNot()
 
 		this._processNesting()
+
+		this._processFunctions()
 
 		// Cleanup empty rulesets and prepend .chassis namespace to all selectors
 		// except 'html' and ':root'
