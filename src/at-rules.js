@@ -18,55 +18,55 @@ class ChassisAtRules {
 	}
 
 	get 'apply' () {
-		return (data) => this.typographyMixins.applyProps(data)
+		return data => this.typographyMixins.applyProps(data)
 	}
 
 	get 'constrain-width' () {
-		return (data) => this.layoutMixins.constrainWidth(data)
+		return data => this.layoutMixins.constrainWidth(data)
 	}
 
 	get 'ellipsis' () {
-		return (data) => this.typographyMixins.ellipsis(data)
+		return data => this.typographyMixins.ellipsis(data)
 	}
 
 	get 'extend' () {
-		return (data) => this.componentMixins.extend(data)
+		return data => this.componentMixins.extend(data)
 	}
 
 	get 'ie-only' () {
-		return (data) => this.browserMixins.ieOnly(data)
+		return data => this.browserMixins.ieOnly(data)
 	}
 
 	get 'import' () {
-		return (data) => this.styleSheetMixins.import(data)
+		return data => this.styleSheetMixins.import(data)
 	}
 
 	get 'include' () {
-		return (data) => this.componentMixins.include(data)
+		return data => this.componentMixins.include(data)
 	}
 
 	get 'init' () {
-		return (data) => data.atRule.remove()
+		return data => data.atRule.remove()
 	}
 
 	get 'font-size' () {
-		return (data) => this.typographyMixins.fontSize(data)
+		return data => this.typographyMixins.fontSize(data)
 	}
 
 	get 'new' () {
-		return (data) => this.componentMixins.new(data)
+		return data => this.componentMixins.new(data)
 	}
 
 	get 'viewport-height' () {
-		return (data) => this.viewportMixins.height(data)
+		return data => this.viewportMixins.height(data)
 	}
 
 	get 'viewport-width' () {
-		return (data) => this.viewportMixins.width(data)
+		return data => this.viewportMixins.width(data)
 	}
 
 	get 'z-index' () {
-		return (data) => this.layoutMixins.zIndex(data)
+		return data => this.layoutMixins.zIndex(data)
 	}
 
 	getProperties (atRule) {

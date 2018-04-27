@@ -53,7 +53,7 @@ class ChassisViewport {
 	getWidthRanges (string) {
 		let { settings } = this.chassis
 
-		let spec = string.split(' ').map((entry) => isNaN(parseInt(entry)) ? entry : parseInt(entry))
+		let spec = string.split(' ').map(entry => isNaN(parseInt(entry)) ? entry : parseInt(entry))
 		let firstEntry = spec[0]
 		let lastEntry = spec[spec.length - 1]
 

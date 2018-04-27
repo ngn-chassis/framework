@@ -46,7 +46,7 @@ class ChassisCore {
 			utils.css.newDeclObj('--ui-min-width', `${settings.layout.minWidth}px`),
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
-			...Object.keys(theme.customProperties).map((prop) => utils.css.newDeclObj(prop, theme.customProperties[prop]))
+			...Object.keys(theme.customProperties).map(prop => utils.css.newDeclObj(prop, theme.customProperties[prop]))
 		])
 	}
 
@@ -298,7 +298,7 @@ class ChassisCore {
 			return tree
 		}
 
-		tree.walk((node) => {
+		tree.walk(node => {
 			if (node.type === 'atrule') {
 				node.params = utils.string.resolveVariables(node.params, variables)
 			}
@@ -319,7 +319,7 @@ class ChassisCore {
 	_applyTheme (element, defaultRule, root = this.chassis.utils.css.newRoot([])) {
 		let { theme, utils } = this.chassis
 
-		let selectors = defaultRule.selector.split(',').map((selector) => selector.trim())
+		let selectors = defaultRule.selector.split(',').map(selector => selector.trim())
 		let themeData = theme.getElement(element)
 
 		if (!themeData) {
@@ -351,11 +351,11 @@ class ChassisCore {
 	_appendNestedRulesets (root, selectors, nestedRules) {
 		let { utils } = this.chassis
 
-		Object.keys(nestedRules).forEach((nestedRule) => {
-			let nestedSelector = selectors.map((selector) => `${selector} ${nestedRule}`).join(', ')
+		Object.keys(nestedRules).forEach(nestedRule => {
+			let nestedSelector = selectors.map(selector => `${selector} ${nestedRule}`).join(', ')
 			let { properties, rules } = nestedRules[nestedRule]
 
-			let decls = Object.keys(properties).map((property) => {
+			let decls = Object.keys(properties).map(property => {
 				return utils.css.newDeclObj(property, properties[property])
 			})
 

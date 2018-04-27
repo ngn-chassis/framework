@@ -13,11 +13,11 @@ class ChassisStyleSheet {
 			_atRules: NGN.private({}),
 			_functions: NGN.private({}),
 
-			_generateNamespacedSelector: NGN.privateconst((selector) => {
+			_generateNamespacedSelector: NGN.privateconst(selector => {
 				selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
 
 				if (selector.includes(',')) {
-					selector = selector.split(',').map((chunk) => chunk.trim()).join(', .chassis ')
+					selector = selector.split(',').map(chunk => chunk.trim()).join(', .chassis ')
 				}
 
 				return selector
@@ -57,7 +57,7 @@ class ChassisStyleSheet {
 			}),
 
 			_processImports: NGN.privateconst(() => {
-				this.tree.walkAtRules('chassis', (atRule) => {
+				this.tree.walkAtRules('chassis', atRule => {
 					if (atRule.params.startsWith('import')) {
 						this._processAtRule(atRule)
 					}
@@ -72,7 +72,7 @@ class ChassisStyleSheet {
 				this.tree = postcss.parse(processNot.process(this.tree))
 			}),
 
-			_storeAtRule: NGN.privateconst((atRule) => {
+			_storeAtRule: NGN.privateconst(atRule => {
 				let params = atRule.params.split(' ')
 				let container = params[0]
 				let containers = ['import', 'include', 'new', 'extend']
@@ -95,7 +95,7 @@ class ChassisStyleSheet {
 
 			_storeAtRules: NGN.privateconst(() => {
 				this._atRules = {}
-				this.tree.walkAtRules('chassis', (atRule) => this._storeAtRule(atRule))
+				this.tree.walkAtRules('chassis', atRule => this._storeAtRule(atRule))
 			})
 		})
 	}
@@ -131,7 +131,7 @@ class ChassisStyleSheet {
 
 		// Cleanup empty rulesets and prepend .chassis namespace to all selectors
 		// except 'html' and ':root'
-		this.tree.walkRules((rule) => {
+		this.tree.walkRules(rule => {
 			if (rule.nodes.length === 0) {
 				rule.remove()
 				return

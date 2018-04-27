@@ -1,30 +1,32 @@
+const valueParser = require('postcss-value-parser')
+
 class ChassisFunctions {
 	constructor (chassis) {
 		this.chassis = chassis
 	}
 
-	evaluate (expression) {
-    return eval(expression)
+	evaluate (node) {
+		let string = valueParser.stringify(node)
+		let expression = string.replace(node.value, '').replace(/\(|\)/g, '')
+
+		return eval(expression)
 	}
 
 	process (data) {
-    data.parsed.walk((node, index, nodes) => {
-      if (node.type === 'function') {
-        switch (node.value) {
-          case 'eval':
-            data.parsed.nodes = Object.assign([...nodes], {
-              [index]: {
-                type: 'word',
-                sourceIndex: node.sourceIndex,
-                value: this.evaluate(data.parsed.toString().replace(node.value, '').replace(/\(|\)/g,''))
-              }
-            })
-            break
+		data.parsed.walk((outerNode, outerIndex) => {
+			if (outerNode.type !== 'function') {
+				return
+			}
 
-          default: return
-        }
-      }
-    })
+			switch (outerNode.value) {
+				case 'eval':
+					outerNode.value = this.evaluate(outerNode)
+					outerNode.type = 'word'
+					break
+
+				default: return
+			}
+		})
 
     return data.parsed.toString()
 	}

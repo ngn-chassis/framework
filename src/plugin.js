@@ -46,9 +46,9 @@ class Chassis {
 		this.componentOverrides = {}
 
 		// this.utils.console.printTree(this.settings.data)
-		// this.utils.console.printTree(this.theme.json)
+		this.utils.console.printTree(this.theme.json)
 		return (root, result) => {
-			let skip = !root.some((node) => {
+			let skip = !root.some(node => {
 				return node.type === 'atrule' && node.name === 'chassis' && node.params === 'init'
 			})
 
@@ -56,7 +56,7 @@ class Chassis {
 			let output = skip ? input : this.core.css.append(input)
 
 			// Post-processing
-			output.walkAtRules('chassis-post', (atRule) => {
+			output.walkAtRules('chassis-post', atRule => {
 				let data = Object.assign({
 					root: this.tree,
 					atRule

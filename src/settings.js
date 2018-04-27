@@ -81,11 +81,11 @@ class ChassisSettings extends NGN.EventEmitter {
 					let selectors = {}
 
 					for (let list in this.componentResetSelectors) {
-						selectors[list] = this.componentResetSelectors[list].map((selectorString) => {
+						selectors[list] = this.componentResetSelectors[list].map(selectorString => {
 							selectorString = `.chassis ${selectorString.trim()}`
 
 							if (selectorString.includes(',')) {
-								return selectorString.split(',').map((selector) => selector.trim()).join(', .chassis ')
+								return selectorString.split(',').map(selector => selector.trim()).join(', .chassis ')
 							}
 
 							return selectorString
@@ -100,7 +100,7 @@ class ChassisSettings extends NGN.EventEmitter {
 		Object.defineProperties(this, {
 			_model: NGN.privateconst(new Model()),
 
-			_cleanseCfg: NGN.privateconst((cfg) => {
+			_cleanseCfg: NGN.privateconst(cfg => {
 				let { scale } = chassis.constants.typography
 
 				this.cssNextCfg = {

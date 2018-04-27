@@ -17,7 +17,7 @@ class ChassisTypography {
 		let { constants, settings } = this.chassis
 		let rootFontSize = this.root
 
-		let breakpoints = constants.typography.breakpoints.filter((breakpoint) => {
+		let breakpoints = constants.typography.breakpoints.filter(breakpoint => {
 			return breakpoint <= settings.layout.maxWidth
 		})
 
@@ -39,7 +39,7 @@ class ChassisTypography {
 				bounds,
 				typography: this.getViewportSettings({bounds, rootFontSize})
 			}
-		}).filter((vwr) => vwr !== undefined)
+		}).filter(Boolean)
 	}
 
 	calculateFontSize (alias, multiplier = 1, root = this.root) {
@@ -105,7 +105,7 @@ class ChassisTypography {
 		let averageViewportWidth = (vwr.bounds.lower + vwr.bounds.upper) / 2
 		let rules = {}
 
-		this.fontSizeAliases.forEach((alias) => {
+		this.fontSizeAliases.forEach(alias => {
 			let fontSize = this.calculateFontSize(alias, 1, vwr.rootFontSize)
 
 			rules[alias] = {

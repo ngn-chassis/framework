@@ -19,7 +19,7 @@ class ChassisComponent {
        * @return {object}
        * @private
        */
-      _getStateTheme: NGN.privateconst((state) => {
+      _getStateTheme: NGN.privateconst(state => {
         let theme = this.chassis.theme.getComponent(this.type)
 
     		if (!theme || !theme.hasOwnProperty(state)) {
@@ -40,7 +40,7 @@ class ChassisComponent {
       _storeComponentOverrides: NGN.privateconst(() => {
         this.chassis.componentOverrides[this.type] = {}
 
-        this.defaultSpec.states.forEach((state) => {
+        this.defaultSpec.states.forEach(state => {
           let theme = this._getStateTheme(state)
 
           if (!theme || Object.keys(theme).length === 0) {

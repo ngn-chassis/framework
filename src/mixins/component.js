@@ -17,7 +17,7 @@ class ChassisComponentMixins {
 			return
 		}
 
-		let selectors = atRule.parent.selector.split(',').map((selector) => selector.trim())
+		let selectors = atRule.parent.selector.split(',').map(selector => selector.trim())
 
 		if (componentExtensions.hasOwnProperty(type)) {
 			componentExtensions[type].push(...selectors)
@@ -46,7 +46,7 @@ class ChassisComponentMixins {
 				}
 			}
 		} else {
-			requestedComponents = args.filter((type) => {
+			requestedComponents = args.filter(type => {
 				let componentExists = this.components.has(type)
 
 				if (!componentExists) {
@@ -70,7 +70,7 @@ class ChassisComponentMixins {
 			}
 		}
 
-		let css = NGN.dedupe(sorted).map((type) => {
+		let css = NGN.dedupe(sorted).map(type => {
 			let component = new ChassisComponent(this.chassis, type)
 
 			// console.log(type);

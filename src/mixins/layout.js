@@ -14,7 +14,7 @@ class ChassisLayoutMixins {
     let { parent } = atRule
 
     if (args && args.length > 0) {
-			args.forEach((arg) => {
+			args.forEach(arg => {
 				if (arg.startsWith('min')) {
 					minWidth = utils.string.stripParentheses(arg.replace('min', ''))
 				} else if (arg.startsWith('max')) {

@@ -11,7 +11,7 @@ class ChassisSpecSheet {
 		this.states = []
 
 		// Strip comments from spec sheet
-		this.spec.walkComments((comment) => comment.remove())
+		this.spec.walkComments(comment => comment.remove())
 
 		// Get selector list from first line of spec sheet
 		this.selectors = this.spec.nodes[0].selector.split(',')
@@ -25,7 +25,7 @@ class ChassisSpecSheet {
 		})
 
 		// Store states
-		this.spec.walkAtRules('state', (atRule) => this.states.push(atRule.params))
+		this.spec.walkAtRules('state', atRule => this.states.push(atRule.params))
 
 		Object.defineProperties(this, {
 			_applyCustomizedState: NGN.privateconst((state, customState) => {
@@ -36,8 +36,8 @@ class ChassisSpecSheet {
 					return
 				}
 
-				let customRules = customState.nodes.filter((node) => node.type === 'rule')
-				let customDecls = customState.nodes.filter((node) => node.type === 'decl')
+				let customRules = customState.nodes.filter(node => node.type === 'rule')
+				let customDecls = customState.nodes.filter(node => node.type === 'decl')
 				let overrides = null
 
 				if (this.overrides) {
@@ -67,7 +67,7 @@ class ChassisSpecSheet {
 					}
 				})
 
-				customRules.forEach((customRule) => {
+				customRules.forEach(customRule => {
 					customRule.selector = `${state.nodes[0].selector} ${customRule.selector.replace('&', '').trim()}`
 				})
 
@@ -77,7 +77,7 @@ class ChassisSpecSheet {
 			_findMatchingState: NGN.privateconst((state, customSpec) => {
 				let customState = null
 
-				customSpec.walkAtRules('state', (atRule) => {
+				customSpec.walkAtRules('state', atRule => {
 					if (atRule.params === state.params) {
 						customState = atRule
 					}
@@ -94,9 +94,9 @@ class ChassisSpecSheet {
 					return
 				}
 
-				let customRules = customState.nodes.filter((node) => node.type === 'rule')
-				let customDecls = customState.nodes.filter((node) => node.type === 'decl')
-				let customAtRules = customState.nodes.filter((node) => node.type === 'atrule')
+				let customRules = customState.nodes.filter(node => node.type === 'rule')
+				let customDecls = customState.nodes.filter(node => node.type === 'decl')
+				let customAtRules = customState.nodes.filter(node => node.type === 'atrule')
 
 				state.walkRules((rule, index) => {
 					if (index === 0) {
@@ -113,7 +113,7 @@ class ChassisSpecSheet {
 
 					if (match) {
 						customRules.splice(customRuleIndex, 1)
-						rule.nodes = match.nodes.filter((node) => node.type === 'decl')
+						rule.nodes = match.nodes.filter(node => node.type === 'decl')
 					} else {
 						rule.remove()
 					}
@@ -122,11 +122,11 @@ class ChassisSpecSheet {
 				cb && cb()
 			}),
 
-			_generateCustomTemplate: NGN.privateconst((customSpec) => {
+			_generateCustomTemplate: NGN.privateconst(customSpec => {
 				let { utils } = this.chassis
 				let root = utils.css.newRoot([])
 
-				this.spec.walkAtRules((state) => {
+				this.spec.walkAtRules(state => {
 					switch (state.name) {
 						case 'state':
 							let customState = this._findMatchingState(state, customSpec)
@@ -135,8 +135,8 @@ class ChassisSpecSheet {
 								return
 							}
 
-							this._generateCustomizedState(state, customState, (result) => {
-								state.nodes.forEach((node) => root.append(node))
+							this._generateCustomizedState(state, customState, result => {
+								state.nodes.forEach(node => root.append(node))
 							})
 							break
 
@@ -174,7 +174,7 @@ class ChassisSpecSheet {
 		    // let stateRules = theme.getRules(stateTheme)
 
 				if (state.params === 'default') {
-					return uniqueOverridableDecls.map((prop) => utils.css.newDecl(prop, 'initial'))
+					return uniqueOverridableDecls.map(prop => utils.css.newDecl(prop, 'initial'))
 				}
 
 				let overrides = []
@@ -186,9 +186,9 @@ class ChassisSpecSheet {
 				// AND it is not already included in the component.${state} theme, add this override:
 				// property: component.default value;
 				if (commonDecls.length > 0) {
-					let defaultOverrides = commonDecls.map((prop) => {
-						return currentStateDecls.find((decl) => decl.prop === prop)
-					}).filter((entry) => entry !== undefined)
+					let defaultOverrides = commonDecls.map(prop => {
+						return currentStateDecls.find(decl => decl.prop === prop)
+					}).filter(Boolean)
 
 					overrides.push(...defaultOverrides)
 				}
@@ -197,10 +197,10 @@ class ChassisSpecSheet {
 				// AND it is NOT already included in the button.${state} theme,
 				// unset it in ${state} button theme
 				if (uniqueOverridableDecls.length > 0) {
-					let unset = uniqueOverridableDecls.filter((prop) => {
+					let unset = uniqueOverridableDecls.filter(prop => {
 						return !commonDecls.includes(prop)
-					}).filter((prop) => {
-						return !currentStateDecls.some((decl) => decl.prop === prop)
+					}).filter(prop => {
+						return !currentStateDecls.some(decl => decl.prop === prop)
 					})
 
 					// Check for properties in the default theme which should be applied
@@ -208,7 +208,7 @@ class ChassisSpecSheet {
 					let indexesToRemove = []
 
 					unset.forEach((prop, index) => {
-						let matchInDefaultDecls = defaultStateDecls.find((decl) => decl.prop === prop)
+						let matchInDefaultDecls = defaultStateDecls.find(decl => decl.prop === prop)
 
 						if (matchInDefaultDecls) {
 							indexesToRemove.push(index)
@@ -217,12 +217,12 @@ class ChassisSpecSheet {
 					})
 
 					// Remove properties from unset if they are already present in the default theme
-					indexesToRemove.forEach((index) => {
+					indexesToRemove.forEach(index => {
 						unset.splice(index, 1)
 					})
 
 					if (unset.length > 0) {
-						overrides.push(...unset.map((prop) => {
+						overrides.push(...unset.map(prop => {
 							// "unset" is not supported in IE11, so we're using "initial"
 							// These properties are guaranteed to be inherited since they are
 							// applied to a tags- hence, even if this value were set to "unset"
@@ -239,7 +239,7 @@ class ChassisSpecSheet {
 				let { utils } = this.chassis
 				let root = utils.css.newRoot([])
 
-				this.spec.walkAtRules((atRule) => {
+				this.spec.walkAtRules(atRule => {
 					switch (atRule.name) {
 						case 'state':
 							if (customSpec) {
@@ -252,10 +252,10 @@ class ChassisSpecSheet {
 								this._applyCustomizedState(atRule, customState)
 							}
 
-							return atRule.nodes.forEach((node) => root.append(node.clone()))
+							return atRule.nodes.forEach(node => root.append(node.clone()))
 
 						case 'legacy':
-							return atRule.nodes.forEach((node) => root.append(node.clone()))
+							return atRule.nodes.forEach(node => root.append(node.clone()))
 
 						default:
 							return
@@ -266,7 +266,7 @@ class ChassisSpecSheet {
 			}),
 
 			_mergeDecls: NGN.privateconst((rule, customDecls) => {
-				rule.walkDecls((decl) => {
+				rule.walkDecls(decl => {
 					let index
 
 					let match = customDecls.find((customDecl, i) => {
@@ -284,13 +284,13 @@ class ChassisSpecSheet {
 			}),
 
 			_mergeRules: NGN.privateconst((rule, custom) => {
-				let customRules = custom.nodes.filter((node) => node.type === 'rule')
-				let customDecls = custom.nodes.filter((node) => node.type === 'decl')
+				let customRules = custom.nodes.filter(node => node.type === 'rule')
+				let customDecls = custom.nodes.filter(node => node.type === 'decl')
 
 				this._mergeDecls(rule, customDecls)
 			}),
 
-			_processAtRule: NGN.privateconst((atRule) => {
+			_processAtRule: NGN.privateconst(atRule => {
 				let data = Object.assign({
 					root: this.tree,
 					atRule
@@ -302,12 +302,12 @@ class ChassisSpecSheet {
 			_resolveVariables: NGN.privateconst((root, variables = this.variables) => {
 				let { utils } = this.chassis
 
-				root.walkRules((rule) => {
-					rule.selector = this.variables.selectors.map((selector) => {
+				root.walkRules(rule => {
+					rule.selector = this.variables.selectors.map(selector => {
 						return utils.string.resolveVariables(rule.selector, {selector})
 					}).join(', ')
 
-					rule.walkDecls((decl) => {
+					rule.walkDecls(decl => {
 			      decl.prop = utils.string.resolveVariables(decl.prop, this.variables)
 			      decl.value = utils.string.resolveVariables(decl.value, this.variables)
 			    })
@@ -333,7 +333,7 @@ class ChassisSpecSheet {
 
 		let resolved = this._resolveVariables(template, customVariables)
 
-		resolved.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+		resolved.walkAtRules('chassis', atRule => this._processAtRule(atRule))
 
 		return resolved
 	}
@@ -347,7 +347,7 @@ class ChassisSpecSheet {
 
 		let resolved = this._resolveVariables(template, customVariables)
 
-		resolved.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+		resolved.walkAtRules('chassis', atRule => this._processAtRule(atRule))
 
 		return resolved
 	}
@@ -356,7 +356,7 @@ class ChassisSpecSheet {
 		let template = this._generateTemplate(theme)
 		let resolved = this._resolveVariables(template)
 
-		resolved.walkAtRules('chassis', (atRule) => this._processAtRule(atRule))
+		resolved.walkAtRules('chassis', atRule => this._processAtRule(atRule))
 
 		return resolved
 	}

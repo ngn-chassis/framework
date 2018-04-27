@@ -14,48 +14,48 @@ class ChassisTheme {
 
 		this.tree = chassis.utils.file.parseStyleSheet(chassis.settings.theme, !pathIsAbsolute)
 
-		this.hasCustomProperties = this.tree.some((rule) => rule.selector === 'custom-properties')
-		this.hasRootBlock = this.tree.some((rule) => rule.selector === ':root')
-		
+		this.hasCustomProperties = this.tree.some(rule => rule.selector === 'custom-properties')
+		this.hasRootBlock = this.tree.some(rule => rule.selector === ':root')
+
 		this._initialize()
 	}
-	
+
 	get customProperties () {
 		return this.json.hasOwnProperty('custom-properties') ? this.json['custom-properties'] : {}
 	}
-	
+
 	get json () {
 		return this.chassis.utils.theme.generateJson(this.tree)
 	}
-	
+
 	getElement (element) {
 		if (!this.json.elements.hasOwnProperty(element)) {
 			// TODO: Add Warning/Error message
 			return null
 		}
-	
+
 		return this.json.elements[element]
 	}
-	
+
 	getComponent (component) {
 		if (!this.json.components.hasOwnProperty(component)) {
 			// TODO: Add Warning/Error message
 			return null
 		}
-	
+
 		return this.json.components[component]
 	}
-	
+
 	getComponentSpec (component) {
-		return this.componentSpecs.find((componentSpec) => {
+		return this.componentSpecs.find(componentSpec => {
 			return componentSpec.selector === component
 		})
 	}
-	
+
 	_initialize () {
 		let { constants } = this.chassis
-		
-		this.tree.walkRules((rule) => {
+
+		this.tree.walkRules(rule => {
 			if (rule.selector === 'custom-properties' && !this.hasRootBlock) {
 				rule.cloneBefore(rule.clone({selector: ':root'}))
 			}
@@ -63,9 +63,9 @@ class ChassisTheme {
 			if (rule.selector === ':root' && !this.hasCustomProperties) {
 				rule.cloneAfter(rule.clone({selector: 'custom-properties'}))
 			}
-			
+
 			if (rule.selector === 'components') {
-				rule.nodes.forEach((node) => {
+				rule.nodes.forEach(node => {
 					if (node.type === 'rule' && constants.components.has(node.selector)) {
 						this.componentSpecs.push(node)
 					}

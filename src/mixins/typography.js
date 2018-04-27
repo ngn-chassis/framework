@@ -19,7 +19,7 @@ class ChassisTypographyMixins {
       }
 
       return arg
-    }).filter(entry => !!entry)
+    }).filter(Boolean)
   }
 
   _getInlineBlockDecls (args, source) {
@@ -302,7 +302,7 @@ class ChassisTypographyMixins {
       }
     }
 
-    if (margin && margin.some((value) => value !== null)) {
+    if (margin && margin.some(Boolean)) {
       margin.forEach((value, index) => {
         if (value) {
           decls.push(utils.css.newDecl(`margin-${this.dimensions[index]}`, value))
@@ -335,7 +335,7 @@ class ChassisTypographyMixins {
       }
     }
 
-    if (padding && padding.some((value) => value !== null)) {
+    if (padding && padding.some(Boolean)) {
       padding.forEach((value, index) => {
         if (value) {
           decls.push(utils.css.newDecl(`padding-${this.dimensions[index]}`, value))

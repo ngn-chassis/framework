@@ -10,18 +10,18 @@ class ChassisThemeUtils {
 
 		return numIssues === 0
 	}
-	
+
 	static generateJson (tree) {
 		let json = {
 			components: {},
 			elements: {}
 		}
 
-		tree.nodes.forEach((node) => {
+		tree.nodes.forEach(node => {
 			if (node.selector === 'components') {
 				let components = node.nodes
 
-				components.forEach((component) => {
+				components.forEach(component => {
 					if (component.type === 'comment') {
 						return
 					}
@@ -46,59 +46,55 @@ class ChassisThemeUtils {
 
 		return json
 	}
-	
+
 	static generateComponentJson (component) {
 		let json = {
 			default: {}
 		}
 
-		component.nodes.forEach((node) => {
-			if (node.type === 'comment') {
-				return
-			} else if (node.type === 'decl') {
-				let { prop, value } = node
-
-				console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: "${component.selector}" component: Theme properties must be assigned to a component state or an element selector. Discarding unassigned "${node.prop}" property...`)
-				return
-			} else if (node.type === 'atrule') {
-				let state = node.params
-
-				if (state === 'variants') {
-					json.variants = this.generateComponentVariantJson(node)
+		component.nodes.forEach(node => {
+			switch (node.type) {
+				case 'comment':
 					return
-				}
 
-				json[state] = this.generateComponentStateJson(node)
-				return
+				case 'decl':
+					return console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: "${component.selector}" component: Theme properties must be assigned to a component state or an element selector. Discarding unassigned "${node.prop}" property...`)
+
+				case 'atrule':
+					return node.params === 'variants'
+						? json.variants = this.generateComponentVariantJson(node)
+						: json[node.params] = this.generateComponentStateJson(node)
+
+				default:
+					return console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Chassis Themes do not support nodes of type "${node.type}". Discarding...`)
 			}
-
-			console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Chassis Themes do not support nodes of type "${node.type}". Discarding...`)
 		})
 
 		return json
 	}
-	
+
 	static generateComponentStateJson (state) {
 		let json = {
 			properties: {},
 			rules: {}
 		}
 
-		state.nodes.forEach((node) => {
-			if (node.type === 'comment') {
-				return
+		state.nodes.forEach(node => {
+			switch (node.type) {
+			  case 'comment':
+			    return
 
-			} else if (node.type === 'rule') {
-				json.rules[node.selector] = this.generateRulesetJson(node)
-				return
+			  case 'rule':
+			    return json.rules[node.selector] = this.generateRulesetJson(node)
 
-			} else if (node.type !== 'decl') {
-				console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Chassis Themes: Component states do not support nodes of type "${node.type}". Discarding...`)
-				node.remove()
-				return
+			  case 'decl':
+			    return json.properties[node.prop] = node.value
+
+			  default:
+			    console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Chassis Themes: Component states do not support nodes of type "${node.type}". Discarding...`)
+			    node.remove()
+			    return
 			}
-
-			json.properties[node.prop] = node.value
 		})
 
 		return json
@@ -107,17 +103,19 @@ class ChassisThemeUtils {
 	static generateComponentVariantJson (variant) {
 		let json = {}
 
-		variant.nodes.forEach((node) => {
-			if (node.type === 'comment') {
-				return
+		variant.nodes.forEach(node => {
+			switch (node.type) {
+				case 'comment':
+					return
 
-			} else if (node.type !== 'rule') {
-				console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Invalid Component Variant type "${node.type}". Component Variants must be declared as rulesets with CSS declarations inside. Discarding...`)
-				node.remove()
-				return
+				case 'rule':
+					return json[node.selector] = this.generateComponentJson(node)
+
+				default:
+					console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Invalid Component Variant type "${node.type}". Component Variants must be declared as rulesets with CSS declarations inside. Discarding...`)
+					node.remove()
+					return
 			}
-
-			json[node.selector] = this.generateComponentJson(node)
 		})
 
 		return json
@@ -126,34 +124,35 @@ class ChassisThemeUtils {
 	static generateCustomProperties (root) {
 		let json = {}
 
-		root.nodes.forEach((node) => {
+		root.nodes.forEach(node => {
 			json[node.prop] = node.value
 		})
 
 		return json
 	}
-	
+
 	static generateRulesetJson (ruleset) {
 		let json = {
 			properties: {},
 			rules: {}
 		}
 
-		ruleset.nodes.forEach((node) => {
-			if (node.type === 'comment') {
-				return
+		ruleset.nodes.forEach(node => {
+			switch (node.type) {
+				case 'comment':
+					return
 
-			} else if (node.type === 'rule') {
-				json.rules[node.selector] = this.generateRulesetJson(node)
-				return
+				case 'rule':
+					return json.rules[node.selector] = this.generateRulesetJson(node)
 
-			} else if (node.type !== 'decl') {
-				console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Chassis Themes: Rulesets nested within component states do not support nodes of type "${node.type}". Discarding...`)
-				node.remove()
-				return
+				case 'decl':
+					return json.properties[node.prop] = node.value
+
+				default:
+					console.warn(`[WARNING]: ${this.filename} line ${node.source.start.line}: Chassis Themes: Rulesets nested within component states do not support nodes of type "${node.type}". Discarding...`)
+					node.remove()
+					return
 			}
-
-			json.properties[node.prop] = node.value
 		})
 
 		return json

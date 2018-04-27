@@ -3,11 +3,11 @@ class ChassisStyleSheetMixins {
     this.chassis = chassis
 
     Object.defineProperties(this, {
-      _getDirectory: NGN.privateconst((path) => {
+      _getDirectory: NGN.privateconst(path => {
         return this.chassis.utils.file.parseDirectory(path, false)
       }),
 
-      _getImportedContent: NGN.privateconst((input) => {
+      _getImportedContent: NGN.privateconst(input => {
         let { settings, utils } = this.chassis
 
         let importPath = ''

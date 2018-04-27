@@ -15,7 +15,7 @@ class ChassisStringUtils {
 		let array = values
 
 		if (typeof values === 'object') {
-			array = Object.keys(values).map((key) => values[key])
+			array = Object.keys(values).map(key => values[key])
 		}
 
 		return array.map((value, index) => {
