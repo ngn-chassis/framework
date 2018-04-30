@@ -7,13 +7,10 @@ class ChassisMathUtils {
 
 			let arr = `${number}`.split('e')
 
-			return +(arr[0] + "e" + (arr[1] ? (+arr[1] + precision) : precision))
+			return +(`${arr[0]}e${arr[1] ? (+arr[1] + precision) : precision}`)
 		}
 
 		return shift(Math.round(shift(number, precision, false)), precision, true)
-
-	  // let factor = Math.pow(10, precision);
-	  // return Math.round(number * factor) / factor;
 	}
 }
 
