@@ -71,7 +71,7 @@ class ChassisLayoutMixins {
 		let { settings, utils } = this.chassis
     let { args, atRule, source } = arguments[0]
 
-		let index = settings.zIndex[args[0]]
+		let index = settings.data.zIndex[args[0]]
 
 		if (!index) {
 			console.error(`[ERROR] Line ${source.line}: Invalid z-index alias. Accepted values: ${utils.string.listValues(settings.zIndex)}`)
