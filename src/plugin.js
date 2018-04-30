@@ -46,7 +46,7 @@ class Chassis {
 		this.componentOverrides = {}
 
 		// this.utils.console.printTree(this.settings.data)
-		this.utils.console.printTree(this.theme.json)
+		// this.utils.console.printTree(this.theme.json)
 		return (root, result) => {
 			let skip = !root.some(node => {
 				return node.type === 'atrule' && node.name === 'chassis' && node.params === 'init'
