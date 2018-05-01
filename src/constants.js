@@ -17,7 +17,8 @@ class ChassisConstants {
 			['textarea', require('./components/textarea/component.js')],
 			['chassis-select', require('./components/chassis-select/component.js')],
 			['chassis-control', require('./components/chassis-control/component.js')],
-			['form-controls', ['input', 'textarea', 'chassis-select', 'chassis-control']]
+			['chassis-datalist', require('./components/chassis-datalist/component.js')],
+			['form-controls', ['input', 'textarea', 'chassis-select', 'chassis-datalist', 'chassis-control']]
 		])
 	}
 
