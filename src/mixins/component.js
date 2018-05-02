@@ -46,15 +46,20 @@ class ChassisComponentMixins {
 				}
 			}
 		} else {
-			requestedComponents = args.filter(type => {
-				let componentExists = this.components.has(type)
-
-				if (!componentExists) {
-					console.warn(`[WARNING] Line ${source.line}: Component "${type}" not found.`)
+			for (let component of args) {
+				if (!this.components.has(component)) {
+					console.warn(`[WARNING] Line ${source.line}: Component "${type}" not found. Discarding...`)
+					continue
 				}
 
-				return componentExists
-			})
+				let data = this.components.get(component)
+
+				if (Array.isArray(data)) {
+					requestedComponents.push(...data)
+				} else {
+					requestedComponents.push(...data.dependencies)
+				}
+			}
 		}
 
 		// Order component includes for correct cascade behavior
