@@ -1,7 +1,7 @@
 class ChassisSelectComponent {
   constructor (chassis) {
     this.chassis = chassis
-    this.resetType = 'inline-block'
+    this.resetType = 'none'
   }
 
   get variables () {

@@ -4,20 +4,79 @@ class ChassisConstants {
 	// added to the style sheet; This must be correct for proper cascade behavior.
 	static get components () {
 		return new Map([
-			['anchor', require('./components/anchor/component.js')],
-			['svg-icon', require('./components/svg-icon/component.js')],
-			['button', require('./components/button/component.js')],
-			['anchor-button', require('./components/anchor-button/component.js')],
+			['anchor', {
+				component: require('./components/anchor/component.js'),
+				dependencies: []
+			}],
+			['svg-icon', {
+				component: require('./components/svg-icon/component.js'),
+				dependencies: []
+			}],
+			['button', {
+				component: require('./components/button/component.js'),
+				dependencies: []
+			}],
+			['anchor-button', {
+				component: require('./components/anchor-button/component.js'),
+				dependencies: []
+			}],
 			['buttons', ['button', 'anchor-button']],
-			['tag', require('./components/tag/component.js')],
-			['table', require('./components/table/component.js')],
-			['overlay', require('./components/overlay/component.js')],
-			['modal', require('./components/modal/component.js')],
-			['input', require('./components/input/component.js')],
-			['textarea', require('./components/textarea/component.js')],
-			['chassis-select', require('./components/chassis-select/component.js')],
-			['chassis-control', require('./components/chassis-control/component.js')],
-			['chassis-datalist', require('./components/chassis-datalist/component.js')],
+			['tag', {
+				component: require('./components/tag/component.js'),
+				dependencies: []
+			}],
+			['table', {
+				component: require('./components/table/component.js'),
+				dependencies: []
+			}],
+			['overlay', {
+				component: require('./components/overlay/component.js'),
+				dependencies: []
+			}],
+			['modal', {
+				component: require('./components/modal/component.js'),
+				dependencies: []
+			}],
+			['input', {
+				component: require('./components/input/component.js'),
+				dependencies: []
+			}],
+			['textarea', {
+				component: require('./components/textarea/component.js'),
+				dependencies: []
+			}],
+			['chassis-optgroup', {
+				component: require('./components/chassis-optgroup/component.js'),
+				dependencies: []
+			}],
+			['chassis-optgroup-label', {
+				component: require('./components/chassis-optgroup-label/component.js'),
+				dependencies: []
+			}],
+			['chassis-options', {
+				component: require('./components/chassis-options/component.js'),
+				dependencies: []
+			}],
+			['chassis-option', {
+				component: require('./components/chassis-option/component.js'),
+				dependencies: []
+			}],
+			['chassis-select-title', {
+				component: require('./components/chassis-select-title/component.js'),
+				dependencies: []
+			}],
+			['chassis-select', {
+				component: require('./components/chassis-select/component.js'),
+				dependencies: ['chassis-select-title', 'chassis-options', 'chassis-option', 'chassis-optgroup', 'chassis-optgroup-label', 'chassis-select']
+			}],
+			['chassis-datalist', {
+				component: require('./components/chassis-datalist/component.js'),
+				dependencies: ['chassis-options', 'chassis-option']
+			}],
+			['chassis-control', {
+				component: require('./components/chassis-control/component.js'),
+				dependencies: []
+			}],
 			['form-controls', ['input', 'textarea', 'chassis-select', 'chassis-datalist', 'chassis-control']]
 		])
 	}

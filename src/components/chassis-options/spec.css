@@ -1,0 +1,5 @@
+chassis-options {
+  @state default {
+    $(selector) {}
+  }
+}

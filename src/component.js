@@ -5,7 +5,7 @@ class ChassisComponent {
   constructor (chassis, type, customSpec = null) {
     this.chassis = chassis
     this.type = type
-    this.instance = new (chassis.constants.components.get(type))(chassis)
+    this.instance = new (chassis.constants.components.get(type)).component(chassis)
 
     this.theme = chassis.theme.getComponentSpec(type)
     this.defaultSpec = new ChassisSpecSheet(this.chassis, type, chassis.utils.file.parseStyleSheet(`../components/${type}/spec.css`), this.instance)

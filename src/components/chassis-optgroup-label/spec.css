@@ -1,0 +1,5 @@
+chassis-optgroup-label {
+  @state default {
+    $(selector) {}
+  }
+}

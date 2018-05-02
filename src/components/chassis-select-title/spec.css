@@ -1,0 +1,5 @@
+chassis-select-title {
+  @state default {
+    $(selector) {}
+  }
+}

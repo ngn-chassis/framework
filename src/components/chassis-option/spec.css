@@ -1,0 +1,27 @@
+chassis-option {
+  @state default {
+    $(selector) {}
+  }
+
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+
+  @state active {
+    $(selector):active,
+    $(selector).active {}
+  }
+
+  @state focus {
+    $(selector):focus,
+    $(selector).focus {}
+  }
+
+  @state disabled {
+    $(selector):disabled,
+    $(selector).disabled {
+      pointer-events: none;
+    }
+  }
+}

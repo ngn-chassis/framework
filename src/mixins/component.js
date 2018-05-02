@@ -64,8 +64,13 @@ class ChassisComponentMixins {
 			if (requestedComponents.includes(key)) {
 				if (Array.isArray(value)) {
 					sorted.push(...value)
-				} else {
-					sorted.push(key)
+					continue
+				}
+
+				sorted.push(key)
+
+				if (value.dependencies.length > 0) {
+					sorted.push(...value.dependencies)
 				}
 			}
 		}
