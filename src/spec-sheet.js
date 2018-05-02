@@ -154,6 +154,11 @@ class ChassisSpecSheet {
 
 			_generateOverrides: NGN.privateconst((type, state) => {
 				let { componentOverrides, theme, utils } = this.chassis
+
+				if (!componentOverrides.hasOwnProperty(type)) {
+					return
+				}
+
 				let stateOverrides = componentOverrides[type][state.params]
 
 				if (!stateOverrides) {

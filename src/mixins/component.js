@@ -57,7 +57,7 @@ class ChassisComponentMixins {
 				if (Array.isArray(data)) {
 					requestedComponents.push(...data)
 				} else {
-					requestedComponents.push(...data.dependencies)
+					requestedComponents.push(component, ...data.dependencies)
 				}
 			}
 		}
