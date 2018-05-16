@@ -34,8 +34,8 @@ class ChassisComponentMixins {
 	}
 
 	include () {
-		let { settings } = this.chassis
-		let { args, atRule, source } = arguments[0]
+		let { settings, utils } = this.chassis
+		let { args, atRule, root, source } = arguments[0]
 
 		let requestedComponents = []
 
@@ -82,17 +82,28 @@ class ChassisComponentMixins {
 
 		let css = NGN.dedupe(sorted).map(type => {
 			let component = new ChassisComponent(this.chassis, type)
+			let { themedCss } = component
 
 			// console.log(type);
 			// console.log(component.themedCss.toString());
 			// console.log('============================');
 			// console.log(component.unthemedCss.toString());
 
+			if (component.variables) {
+				let rootRule = utils.css.newRule(':root', [])
+
+				for (let variable in component.variables) {
+					rootRule.nodes.push(utils.css.newDecl(`--${variable}`, component.variables[variable]))
+				}
+
+				themedCss.prepend(rootRule)
+			}
+
 			if (component.instance.resetType !== 'none') {
 				settings.componentResetSelectors[component.instance.resetType].push(...component.defaultSpec.selectors)
 			}
 
-			return component.themedCss
+			return themedCss
 		})
 
 		atRule.replaceWith(css)

@@ -60,7 +60,7 @@ class ChassisTypographyMixins {
 
     let padding = {
       x: `${typography.calculateInlinePaddingX(lineHeightMult)}em`,
-      y: `${(calcLineHeight - lineHeightMult) / 2}em`
+      y: `${typography.calculateInlinePaddingY(lineHeightMult)}em`
     }
 
     let props = {

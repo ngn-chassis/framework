@@ -9,6 +9,8 @@ class ChassisStyleSheet {
 		this.tree = tree
 		this.isNamespaced = namespaced
 
+		this.customProperties = []
+
 		Object.defineProperties(this, {
 			_atRules: NGN.private({}),
 			_functions: NGN.private({}),

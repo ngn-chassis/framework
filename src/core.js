@@ -37,15 +37,24 @@ class ChassisCore {
 	}
 
 	get customProperties () {
-		let { settings, theme, utils } = this.chassis
+		let { settings, theme, typography, utils } = this.chassis
+    let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
 
-		// TODO: Add component properties
+    let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
+    let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
 
 		return utils.css.newRule(':root', [
 			...utils.file.parseStyleSheet('../style-sheets/copic-greys.css').nodes,
+
 			utils.css.newDeclObj('--ui-min-width', `${settings.layout.minWidth}px`),
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
+
+			utils.css.newDeclObj('--inline-block-margin-x', `${typography.calculateInlineMarginX(lineHeightMult)}em`),
+			utils.css.newDeclObj('--inline-block-margin-y', `${typography.calculateInlineMarginY(lineHeightMult)}em`),
+			utils.css.newDeclObj('--inline-block-padding-x', `${typography.calculateInlinePaddingX(lineHeightMult)}em`),
+			utils.css.newDeclObj('--inline-block-padding-y', `${typography.calculateInlinePaddingY(lineHeightMult)}em`),
+
 			...Object.keys(theme.customProperties).map(prop => utils.css.newDeclObj(prop, theme.customProperties[prop]))
 		])
 	}

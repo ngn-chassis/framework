@@ -89,6 +89,10 @@ class ChassisTypography {
 		return Math.sin(baseLineHeight)
 	}
 
+	calculateInlinePaddingY (baseLineHeight) {
+		return (this.calculateInlineHeight(baseLineHeight) - baseLineHeight) / 2
+	}
+
 	calculateLineHeight (fontSize, viewportWidth, ratio = this.scale.ratio) {
 		return (ratio - 1 / (2 * ratio) * (1 - viewportWidth / this.calculateOptimalLineWidth(fontSize))) * fontSize
 	}

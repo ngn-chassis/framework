@@ -56,6 +56,20 @@ class ChassisComponent {
     })
   }
 
+  get variables () {
+    if (!('variables' in this.instance)) {
+      return null
+    }
+
+    let scopedVariables = {}
+
+    for (let key in this.instance.variables) {
+      scopedVariables[`${this.type}-${key}`] = this.instance.variables[key]
+    }
+
+    return Object.keys(scopedVariables).length ? scopedVariables : null
+  }
+
   // TODO: REvisit the name of this getter
   get customRules () {
     if (!this.customSpec) {
