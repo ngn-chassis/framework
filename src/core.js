@@ -50,6 +50,9 @@ class ChassisCore {
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
 
+			utils.css.newDeclObj('--root-font-size', `${fontSize}px`),
+			utils.css.newDeclObj('--root-line-height', lineHeightMult),
+
 			utils.css.newDeclObj('--inline-block-margin-x', `${typography.calculateInlineMarginX(lineHeightMult)}em`),
 			utils.css.newDeclObj('--inline-block-margin-y', `${typography.calculateInlineMarginY(lineHeightMult)}em`),
 			utils.css.newDeclObj('--inline-block-padding-x', `${typography.calculateInlinePaddingX(lineHeightMult)}em`),
