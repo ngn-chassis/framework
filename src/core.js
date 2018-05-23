@@ -38,10 +38,11 @@ class ChassisCore {
 
 	get customProperties () {
 		let { settings, theme, typography, utils } = this.chassis
-    let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
+		let { root, small, large, larger, largest } = settings.typography.ranges.first.typography
+		let headingSizeAliases = settings.typography.fontSizes.headings
 
-    let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
-    let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
+    let rootLineHeightMult = utils.unit.pxToEm(root.lineHeight, root.fontSize)
+    let calcLineHeight = typography.calculateInlineHeight(rootLineHeightMult)
 
 		return utils.css.newRule(':root', [
 			...utils.file.parseStyleSheet('../style-sheets/copic-greys.css').nodes,
@@ -50,13 +51,32 @@ class ChassisCore {
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
 
-			utils.css.newDeclObj('--root-font-size', `${fontSize}px`),
-			utils.css.newDeclObj('--root-line-height', lineHeightMult),
+			utils.css.newDeclObj('--line-height', calcLineHeight),
 
-			utils.css.newDeclObj('--inline-block-margin-x', `${typography.calculateInlineMarginX(lineHeightMult)}em`),
-			utils.css.newDeclObj('--inline-block-margin-y', `${typography.calculateInlineMarginY(lineHeightMult)}em`),
-			utils.css.newDeclObj('--inline-block-padding-x', `${typography.calculateInlinePaddingX(lineHeightMult)}em`),
-			utils.css.newDeclObj('--inline-block-padding-y', `${typography.calculateInlinePaddingY(lineHeightMult)}em`),
+			utils.css.newDeclObj('--font-size-small', `${small.fontSize}px`),
+			utils.css.newDeclObj('--font-size-root', `${root.fontSize}px`),
+			utils.css.newDeclObj('--font-size-large', `${large.fontSize}px`),
+			utils.css.newDeclObj('--font-size-larger', `${larger.fontSize}px`),
+			utils.css.newDeclObj('--font-size-largest', `${largest.fontSize}px`),
+
+			...[1,2,3,4,5,6].map(key => {
+				return utils.css.newDeclObj(
+					`--h${key}-font-size`,
+					`${utils.unit.pxToEm(this.baseTypography[headingSizeAliases[key]].fontSize, root.fontSize)}em`
+				)
+			}),
+
+			...[1,2,3,4,5,6].map(key => {
+				return utils.css.newDeclObj(
+					`--h${key}-line-height`,
+					`${utils.unit.pxToEm(this.baseTypography[headingSizeAliases[key]].lineHeight, this.baseTypography[headingSizeAliases[key]].fontSize)}`
+				)
+			}),
+
+			utils.css.newDeclObj('--inline-block-margin-x', `${typography.calculateInlineMarginX(rootLineHeightMult)}em`),
+			utils.css.newDeclObj('--inline-block-margin-y', `${typography.calculateInlineMarginY(rootLineHeightMult)}em`),
+			utils.css.newDeclObj('--inline-block-padding-x', `${typography.calculateInlinePaddingX(rootLineHeightMult)}em`),
+			utils.css.newDeclObj('--inline-block-padding-y', `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`),
 
 			...Object.keys(theme.customProperties).map(prop => utils.css.newDeclObj(prop, theme.customProperties[prop]))
 		])
