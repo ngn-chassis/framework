@@ -51,27 +51,8 @@ class ChassisCore {
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
 
-			utils.css.newDeclObj('--line-height', calcLineHeight),
-
-			utils.css.newDeclObj('--font-size-small', `${small.fontSize}px`),
-			utils.css.newDeclObj('--font-size-root', `${root.fontSize}px`),
-			utils.css.newDeclObj('--font-size-large', `${large.fontSize}px`),
-			utils.css.newDeclObj('--font-size-larger', `${larger.fontSize}px`),
-			utils.css.newDeclObj('--font-size-largest', `${largest.fontSize}px`),
-
-			...[1,2,3,4,5,6].map(key => {
-				return utils.css.newDeclObj(
-					`--h${key}-font-size`,
-					`${utils.unit.pxToEm(this.baseTypography[headingSizeAliases[key]].fontSize, root.fontSize)}em`
-				)
-			}),
-
-			...[1,2,3,4,5,6].map(key => {
-				return utils.css.newDeclObj(
-					`--h${key}-line-height`,
-					`${utils.unit.pxToEm(this.baseTypography[headingSizeAliases[key]].lineHeight, this.baseTypography[headingSizeAliases[key]].fontSize)}`
-				)
-			}),
+			utils.css.newDeclObj('--root-font-size', `${root.fontSize}px`),
+			utils.css.newDeclObj('--root-line-height', calcLineHeight),
 
 			utils.css.newDeclObj('--inline-block-margin-x', `${typography.calculateInlineMarginX(rootLineHeightMult)}em`),
 			utils.css.newDeclObj('--inline-block-margin-y', `${typography.calculateInlineMarginY(rootLineHeightMult)}em`),

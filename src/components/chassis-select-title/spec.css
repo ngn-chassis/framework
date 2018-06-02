@@ -2,4 +2,8 @@ chassis-select-title {
   @state default {
     $(selector) {}
   }
+
+  @state placeholder {
+    $(selector)[placeholder] {}
+  }
 }
