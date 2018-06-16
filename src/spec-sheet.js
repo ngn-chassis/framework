@@ -45,7 +45,7 @@ class ChassisSpecSheet {
 				}
 
 				state.walkRules((rule, index) => {
-					// Default state is always first
+					// Initial state is always first
 					if (index === 0) {
 						this._mergeDecls(rule, customDecls)
 
@@ -166,11 +166,11 @@ class ChassisSpecSheet {
 				}
 
 				let defaultTheme = theme.getComponent(this.type)
-				let defaultState = defaultTheme['default']
+				let initialState = defaultTheme['initial']
 				let currentState = defaultTheme[state.params]
 
 				let overridableDecls = utils.css.generateDeclsFromTheme(stateOverrides)
-				let defaultStateDecls = utils.css.generateDeclsFromTheme(defaultState)
+				let initialStateDecls = utils.css.generateDeclsFromTheme(initialState)
 				let currentStateDecls = utils.css.generateDeclsFromTheme(currentState)
 				let uniqueOverridableDecls = utils.css.getUniqueProps(overridableDecls, currentStateDecls)
 
@@ -178,7 +178,7 @@ class ChassisSpecSheet {
 		    // let defaultRules = theme.getRules(defaultTheme)
 		    // let stateRules = theme.getRules(stateTheme)
 
-				if (state.params === 'default') {
+				if (state.params === 'initial') {
 					return uniqueOverridableDecls.map(prop => utils.css.newDecl(prop, 'initial'))
 				}
 
@@ -187,15 +187,15 @@ class ChassisSpecSheet {
 				// Props common between link.${state} and component.${state}
 				let commonDecls = utils.css.getCommonProps(overridableDecls, currentStateDecls)
 
-				// If both link.${state} AND component.default themes include a property,
+				// If both link.${state} AND component.initial themes include a property,
 				// AND it is not already included in the component.${state} theme, add this override:
-				// property: component.default value;
+				// property: component.initial value;
 				if (commonDecls.length > 0) {
-					let defaultOverrides = commonDecls.map(prop => {
+					let initialOverrides = commonDecls.map(prop => {
 						return currentStateDecls.find(decl => decl.prop === prop)
 					}).filter(Boolean)
 
-					overrides.push(...defaultOverrides)
+					overrides.push(...initialOverrides)
 				}
 
 				// If a property is included in link.${state} theme but not default button theme,
@@ -213,7 +213,7 @@ class ChassisSpecSheet {
 					let indexesToRemove = []
 
 					unset.forEach((prop, index) => {
-						let matchInDefaultDecls = defaultStateDecls.find(decl => decl.prop === prop)
+						let matchInDefaultDecls = initialStateDecls.find(decl => decl.prop === prop)
 
 						if (matchInDefaultDecls) {
 							indexesToRemove.push(index)

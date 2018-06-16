@@ -1,5 +1,5 @@
 chassis-control {
-	@state default {
+	@state initial {
 		$(selector)[type="field"],
 		$(selector)[type="select"] {
 			margin-bottom: $(margin-bottom);
@@ -52,10 +52,50 @@ chassis-control {
 		/* TODO: Add validation states, sub-label */
 	}
 
+	@state hover {
+		$(selector):hover,
+		$(selector).hover {}
+	}
+
+	@state default {
+		$(selector):default {}
+	}
+
+	@state defined {
+		$(selector):defined {}
+	}
+
 	@state disabled {
-		$(selector).disabled,
-		$(selector):disabled {
+		$(selector).disabled {
 			pointer-events: none;
 		}
 	}
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state enabled {
+		$(selector):enabled {}
+	}
+
+	@state focus {
+		$(selector):focus {}
+	}
+
+	@state focus-within {
+		$(selector):focus-within {}
+	}
+
+	@state invalid {
+		$(selector):invalid{}
+	}
+
+	@state required {
+		$(selector):required {}
+	}
+
+	@state valid {
+    $(selector):valid {}
+  }
 }

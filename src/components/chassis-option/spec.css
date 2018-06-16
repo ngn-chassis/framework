@@ -1,5 +1,5 @@
 chassis-option {
-  @state default {
+  @state initial {
     $(selector) {}
   }
 
@@ -9,19 +9,36 @@ chassis-option {
   }
 
   @state active {
-    $(selector):active,
-    $(selector).active {}
+    $(selector):active {}
   }
 
-  @state focus {
-    $(selector):focus,
-    $(selector).focus {}
+  @state default {
+    $(selector):default {}
+  }
+
+  @state defined {
+    $(selector):defined {}
   }
 
   @state disabled {
-    $(selector):disabled,
-    $(selector).disabled {
+    $(selector):disabled {
       pointer-events: none;
     }
   }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+    $(selector):enabled {}
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
 }

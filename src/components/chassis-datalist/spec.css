@@ -1,5 +1,5 @@
 chassis-datalist {
-  @state default {
+  @state initial {
     $(selector) {
       position: relative;
       flex-direction: column;
@@ -35,6 +35,41 @@ chassis-datalist {
     }
   }
 
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+		$(selector):enabled {}
+	}
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
+
+  @state invalid {
+		$(selector):invalid {}
+	}
+
   @state open {
     $(selector)[open] {}
 
@@ -47,18 +82,7 @@ chassis-datalist {
     }
   }
 
-  @state hover {
-    $(selector):hover {}
-  }
-
-  @state focus {
-    $(selector):focus {}
-  }
-
-  @state disabled {
-    $(selector).disabled,
-    $(selector):disabled {
-      pointer-events: none;
-    }
+  @state valid {
+    $(selector):valid {}
   }
 }

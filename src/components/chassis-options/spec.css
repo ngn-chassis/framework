@@ -1,5 +1,17 @@
 chassis-options {
-  @state default {
+  @state initial {
     $(selector) {}
   }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
 }

@@ -1,5 +1,5 @@
 svg.icon {
-	@state default {
+	@state initial {
 		$(selector) {
 			width: $(width);
 			height: $(height);

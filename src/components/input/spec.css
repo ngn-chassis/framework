@@ -12,7 +12,7 @@ input[type="text"],
 input[type="time"],
 input[type="url"],
 input[type="week"] {
-	@state default {
+	@state initial {
 		$(selector) {
 			@chassis apply inline-block;
 
@@ -23,17 +23,65 @@ input[type="week"] {
 	}
 
 	@state hover {
-		$(selector):hover {}
+		$(selector):hover,
+		$(selector).hover {}
+	}
+
+	@state active {
+		$(selector):active {}
+	}
+
+	@state disabled {
+		$(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state enabled {
+		$(selector):enabled {}
 	}
 
 	@state focus {
 		$(selector):focus {}
 	}
 
-	@state disabled {
-		$(selector):disabled,
-		$(selector).disabled {
-      pointer-events: none;
-    }
+	@state focus-within {
+		$(selector):focus-within {}
+	}
+
+	@state invalid {
+		$(selector):invalid {}
+	}
+
+	@state in-range {
+		$(selector):in-range {}
+	}
+
+	@state optional {
+		$(selector):optional {}
+	}
+
+	@state out-of-range {
+		$(selector):out-of-range {}
+	}
+
+	@state read-only {
+		$(selector):read-only {}
+	}
+
+	@state read-write {
+		$(selector):read-write {}
+	}
+
+	@state required {
+		$(selector):required {}
+	}
+
+	@state valid {
+    $(selector):valid {}
   }
 }

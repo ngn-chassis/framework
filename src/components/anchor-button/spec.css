@@ -1,5 +1,5 @@
 a.button {
-  @state default {
+  @state initial {
     $(selector) {
       display: inline-flex;
       justify-content: center;
@@ -22,26 +22,42 @@ a.button {
     }
   }
 
+  @state link {
+		$(selector):link {}
+	}
+
   @state visited {
     $(selector):visited {}
   }
 
   @state hover {
-    $(selector):hover {}
+    $(selector):hover,
+    $(selector).hover {}
   }
 
   @state active {
     $(selector):active {}
   }
 
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+		$(selector):enabled {}
+	}
+
   @state focus {
     $(selector):focus {}
   }
 
-  @state disabled {
-    $(selector):disabled,
-    $(selector).disabled {
-      pointer-events: none;
-    }
-  }
+  @state focus-within {
+		$(selector):focus-within {}
+	}
 }

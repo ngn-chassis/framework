@@ -1,5 +1,5 @@
 chassis-select {
-  @state default {
+  @state initial {
     $(selector) {
       position: relative;
       flex-direction: column;
@@ -47,6 +47,45 @@ chassis-select {
     }
   }
 
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+
+  @state active {
+    $(selector):active {}
+  }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state disabled {
+    $(selector).disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+    $(selector):enabled {}
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
+
+  @state invalid {
+		$(selector):invalid {}
+	}
+
   @state open {
     $(selector)[open] {}
 
@@ -60,18 +99,15 @@ chassis-select {
     }
   }
 
-  @state hover {
-    $(selector):hover {}
-  }
+  @state optional {
+		$(selector):optional {}
+	}
 
-  @state focus {
-    $(selector):focus {}
-  }
+  @state required {
+		$(selector):required {}
+	}
 
-  @state disabled {
-    $(selector).disabled,
-    $(selector):disabled {
-      pointer-events: none;
-    }
+  @state valid {
+    $(selector):valid {}
   }
 }

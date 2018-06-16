@@ -1,5 +1,5 @@
 .tag {
-	@state default {
+	@state initial {
 		$(selector) {
 			display: inline-flex;
 			justify-content: center;
@@ -23,5 +23,13 @@
 			padding-left: $(pill-padding-x);
 			border-radius: $(pill-border-radius);
 		}
+	}
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state focus-within {
+		$(selector):focus-within {}
 	}
 }

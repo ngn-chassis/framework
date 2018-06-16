@@ -1,5 +1,27 @@
 chassis-optgroup {
-  @state default {
+  @state initial {
     $(selector) {}
   }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+    $(selector):enabled {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
 }

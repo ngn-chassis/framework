@@ -4,7 +4,9 @@
 button {
   @legacy {
     @chassis ie-only {
-      $(selector), $(selector):focus, $(selector):active {
+      $(selector),
+      $(selector):focus,
+      $(selector):active {
         background: none;
         border: none;
         outline: none;
@@ -19,11 +21,11 @@ button {
 
   /* This rule can contain @state rules and an @legacy rule */
   /*
-    The first element inside each @state rule MUST be the default selector
+    The first element inside each @state rule MUST be the initial selector
     for the state. Component extensions rely on this being the first so they
     can properly generate selectors.
    */
-  @state default {
+  @state initial {
     $(selector) {
       display: inline-flex;
       justify-content: center;
@@ -51,21 +53,37 @@ button {
   }
 
   @state hover {
-    $(selector):hover {}
+    $(selector):hover,
+    $(selector).hover {}
   }
 
   @state active {
     $(selector):active {}
   }
 
+  @state default {
+    $(selector):default {}
+  }
+
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+		$(selector):enabled {}
+	}
+
   @state focus {
     $(selector):focus {}
   }
 
-  @state disabled {
-    $(selector):disabled,
-    $(selector).disabled {
-      pointer-events: none;
-    }
-  }
+  @state focus-within {
+		$(selector):focus-within {}
+	}
 }

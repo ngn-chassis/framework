@@ -1,5 +1,5 @@
 textarea {
-	@state default {
+	@state initial {
 		$(selector) {
 			@chassis apply inline-block;
 			overflow: auto;
@@ -13,18 +13,58 @@ textarea {
 		}
 	}
 
-  @state hover {
-		$(selector):hover {}
+	@state hover {
+		$(selector):hover,
+		$(selector).hover {}
+	}
+
+	@state active {
+		$(selector):active {}
+	}
+
+	@state disabled {
+		$(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state enabled {
+		$(selector):enabled {}
 	}
 
 	@state focus {
 		$(selector):focus {}
 	}
 
-	@state disabled {
-		$(selector):disabled,
-		$(selector).disabled {
-      pointer-events: none;
-    }
+	@state focus-within {
+		$(selector):focus-within {}
+	}
+
+	@state invalid {
+		$(selector):invalid {}
+	}
+
+	@state optional {
+		$(selector):optional {}
+	}
+
+	@state read-only {
+		$(selector):read-only {}
+	}
+
+	@state read-write {
+		$(selector):read-write {}
+	}
+
+	@state required {
+		$(selector):required {}
+	}
+
+	@state valid {
+    $(selector):valid {}
   }
 }

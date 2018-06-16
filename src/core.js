@@ -51,6 +51,9 @@ class ChassisCore {
 			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
 			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
 
+			// TODO: add breakpoint vars
+
+			utils.css.newDeclObj('--typography-scale-ratio', settings.typography.scaleRatio),
 			utils.css.newDeclObj('--root-font-size', `${root.fontSize}px`),
 			utils.css.newDeclObj('--root-line-height', calcLineHeight),
 
@@ -329,14 +332,14 @@ class ChassisCore {
 		return tree
 	}
 
-	_applyTheme (element, defaultRule, root = this.chassis.utils.css.newRoot([])) {
+	_applyTheme (element, initialRule, root = this.chassis.utils.css.newRoot([])) {
 		let { theme, utils } = this.chassis
 
-		let selectors = defaultRule.selector.split(',').map(selector => selector.trim())
+		let selectors = initialRule.selector.split(',').map(selector => selector.trim())
 		let themeData = theme.getElement(element)
 
 		if (!themeData) {
-			return root.append(defaultRule)
+			return root.append(initialRule)
 		}
 
 		let propKeys = Object.keys(themeData.properties)
@@ -349,10 +352,10 @@ class ChassisCore {
 				decls.push(utils.css.newDecl(property, themeData.properties[property]))
 			}
 
-			defaultRule.nodes = utils.css.mergeDecls(defaultRule.nodes, decls)
+			initialRule.nodes = utils.css.mergeDecls(initialRule.nodes, decls)
 		}
 
-		root.append(defaultRule)
+		root.append(initialRule)
 
 		if (ruleKeys.length > 0) {
 			let rulesets = this._appendNestedRulesets(root, selectors, themeData.rules)

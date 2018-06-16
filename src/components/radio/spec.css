@@ -1,26 +1,50 @@
 input[type="radio"] {
-  @state default {
-    $(selector) {
-
-    }
+  @state initial {
+    $(selector) {}
   }
 
   @state hover {
-    $(selector):hover {
-
-    }
+    $(selector):hover,
+    $(selector).hover {}
   }
 
-  @state focus {
-    $(selector):focus {
+  @state checked {
+		$(selector):checked {}
+	}
 
-    }
+  @state default {
+    $(selector):default {}
   }
 
   @state disabled {
-    $(selector):disabled,
-    $(selector).disabled {
+    $(selector):disabled {}
+  }
 
-    }
+  @state enabled {
+		$(selector):enabled {}
+	}
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state indeterminate {
+		$(selector):indeterminate {}
+	}
+
+  @state invalid {
+		$(selector):invalid {}
+	}
+
+  @state optional {
+		$(selector):optional {}
+	}
+
+  @state required {
+		$(selector):required {}
+	}
+
+  @state valid {
+    $(selector):valid {}
   }
 }

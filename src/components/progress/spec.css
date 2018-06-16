@@ -1,4 +1,4 @@
-chassis-modal {
+progress {
 	@state initial {
 		$(selector) {}
 	}
@@ -6,10 +6,6 @@ chassis-modal {
 	@state hover {
 		$(selector):hover,
 		$(selector).hover {}
-	}
-
-	@state defined {
-		$(selector):defined {}
 	}
 
 	@state disabled {
@@ -24,11 +20,7 @@ chassis-modal {
 		$(selector):enabled {}
 	}
 
-	@state focus {
-		$(selector):focus {}
-	}
-
-	@state focus-within {
-		$(selector):focus-within {}
+	@state indeterminate {
+		$(selector):indeterminate {}
 	}
 }

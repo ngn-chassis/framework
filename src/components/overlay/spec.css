@@ -1,5 +1,34 @@
 chassis-overlay {
-	@state default {
+	@state initial {
 		$(selector) {}
+	}
+
+	@state hover {
+		$(selector):hover,
+		$(selector).hover {}
+	}
+
+	@state defined {
+		$(selector):defined {}
+	}
+
+	@state disabled {
+		$(selector):disabled {}
+	}
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state enabled {
+		$(selector):enabled {}
+	}
+
+	@state focus {
+		$(selector):focus {}
+	}
+
+	@state focus-within {
+		$(selector):focus-within {}
 	}
 }

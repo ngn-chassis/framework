@@ -1,5 +1,5 @@
 table {
-	@state default {
+	@state initial {
 		$(selector) {
 			table-layout: fixed;
 			width: 100%;
@@ -19,5 +19,13 @@ table {
 		$(selector) caption {
 			text-align: left;
 		}
+	}
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state focus-within {
+		$(selector):focus-within {}
 	}
 }

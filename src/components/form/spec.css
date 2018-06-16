@@ -1,0 +1,25 @@
+form {
+	@state initial {
+		$(selector) {}
+	}
+
+	@state disabled {
+		$(selector):disabled {}
+	}
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state enabled {
+		$(selector):enabled {}
+	}
+
+  @state invalid {
+    $(selector):invalid {}
+  }
+
+  @state valid {
+    $(selector):valid {}
+  }
+}

@@ -1,7 +1,15 @@
 chassis-select-title {
-  @state default {
+  @state initial {
     $(selector) {}
   }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
 
   @state placeholder {
     $(selector)[placeholder] {}
