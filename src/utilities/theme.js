@@ -49,7 +49,7 @@ class ChassisThemeUtils {
 
 	static generateComponentJson (component) {
 		let json = {
-			default: {}
+			initial: {}
 		}
 
 		component.nodes.forEach(node => {

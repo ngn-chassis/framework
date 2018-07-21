@@ -34,7 +34,7 @@ class ChassisComponent {
        * Store component properties so they can be selectively overwritten by
        * other components which use the same tag in conjunction with classes
        * or attributes. For example:
-       * <a class="button"> must override certain properties of default <a> tags.
+       * <a class="button"> must override certain properties of initial <a> tags.
        * @private
        */
       _storeComponentOverrides: NGN.privateconst(() => {
