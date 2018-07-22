@@ -104,12 +104,8 @@ class ChassisSettings extends NGN.EventEmitter {
 				let { scale } = chassis.constants.typography
 
 				this.envCfg = {
-					stage: 4,
+					stage: 0,
 					features: {
-						'color-mod-function': {
-							unresolved: 'warn'
-						},
-
 						'custom-properties': {
 							preserve: false
 						}
