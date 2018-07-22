@@ -47,7 +47,7 @@ class Chassis {
 		this.componentOverrides = {}
   }
 
-  process (css, cb) {
+  process (css, cb, from = undefined) {
     let root = postcss.parse(css)
     let input, output
 
@@ -78,7 +78,7 @@ class Chassis {
 		})
 
     tasks.add('Processing CSS4 syntax...', next => {
-      postcss([env(this.settings.envCfg)]).process(output).then(processed => {
+      postcss([env(this.settings.envCfg)]).process(output, {from}).then(processed => {
         output = processed.css
         next()
       }, error => {
