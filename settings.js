@@ -103,11 +103,15 @@ class ChassisSettings extends NGN.EventEmitter {
 			_cleanseCfg: NGN.privateconst(cfg => {
 				let { scale } = chassis.constants.typography
 
-				this.cssNextCfg = {
+				this.envCfg = {
+					stage: 4,
 					features: {
-						// autoprefixer: false,
-						customProperties: {
-							variables: {}
+						'color-mod-function': {
+							unresolved: 'warn'
+						},
+
+						'custom-properties': {
+							preserve: false
 						}
 					}
 				}
@@ -118,9 +122,9 @@ class ChassisSettings extends NGN.EventEmitter {
 
 				if (cfg.hasOwnProperty('customProperties')) {
 					if (typeof cfg.customProperties === 'boolean') {
-						cssNextCfg.features.customProperties = cfg.customProperties
+						envCfg.features.customProperties = cfg.customProperties
 					} else {
-						cssNextCfg.features.customProperties.variables = cfg.customProperties
+						envCfg.features.customProperties.variables = cfg.customProperties
 					}
 
 					delete cfg.customProperties

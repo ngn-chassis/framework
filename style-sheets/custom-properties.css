@@ -1,8 +1,19 @@
 :root {
-	--ui-min-width: $(layout-min-width);
-	--ui-max-width: $(layout-max-width);
-	--ui-gutter: $(layout-gutter);
-	
+	--layout-min-width: $(layout-min-width);
+	--layout-max-width: $(layout-max-width);
+	--layout-gutter: $(layout-gutter);
+
+	--typography-scale-ratio: $(typography-scale-ratio);
+	--root-font-size: $(root-font-size);
+	--root-line-height: $(root-line-height);
+
+	--inline-block-margin-x: $(inline-block-margin-x);
+	--inline-block-margin-y: $(inline-block-margin-y);
+	--inline-block-padding-x: $(inline-block-padding-x);
+	--inline-block-padding-y: $(inline-block-padding-y);
+
+	/* Copic Greys */
+	/* Cool greys */
 	--grey-c00 : rgb(232,240,243);
 	--grey-c01 : rgb(225,233,236);
 	--grey-c02 : rgb(218,227,232);
@@ -14,6 +25,8 @@
 	--grey-c08 : rgb(83,93,103);
 	--grey-c09 : rgb(60,71,77);
 	--grey-c10 : rgb(33,42,49);
+
+	/* Neutral greys */
 	--grey-n00 : rgb(237,237,237);
 	--grey-n01 : rgb(226,227,229);
 	--grey-n02 : rgb(218,219,221);
@@ -25,6 +38,8 @@
 	--grey-n08 : rgb(99,100,102);
 	--grey-n09 : rgb(76,77,79);
 	--grey-n10 : rgb(44,45,48);
+
+	/* Toner greys */
 	--grey-t00 : rgb(237,237,237);
 	--grey-t01 : rgb(234,234,234);
 	--grey-t02 : rgb(225,225,223);

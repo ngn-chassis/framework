@@ -44,26 +44,29 @@ class ChassisCore {
     let rootLineHeightMult = utils.unit.pxToEm(root.lineHeight, root.fontSize)
     let calcLineHeight = typography.calculateInlineHeight(rootLineHeightMult)
 
-		return utils.css.newRule(':root', [
-			...utils.file.parseStyleSheet('../style-sheets/copic-greys.css').nodes,
-
-			utils.css.newDeclObj('--ui-min-width', `${settings.layout.minWidth}px`),
-			utils.css.newDeclObj('--ui-max-width', `${settings.layout.maxWidth}px`),
-			utils.css.newDeclObj('--ui-gutter', `${settings.layout.gutter}`),
+		let props = this._parseSpecSheet('../style-sheets/custom-properties.css', {
+			'layout-min-width': `${settings.layout.minWidth}px`,
+			'layout-max-width': `${settings.layout.maxWidth}px`,
+			'layout-gutter': settings.layout.gutter,
 
 			// TODO: add breakpoint vars
 
-			utils.css.newDeclObj('--typography-scale-ratio', settings.typography.scaleRatio),
-			utils.css.newDeclObj('--root-font-size', `${root.fontSize}px`),
-			utils.css.newDeclObj('--root-line-height', calcLineHeight),
+			'typography-scale-ratio': settings.typography.scaleRatio,
+			'root-font-size': `${root.fontSize}px`,
+			'root-line-height': calcLineHeight,
 
-			utils.css.newDeclObj('--inline-block-margin-x', `${typography.calculateInlineMarginX(rootLineHeightMult)}em`),
-			utils.css.newDeclObj('--inline-block-margin-y', `${typography.calculateInlineMarginY(rootLineHeightMult)}em`),
-			utils.css.newDeclObj('--inline-block-padding-x', `${typography.calculateInlinePaddingX(rootLineHeightMult)}em`),
-			utils.css.newDeclObj('--inline-block-padding-y', `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`),
+			'inline-block-margin-x': `${typography.calculateInlineMarginX(rootLineHeightMult)}em`,
+			'inline-block-margin-y': `${typography.calculateInlineMarginY(rootLineHeightMult)}em`,
+			'inline-block-padding-x': `${typography.calculateInlinePaddingX(rootLineHeightMult)}em`,
+			'inline-block-padding-y': `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`
+		})
 
-			...Object.keys(theme.customProperties).map(prop => utils.css.newDeclObj(prop, theme.customProperties[prop]))
-		])
+		// Add user-specified custom properties to root
+		Object.keys(theme.customProperties).forEach(prop => {
+			props.nodes[0].append(utils.css.newDeclObj(prop, theme.customProperties[prop]))
+		})
+
+		return props
 	}
 
 	get modifiers () {
