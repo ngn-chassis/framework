@@ -1,22 +1,25 @@
-class ChassisControlComponent {
-  constructor (chassis) {
-    this.chassis = chassis
-    this.resetType = 'block'
-  }
+module.exports = (function () {
+	let _private = new WeakMap()
 
-  get variables () {
-    let { layout, settings, typography, utils } = this.chassis
-		let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
+	return class {
+    constructor (chassis) {
+      _private.set(this, {chassis})
 
-		let lineHeightMultiplier = utils.unit.pxToEm(lineHeight, fontSize)
-		let calcLineHeight = typography.calculateInlineHeight(lineHeightMultiplier)
+      this.resetType = 'block'
+    }
 
-		return {
-      'toggle-margin-right': `${typography.calculateInlineMarginX(lineHeightMultiplier)}em`,
-			'margin-bottom': `${layout.calculateMarginBottom(lineHeightMultiplier, 'inner')}em`,
-			'input-margin-top': `${(calcLineHeight - lineHeightMultiplier) / 2}em`
-		}
-  }
-}
+    get variables () {
+      let { layout, settings, typography, utils } = _private.get(this).chassis
+  		let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
 
-module.exports = ChassisControlComponent
+  		let lineHeightMultiplier = utils.unit.pxToEm(lineHeight, fontSize)
+  		let calcLineHeight = typography.calculateInlineHeight(lineHeightMultiplier)
+
+  		return {
+        'toggle-margin-right': `${typography.calculateInlineMarginX(lineHeightMultiplier)}em`,
+  			'margin-bottom': `${layout.calculateMarginBottom(lineHeightMultiplier, 'inner')}em`,
+  			'input-margin-top': `${(calcLineHeight - lineHeightMultiplier) / 2}em`
+  		}
+    }
+	}
+})()

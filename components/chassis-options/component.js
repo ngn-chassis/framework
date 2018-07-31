@@ -1,8 +1,11 @@
-class ChassisOptionsComponent {
-  constructor (chassis) {
-    this.chassis = chassis
-    this.resetType = 'none'
-  }
-}
+module.exports = (function () {
+	let _private = new WeakMap()
 
-module.exports = ChassisOptionsComponent
+	return class {
+    constructor (chassis) {
+      _private.set(this, {chassis})
+      
+      this.resetType = 'none'
+    }
+	}
+})()

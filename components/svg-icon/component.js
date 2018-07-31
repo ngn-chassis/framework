@@ -1,20 +1,23 @@
-class ChassisSvgIconComponent {
-	constructor (chassis) {
-    this.chassis = chassis
-    this.resetType = 'inline-block'
-	}
+module.exports = (function () {
+	let _private = new WeakMap()
 
-	get variables () {
-		let { settings, utils } = this.chassis
-		let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
+	return class {
+		constructor (chassis) {
+	    _private.set(this, {chassis})
 
-		let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
+	    this.resetType = 'inline-block'
+		}
 
-		return {
-			'width': 'auto',
-			'height': `${lineHeightInEms}em`
+		get variables () {
+			let { settings, utils } = _private.get(this).chassis
+			let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
+
+			let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
+
+			return {
+				'width': 'auto',
+				'height': `${lineHeightInEms}em`
+			}
 		}
 	}
-}
-
-module.exports = ChassisSvgIconComponent
+})()

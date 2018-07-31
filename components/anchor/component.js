@@ -1,9 +1,12 @@
-class ChassisAnchorComponent {
-	constructor	(chassis) {
-		this.chassis = chassis
-		this.resetType = 'inline'
-		this.isOverridable = true
-	}
-}
+module.exports = (function () {
+	let _private = new WeakMap()
 
-module.exports = ChassisAnchorComponent
+	return class {
+		constructor	(chassis) {
+			_private.set(this, {chassis})
+
+			this.resetType = 'inline'
+			this.isOverridable = true
+		}
+	}
+})()

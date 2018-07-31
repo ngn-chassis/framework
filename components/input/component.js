@@ -1,12 +1,15 @@
-class ChassisInputComponent {
-	constructor (chassis) {
-		this.chassis = chassis
-		this.resetType = 'inline-block'
-	}
+module.exports = (function () {
+	let _private = new WeakMap()
 
-	get variables () {
-		return {}
-	}
-}
+	return class {
+		constructor (chassis) {
+			_private.set(this, {chassis})
+			
+			this.resetType = 'inline-block'
+		}
 
-module.exports = ChassisInputComponent
+		get variables () {
+			return {}
+		}
+	}
+})()
