@@ -3,6 +3,30 @@ class ChassisLayoutMixins {
     this.chassis = chassis
   }
 
+  constrain () {
+    let { layout, settings, utils } = this.chassis
+    let { args, atRule, nodes, root, source } = arguments[0]
+    let { parent } = atRule
+
+    console.log(args);
+
+    // if (args[])
+    //
+    //
+    // switch (type) {
+    //   case 'width':
+    //
+    //     break
+    //
+    //   case 'height':
+    //
+    //     break
+    //
+    //   default:
+    //     return
+    // }
+  }
+
   /**
 	 * @mixin constrainWidth
 	 * @return {array} of decls

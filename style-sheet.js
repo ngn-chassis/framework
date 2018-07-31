@@ -1,155 +1,149 @@
-const postcss = require('postcss')
-const nesting = require('postcss-nesting')
-const processNot = require('postcss-selector-not')
-const valueParser = require('postcss-value-parser')
+let postcss = require('postcss')
+let nesting = require('postcss-nesting')
+let processNot = require('postcss-selector-not')
+let valueParser = require('postcss-value-parser')
 
-class ChassisStyleSheet {
-	constructor (chassis, tree, namespaced = true) {
-		this.chassis = chassis
-		this.tree = tree
-		this.isNamespaced = namespaced
+module.exports = (function () {
+	let _private = new WeakMap()
 
-		this.customProperties = []
+	return class {
+		constructor (chassis, tree, namespaced = true) {
+			this.chassis = chassis
 
-		Object.defineProperties(this, {
-			_atRules: NGN.private({}),
-			_functions: NGN.private({}),
+			_private.set(this, {
+				atRules: {},
+				tree,
+				namespaced,
 
-			_generateNamespacedSelector: NGN.privateconst(selector => {
-				selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
+				generateNamespacedSelector: selector => {
+					selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
 
-				if (selector.includes(',')) {
-					selector = selector.split(',').map(chunk => chunk.trim()).join(', .chassis ')
-				}
+					if (selector.includes(',')) {
+						selector = selector.split(',').map(chunk => chunk.trim()).join(', .chassis ')
+					}
 
-				return selector
-			}),
+					return selector
+				},
 
-			_processAtRule: NGN.privateconst(atRule => {
-				let data = Object.assign({
-					root: this.tree,
-					atRule
-				}, this.chassis.atRules.getProperties(atRule))
+				processAtRule: atRule => {
+					let data = Object.assign({
+						root: _private.get(this).tree,
+						atRule
+					}, this.chassis.atRules.getProperties(atRule))
 
-				this.chassis.atRules.process(data)
-			}),
+					this.chassis.atRules.process(data)
+				},
 
-			_processAtRules: NGN.privateconst(type => {
-				if (this._atRules.hasOwnProperty(type)) {
-					this._atRules[type].forEach(atRule => {
-						this._processAtRule(atRule)
-					})
-
-					delete this._atRules[type]
-				}
-			}),
-
-			_processFunctions: NGN.privateconst(type => {
-				this.tree.walkDecls(decl => {
-					let parsed = valueParser(decl.value)
-
-					if (parsed.nodes.some(node => node.type === 'function')) {
-						decl.value = this.chassis.functions.process({
-							root: this.tree,
-							raw: decl,
-							parsed
+				processAtRules: type => {
+					if (_private.get(this).atRules.hasOwnProperty(type)) {
+						_private.get(this).atRules[type].forEach(atRule => {
+							_private.get(this).processAtRule(atRule)
 						})
+
+						delete _private.get(this).atRules[type]
 					}
-				})
-			}),
+				},
 
-			_processImports: NGN.privateconst(() => {
-				this.tree.walkAtRules('chassis', atRule => {
-					if (atRule.params.startsWith('import')) {
-						this._processAtRule(atRule)
+				processFunctions: type => {
+					_private.get(this).tree.walkDecls(decl => {
+						let parsed = valueParser(decl.value)
+
+						if (parsed.nodes.some(node => node.type === 'function')) {
+							decl.value = this.chassis.functions.process({
+								root: _private.get(this).tree,
+								raw: decl,
+								parsed
+							})
+						}
+					})
+				},
+
+				processImports: () => {
+					_private.get(this).tree.walkAtRules('chassis', atRule => {
+						if (atRule.params.startsWith('import')) {
+							_private.get(this).processAtRule(atRule)
+						}
+					})
+				},
+
+				processNesting: () => {
+					_private.get(this).tree = postcss.parse(nesting.process(_private.get(this).tree))
+				},
+
+				processNot: () => {
+					_private.get(this).tree = postcss.parse(processNot.process(_private.get(this).tree))
+				},
+
+				storeAtRule: atRule => {
+					let params = atRule.params.split(' ')
+					let container = params[0]
+					let containers = ['import', 'include', 'new', 'extend']
+
+					if (containers.includes(container)) {
+						if (!_private.get(this).atRules.hasOwnProperty(container)) {
+							_private.get(this).atRules[container] = []
+						}
+
+						_private.get(this).atRules[container].push(atRule)
+						return
 					}
-				})
-			}),
 
-			_processNesting: NGN.privateconst(() => {
-				this.tree = postcss.parse(nesting.process(this.tree))
-			}),
-
-			_processNot: NGN.privateconst(() => {
-				this.tree = postcss.parse(processNot.process(this.tree))
-			}),
-
-			_storeAtRule: NGN.privateconst(atRule => {
-				let params = atRule.params.split(' ')
-				let container = params[0]
-				let containers = ['import', 'include', 'new', 'extend']
-
-				if (containers.includes(container)) {
-					if (!this._atRules.hasOwnProperty(container)) {
-						this._atRules[container] = []
+					if (!_private.get(this).atRules.hasOwnProperty('other')) {
+						_private.get(this).atRules.other = []
 					}
 
-					this._atRules[container].push(atRule)
+					_private.get(this).atRules.other.push(atRule)
+				},
+
+				storeAtRules: () => {
+					_private.get(this).atRules = {}
+					_private.get(this).tree.walkAtRules('chassis', atRule => _private.get(this).storeAtRule(atRule))
+				}
+			})
+		}
+
+		// TODO: Account for multiple "include" mixins
+		get css () {
+			let tasks = new NGN.Tasks()
+
+			_private.get(this).processImports()
+			_private.get(this).processNesting()
+
+			_private.get(this).storeAtRules()
+
+			// Process all but 'include', 'new' and 'extend' mixins as those need to be
+			// processed after the unnest operation to properly resolve nested selectors
+			_private.get(this).processAtRules('other')
+
+			// Process remaining 'new', 'extend', and 'include' mixins
+			_private.get(this).processAtRules('new')
+			_private.get(this).processAtRules('extend')
+			_private.get(this).processAtRules('include')
+
+			// Process ":not()" instances before namespace is prepended
+			_private.get(this).processNot()
+
+			_private.get(this).processNesting()
+			_private.get(this).processFunctions()
+
+			// Cleanup empty rulesets and prepend .chassis namespace to all selectors
+			// except 'html' and ':root'
+			_private.get(this).tree.walkRules(rule => {
+				if (rule.nodes.length === 0) {
+					rule.remove()
 					return
 				}
 
-				if (!this._atRules.hasOwnProperty('other')) {
-					this._atRules.other = []
+				if (rule.parent.type === 'atrule' && rule.parent.name === 'keyframes') {
+					return
 				}
 
-				this._atRules.other.push(atRule)
-			}),
-
-			_storeAtRules: NGN.privateconst(() => {
-				this._atRules = {}
-				this.tree.walkAtRules('chassis', atRule => this._storeAtRule(atRule))
+				if (_private.get(this).namespaced) {
+					rule.selector = _private.get(this).generateNamespacedSelector(rule.selector)
+				}
 			})
-		})
+
+			return _private.get(this).tree
+		}
 	}
-
-	// TODO: Account for multiple "include" mixins
-	get css () {
-		this._processImports()
-
-		// in cssnext, nesting isn't handled correctly, so we're short-circuiting it
-		// by handling unnesting here
-		this._processNesting()
-
-		// After unnesting operation, re-store at-rule references
-		// TODO: Find out why this is necessary, since it seems like the nesting
-		// shouldn't affect which at-rules are present.
-		this._storeAtRules()
-
-		// Process all but 'include', 'new' and 'extend' mixins as those need to be
-		// processed after the unnest operation to properly resolve nested selectors
-		this._processAtRules('other')
-
-		// Process remaining 'new', 'extend', and 'include' mixins
-		this._processAtRules('new')
-		this._processAtRules('extend')
-		this._processAtRules('include')
-
-		// Process ":not()" instances before namespace is prepended
-		this._processNot()
-
-		this._processNesting()
-
-		this._processFunctions()
-
-		// Cleanup empty rulesets and prepend .chassis namespace to all selectors
-		// except 'html' and ':root'
-		this.tree.walkRules(rule => {
-			if (rule.nodes.length === 0) {
-				rule.remove()
-				return
-			}
-
-			if (rule.parent.type === 'atrule' && rule.parent.name === 'keyframes') {
-				return
-			}
-
-			if (this.isNamespaced) {
-				rule.selector = this._generateNamespacedSelector(rule.selector)
-			}
-		})
-
-		return this.tree
-	}
-}
-
-module.exports = ChassisStyleSheet
+})()

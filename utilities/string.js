@@ -10,7 +10,6 @@ class ChassisStringUtils {
 		return value.match(/\D+$/)[0]
 	}
 
-
 	static listValues (values) {
 		let array = values
 

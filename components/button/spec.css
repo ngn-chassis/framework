@@ -37,8 +37,14 @@ button {
       user-select: none;
     }
 
-    $(selector) svg.icon {
-      transform: $(icon-offset);
+    $(selector) .left.icon {
+      order: -1;
+      transform: $(left-icon-offset);
+    }
+
+    $(selector) .right.icon {
+      order: 99;
+      transform: $(right-icon-offset);
     }
 
     $(selector).pill {

@@ -1,6 +1,6 @@
-const fs = require('fs')
-const path = require('path')
-const postcss = require('postcss')
+let fs = require('fs')
+let path = require('path')
+let postcss = require('postcss')
 
 class ChassisFileUtils {
 	/**
@@ -20,15 +20,15 @@ class ChassisFileUtils {
 	static getFilePath (filepath) {
 		return filepath.substring(0, filepath.lastIndexOf("/"))
 	}
-	
+
 	static getFileName (filepath) {
 		return path.basename(filepath)
 	}
-	
+
 	static getFileExtension (filepath) {
 		return path.extname(filepath)
 	}
-	
+
 	/**
 	 * @method isDirectory
 	 * Determine whether or not a filepath points to a directory
@@ -42,7 +42,7 @@ class ChassisFileUtils {
 
 		return false
 	}
-	
+
 	/**
 	 * @method parseDirectory
 	 * Parse all style sheets in a given directory
@@ -92,11 +92,11 @@ class ChassisFileUtils {
 
 		return output
 	}
-	
+
 	static pathIsAbsolute (filepath) {
 		return path.isAbsolute(filepath)
 	}
-	
+
 	/**
 	 * @method resolve
 	 * Resolve a relative path

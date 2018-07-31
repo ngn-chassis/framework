@@ -1,57 +1,59 @@
-class ChassisStyleSheetMixins {
-  constructor (chassis) {
-    this.chassis = chassis
+module.exports = (function () {
+  let _private = new WeakMap()
 
-    Object.defineProperties(this, {
-      _getDirectory: NGN.privateconst(path => {
-        return this.chassis.utils.file.parseDirectory(path, false)
-      }),
+  return class {
+    constructor (chassis) {
+      _private.set(this, {
+        chassis,
 
-      _getImportedContent: NGN.privateconst(input => {
-        let { settings, utils } = this.chassis
+        getDirectory: path => {
+          return _private.get(this).chassis.utils.file.parseDirectory(path, false)
+        },
 
-        let importPath = ''
-        let file = `_${utils.file.getFileName(input)}`
-        let path = `${utils.file.getFilePath(input)}`
+        getImportedContent: input => {
+          let { settings, utils } = _private.get(this).chassis
 
-        if (path) {
-          importPath = `${settings.importBasePath}/${path}/${file}`
-        } else {
-          importPath = `${settings.importBasePath}/${file}`
-        }
+          let importPath = ''
+          let file = `_${utils.file.getFileName(input)}`
+          let path = `${utils.file.getFilePath(input)}`
 
-        if (!importPath.endsWith('.css')) {
-          importPath += '.css'
-        }
+          if (path) {
+            importPath = `${settings.importBasePath}/${path}/${file}`
+          } else {
+            importPath = `${settings.importBasePath}/${file}`
+          }
 
-        if (utils.file.fileExists(importPath, false)) {
-          return utils.file.parseStyleSheet(importPath, false)
+          if (!importPath.endsWith('.css')) {
+            importPath += '.css'
+          }
+
+          if (utils.file.fileExists(importPath, false)) {
+            return utils.file.parseStyleSheet(importPath, false)
+          }
         }
       })
-    })
-  }
-
-  /**
-	 * @mixin import
-	 */
-	import () {
-		let { settings, utils } = this.chassis
-    let { args, atRule, nodes, source } = arguments[0]
-    let input = args[0]
-    let dirPath = `${settings.importBasePath}/${input}`
-
-    let content = utils.file.isDirectory(dirPath) ?
-      this._getDirectory(dirPath) :
-      this._getImportedContent(input)
-
-    if (!content) {
-      console.log(`[ERROR] Line ${source.line}: File "${file}" not found in "${settings.importBasePath}/${path}"`);
-      atRule.remove()
-      return
     }
 
-    return atRule.replaceWith(content)
-	}
-}
+    /**
+  	 * @mixin import
+  	 */
+  	import () {
+  		let { settings, utils } = _private.get(this).chassis
+      let { args, atRule, nodes, source } = arguments[0]
+      let input = args[0]
+      let dirPath = `${settings.importBasePath}/${input}`
 
-module.exports = ChassisStyleSheetMixins
+      let content = utils.file.isDirectory(dirPath) ?
+        _private.get(this).getDirectory(dirPath) :
+        _private.get(this).getImportedContent(input)
+
+      if (!content) {
+        console.log(`[ERROR] Line ${source.line}: File "${file}" not found in "${settings.importBasePath}/${path}"`);
+        atRule.remove()
+        return
+      }
+
+      return atRule.replaceWith(content)
+  	}
+  }
+})()

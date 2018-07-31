@@ -1,4 +1,4 @@
-class ChassisViewportWidthRangeModel {
+module.exports = class {
   constructor (chassis) {
     return new NGN.DATA.Model({
 			fields: {
@@ -22,5 +22,3 @@ class ChassisViewportWidthRangeModel {
 		})
   }
 }
-
-module.exports = ChassisViewportWidthRangeModel

@@ -1,39 +1,29 @@
-const ChassisConsoleUtils = require('./utilities/console.js')
-const ChassisCssUtils = require('./utilities/css.js')
-const ChassisFileUtils = require('./utilities/file.js')
-const ChassisMathUtils = require('./utilities/math.js')
-const ChassisStringUtils = require('./utilities/string.js')
-const ChassisThemeUtils = require('./utilities/theme.js')
-const ChassisUnitUtils = require('./utilities/unit.js')
-
-class ChassisUtils {
+module.exports = class {
 	static get console () {
-		return ChassisConsoleUtils
+		return require('./utilities/console.js')
 	}
 
 	static get css () {
-		return ChassisCssUtils
+		return require('./utilities/css.js')
 	}
 
 	static get file () {
-		return ChassisFileUtils
+		return require('./utilities/file.js')
 	}
 
 	static get math () {
-		return ChassisMathUtils
+		return require('./utilities/math.js')
 	}
 
 	static get string () {
-		return ChassisStringUtils
+		return require('./utilities/string.js')
 	}
 
 	static get theme () {
-		return ChassisThemeUtils
+		return require('./utilities/theme.js')
 	}
 
 	static get unit () {
-		return ChassisUnitUtils
+		return require('./utilities/unit.js')
 	}
 }
-
-module.exports = ChassisUtils

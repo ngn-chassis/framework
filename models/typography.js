@@ -1,4 +1,4 @@
-class ChassisTypographyModel {
+module.exports = class {
   constructor (chassis) {
     let fontSizeModel = new NGN.DATA.Model({
 			fields: {
@@ -86,5 +86,3 @@ class ChassisTypographyModel {
 		})
   }
 }
-
-module.exports = ChassisTypographyModel

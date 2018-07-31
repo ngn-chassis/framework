@@ -1,4 +1,4 @@
-const postcss = require('postcss')
+let postcss = require('postcss')
 
 class ChassisCssUtils {
 	static generateDeclsFromTheme (theme) {

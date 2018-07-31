@@ -1,72 +1,80 @@
-const ChassisMathFunctions = require('./functions/math.js')
-
-class ChassisFunctions {
-	constructor (chassis) {
-		this.chassis = chassis
-
-		this.mathFunctions = new ChassisMathFunctions(chassis)
-	}
-
-	get 'absolute' () {
-		return node => this.mathFunctions.absolute(node)
-	}
-
-	get 'cbrt' () {
-		return node => this.mathFunctions.cbrt(node)
-	}
-
-	get 'ceiling' () {
-		return node => this.mathFunctions.ceiling(node)
-	}
-
-	get 'eval' () {
-		return node => this.mathFunctions.evaluate(node)
-	}
-
-	get 'floor' () {
-		return node => this.mathFunctions.floor(node)
-	}
-
-	get 'max' () {
-		return node => this.mathFunctions.max(node)
-	}
-
-	get 'min' () {
-		return node => this.mathFunctions.min(node)
-	}
-
-	get 'pow' () {
-		return node => this.mathFunctions.pow(node)
-	}
-
-	get 'random' () {
-		return node => this.mathFunctions.random(node)
-	}
-
-	get 'round' () {
-		return node => this.mathFunctions.round(node)
-	}
-
-	get 'sqrt' () {
-		return node => this.mathFunctions.sqrt(node)
-	}
-
-	get 'trunc' () {
-		return node => this.mathFunctions.trunc(node)
-	}
-
-	process (data) {
-		data.parsed.walk((outerNode, outerIndex) => {
-			if (outerNode.type !== 'function' || !(outerNode.value in this)) {
-				return
-			}
-
-			outerNode.value = this[outerNode.value](outerNode)
-			outerNode.type = 'word'
-		})
-
-    return data.parsed.toString()
-	}
+let functions = {
+	math: require('./functions/math.js')
 }
 
-module.exports = ChassisFunctions
+module.exports = (function () {
+	let _private = new WeakMap()
+
+	return class {
+		constructor (chassis) {
+			_private.set(this, {
+				chassis,
+
+				functions: {
+					math: new functions.math(chassis)
+				}
+			})
+		}
+
+		get 'absolute' () {
+			return node => _private.get(this).functions.math.absolute(node)
+		}
+
+		get 'cbrt' () {
+			return node => _private.get(this).functions.math.cbrt(node)
+		}
+
+		get 'ceiling' () {
+			return node => _private.get(this).functions.math.ceiling(node)
+		}
+
+		get 'eval' () {
+			return node => _private.get(this).functions.math.evaluate(node)
+		}
+
+		get 'floor' () {
+			return node => _private.get(this).functions.math.floor(node)
+		}
+
+		get 'max' () {
+			return node => _private.get(this).functions.math.max(node)
+		}
+
+		get 'min' () {
+			return node => _private.get(this).functions.math.min(node)
+		}
+
+		get 'pow' () {
+			return node => _private.get(this).functions.math.pow(node)
+		}
+
+		get 'random' () {
+			return node => _private.get(this).functions.math.random(node)
+		}
+
+		get 'round' () {
+			return node => _private.get(this).functions.math.round(node)
+		}
+
+		get 'sqrt' () {
+			return node => _private.get(this).functions.math.sqrt(node)
+		}
+
+		get 'trunc' () {
+			return node => _private.get(this).functions.math.trunc(node)
+		}
+
+		process (data) {
+			data.parsed.walk((outerNode, outerIndex) => {
+				if (outerNode.type !== 'function' || !(outerNode.value in this)) {
+					return
+				}
+
+				outerNode.value = this[outerNode.value](outerNode)
+				outerNode.type = 'word'
+			})
+
+	    return data.parsed.toString()
+		}
+	}
+})()

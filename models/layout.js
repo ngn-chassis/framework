@@ -1,4 +1,4 @@
-class ChassisLayoutModel {
+module.exports = class {
   constructor (chassis) {
     return new NGN.DATA.Model({
 			fields: {
@@ -25,5 +25,3 @@ class ChassisLayoutModel {
 		})
   }
 }
-
-module.exports = ChassisLayoutModel

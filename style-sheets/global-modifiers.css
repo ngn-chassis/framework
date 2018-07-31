@@ -54,3 +54,9 @@
 .chassis .text-nowrap {
 	white-space: nowrap !important;
 }
+
+.chassis .text-truncate {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

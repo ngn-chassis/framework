@@ -1,47 +1,36 @@
 require('ngn')
 require('ngn-data')
 
-const postcss = require('postcss')
-const env = require('postcss-preset-env')
+let postcss = require('postcss')
+let env = require('postcss-preset-env')
 
 // const mergeAdjacentRules = require('postcss-merge-rules')
-const removeComments = require('postcss-discard-comments')
-const perfectionist = require('perfectionist')
+let removeComments = require('postcss-discard-comments')
+let perfectionist = require('perfectionist')
 
-const ChassisAtRules = require('./at-rules.js')
-const ChassisConstants = require('./constants.js')
-const ChassisCore = require('./core.js')
-const ChassisFunctions = require('./functions.js')
-const ChassisLayout = require('./layout.js')
-const ChassisPost = require('./post.js')
-const ChassisSettings = require('./settings.js')
 const ChassisStyleSheet = require('./style-sheet.js')
-const ChassisTheme = require('./theme.js')
-const ChassisTypography = require('./typography.js')
-const ChassisUtilities = require('./utilities.js')
-const ChassisViewport = require('./viewport.js')
 
-class Chassis {
+module.exports = class Chassis {
   constructor (cfg) {
-    this.utils = ChassisUtilities
-    this.constants = ChassisConstants
+    this.utils = require('./utilities.js')
+    this.constants = require('./constants.js')
 
-    this.settings = new ChassisSettings(this)
+    this.settings = new (require('./settings.js'))(this)
 		this.settings.load(NGN.coalesce(cfg, {}))
 		this.settings.validate()
 
-		this.typography = new ChassisTypography(this)
+		this.typography = new (require('./typography.js'))(this)
 		this.settings.typography.ranges.load(this.typography.ranges)
 
-		this.viewport = new ChassisViewport(this)
+		this.viewport = new (require('./viewport.js'))(this)
 		this.settings.viewportWidthRanges.load(this.viewport.getWidthRanges(this.settings.layout.breakpoints))
 
-		this.theme = new ChassisTheme(this)
-		this.layout = new ChassisLayout(this)
-		this.atRules = new ChassisAtRules(this)
-		this.functions = new ChassisFunctions(this)
-		this.post = new ChassisPost(this)
-		this.core = new ChassisCore(this)
+		this.theme = new (require('./theme.js'))(this)
+		this.layout = new (require('./layout.js'))(this)
+		this.atRules = new (require('./at-rules.js'))(this)
+		this.functions = new (require('./functions.js'))(this)
+		this.post = new (require('./post.js'))(this)
+		this.core = new (require('./core.js'))(this)
 
 		this.componentExtensions = {}
 		this.componentOverrides = {}
@@ -81,12 +70,23 @@ class Chassis {
       postcss([env(this.settings.envCfg)]).process(output, {from}).then(processed => {
         output = processed.css
         next()
-      }, error => {
-        console.log(error);
-      })
+      }, err => console.log(err))
     })
 
-    tasks.add('Stripping Comments...', next => {
+    tasks.add('Cleaning up...', next => {
+      output = postcss.parse(output)
+
+      output.walkRules(rule => {
+				if (rule.nodes.length === 0) {
+					rule.remove()
+					return
+				}
+			})
+
+      next()
+    })
+
+    tasks.add('Stripping comments...', next => {
 			output = removeComments.process(output.toString())
 			next()
 		})
@@ -96,17 +96,15 @@ class Chassis {
 		// 	next()
 		// })
 
-		tasks.add('Beautifying Output...', next => {
+		tasks.add('Beautifying output...', next => {
 			output = perfectionist.process(output.toString())
 			next()
 		})
 
-    tasks.on('taskstart', evt => console.log(evt.name))
+    // tasks.on('taskstart', evt => console.log(evt.name))
     // tasks.on('taskcomplete', evt => console.log('Done.'))
 
     tasks.on('complete', () => cb(null, output.toString()))
     tasks.run(true)
   }
 }
-
-module.exports = Chassis
