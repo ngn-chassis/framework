@@ -42,9 +42,21 @@ module.exports = (function () {
       let isEnv = args[1].startsWith('env(')
   		let width = isEnv ? args[1] : parseInt(args[1])
   		let isRange = false
+      let buffer = 0
 
   		if (!isEnv && isNaN(width)) {
   			let name = args[1]
+
+        if (name.includes('(')) {
+          let params = name.split('(')
+
+          if (params[1].endsWith(')')) {
+            params[1] = params[1].slice(0,-1)
+          }
+
+          name = params[0]
+          buffer = utils.string.getUnits(params[1]) ? utils.string.stripUnits(params[1]) : params[1]
+        }
 
   			width = settings.viewportWidthRanges.find({name})[0]
 
@@ -96,8 +108,12 @@ module.exports = (function () {
   			}
   		}
 
+      if (typeof buffer === 'string' && buffer.startsWith('+')) {
+				buffer = buffer.substring(1)
+			}
+
   		let mediaQuery = utils.css.newMediaQuery(
-  			viewport.getMediaQueryParams('width', operator, width),
+  			viewport.getMediaQueryParams('width', operator, width, parseInt(buffer)),
   			nodes
   		)
 

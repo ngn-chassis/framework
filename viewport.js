@@ -5,7 +5,93 @@ module.exports = (function () {
 		constructor (chassis) {
 			_private.set(this, {
 				chassis,
-				validOperators: ['<', '<=', '=', '>=', '>', 'from', 'to']
+				validOperators: ['<', '<=', '=', '>=', '>', 'from', 'to'],
+
+				getLessThanQuery: (dimension, isRange, isEnv, value, buffer = 0) => {
+					let prop = `max-${dimension}`
+
+					if (!isEnv) {
+						if (isRange) {
+							value = value.lowerBound
+
+							if (buffer !== 0) {
+								value += buffer
+							}
+						}
+					}
+
+					return `(${prop}: ${value - 1}px)`
+				},
+
+				getLessThanOrEqualQuery: (dimension, isRange, isEnv, value, buffer = 0) => {
+					let prop = `max-${dimension}`
+
+					if (!isEnv) {
+						if (isRange) {
+							value = value.lowerBound
+						}
+
+						if (buffer !== 0) {
+							value += buffer
+						}
+					}
+
+					return `(${prop}: ${value}px)`
+				},
+
+				getEqualQuery: (dimension, value, buffer = 0) => {
+					let props = [
+						`min-${dimension}`,
+						`max-${dimension}`
+					]
+
+					let values = [
+						value.lowerBound,
+						value.upperBound
+					]
+
+					if (buffer < 0) {
+						values[0] += buffer
+					}
+
+					if (buffer > 0) {
+						values[1] += buffer
+					}
+
+					return `(${props[0]}: ${values[0]}px) and (${props[1]}: ${values[1]}px)`
+				},
+
+				getGreaterThanOrEqualQuery: (dimension, isRange, isEnv, value, buffer = 0) => {
+					let prop = `min-${dimension}`
+
+					if (!isEnv) {
+						if (isRange) {
+							value = value.lowerBound
+						}
+
+						if (buffer !== 0) {
+							value += buffer
+						}
+					}
+
+					return `(${prop}: ${value}px)`
+				},
+
+				getGreaterThanQuery: (dimension, isRange, isEnv, value, buffer = 0) => {
+					let prop = `min-${dimension}`
+
+					if (!isEnv) {
+						if (isRange) {
+							value = value.upperBound
+						}
+
+						if (buffer !== 0) {
+							value += buffer
+						}
+					}
+
+					return `(${prop}: ${value + 1}px)`
+				}
 			})
 		}
 
@@ -13,7 +99,7 @@ module.exports = (function () {
 			return _private.get(this).validOperators.includes(operator)
 		}
 
-		getMediaQueryParams (dimension, operator, value) {
+		getMediaQueryParams (dimension, operator, value, buffer = 0) {
 			let { settings } = _private.get(this).chassis
 			let query
 
@@ -30,17 +116,17 @@ module.exports = (function () {
 
 			switch (operator) {
 				case '<':
-					query = `(max-${dimension}: ${isRange ? `${value.lowerBound - 1}px` : (isEnv ? value : `${value - 1}px`)})`
+					query = _private.get(this).getLessThanQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case 'to':
 				case '<=':
-					query = `(max-${dimension}: ${isRange ? `${value.upperBound}px` : (isEnv ? value : `${value}px`)})`
+					query = _private.get(this).getLessThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case '=':
 					if (isRange) {
-						query = `(min-${dimension}: ${value.lowerBound}px) and (max-${dimension}: ${value.upperBound}px)`
+						query = _private.get(this).getEqualQuery(dimension, value, buffer)
 					} else {
 						query = `(${dimension}: (${isEnv ? value : `${value}px`}))`
 					}
@@ -48,11 +134,11 @@ module.exports = (function () {
 
 				case 'from':
 				case '>=':
-					query = `(min-${dimension}: ${isRange ? `${value.lowerBound}px` : (isEnv ? value : `${value}px`)})`
+					query = _private.get(this).getGreaterThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case '>':
-					query = `(min-${dimension}: ${isRange ? `${value.upperBound + 1}px` : (isEnv ? value : `${value + 1}px`)})`
+					query = _private.get(this).getGreaterThanQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				default:

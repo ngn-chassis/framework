@@ -6,8 +6,10 @@ class ChassisStringUtils {
 	 * @return {string}
 	 * @static
 	 */
-	static getUnit (value) {
-		return value.match(/\D+$/)[0]
+	static getUnits (string) {
+		let match = string.match(/\D+$/)
+
+		return match ? match[0] : null
 	}
 
 	static listValues (values) {
@@ -39,8 +41,8 @@ class ChassisStringUtils {
 	 * @return {string}
 	 * @static
 	 */
-	static stripUnits (value) {
-		let data = value.match(/\D+$/)
+	static stripUnits (string) {
+		let data = string.match(/\D+$/)
 		return data.input.slice(0, data.index)
 	}
 

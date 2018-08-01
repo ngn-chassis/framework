@@ -58,7 +58,7 @@ module.exports = (function () {
 			let { utils } = _private.get(this).chassis
 			let { typography } = _private.get(this).chassis.settings
 
-			let unit = utils.string.getUnit(this.gutter)
+			let unit = utils.string.getUnits(this.gutter)
 
 			switch (unit) {
 				case 'vw':

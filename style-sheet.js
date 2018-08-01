@@ -16,7 +16,13 @@ module.exports = (function () {
 				namespaced,
 
 				generateNamespacedSelector: selector => {
-					selector = selector === 'html' || selector === ':root'  ? selector.trim() : `.chassis ${selector.trim()}`
+					if (selector.includes('html')) {
+						selector = `${selector.trim()}.chassis`
+					} else if (selector === ':root') {
+						selector = selector.trim()
+					} else {
+						selector = `.chassis ${selector.trim()}`
+					}
 
 					if (selector.includes(',')) {
 						selector = selector.split(',').map(chunk => chunk.trim()).join(', .chassis ')
