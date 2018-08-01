@@ -16,7 +16,6 @@
 			display: inline;
 			width: $(icon-width);
 			height: $(icon-height);
-			transform: $(icon-offset);
 		}
 
 		$(selector) .left.icon {
