@@ -65,7 +65,15 @@ module.exports = (function () {
 			return data => _private.get(this).mixins.viewport.height(data)
 		}
 
+		get 'vp-height' () {
+			return data => _private.get(this).mixins.viewport.height(data)
+		}
+
 		get 'viewport-width' () {
+			return data => _private.get(this).mixins.viewport.width(data)
+		}
+
+		get 'vp-width' () {
 			return data => _private.get(this).mixins.viewport.width(data)
 		}
 
