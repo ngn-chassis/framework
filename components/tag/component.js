@@ -21,7 +21,7 @@ module.exports = (function () {
 			let paddingRoot = Math.log(lineHeightMultiplier) / 2
 
 			let iconDimension = `${lineHeightMultiplier / scaleRatio}em`
-			let iconOffset = `-${paddingRoot - utils.unit.pxToEm(fontSize / (scaleRatio * 10), fontSize)}em`
+			let iconOffset = paddingRoot - utils.unit.pxToEm(fontSize / (scaleRatio * 10), fontSize)
 
 			if (iconOffset < 0) {
 				iconOffset = 0
@@ -43,7 +43,8 @@ module.exports = (function () {
 				'padding': `${paddingY} ${paddingX}`,
 				'icon-width': iconDimension,
 				'icon-height': iconDimension,
-				'icon-offset': `translateX(${iconOffset})`,
+				'left-icon-offset': `translateX(-${iconOffset}em)`,
+				'right-icon-offset': `translateX(${iconOffset}em)`,
 				'pill-padding-x': `${Math.sin(lineHeightMultiplier) / settings.typography.scaleRatio}em`,
 				'pill-border-radius': `${lineHeightMultiplier}em`
 	    }

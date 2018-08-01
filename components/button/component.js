@@ -16,6 +16,7 @@ module.exports = (function () {
       let iconOffset = (typography.calculateInlinePaddingX(lineHeightMultiplier) / 2) - utils.unit.pxToEm(fontSize / (settings.typography.scaleRatio * 10), fontSize)
 
       return {
+				'icon-height': `calc(${lineHeightMultiplier}em - 2px)`,
         'left-icon-offset': `translateX(-${iconOffset}em)`,
         'right-icon-offset': `translateX(${iconOffset}em)`,
         'pill-padding-x': `${settings.typography.scaleRatio}em`,

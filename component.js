@@ -1,5 +1,5 @@
-const ChassisSpecSheet = require('./spec-sheet.js')
-const ChassisStyleSheet = require('./style-sheet.js')
+let ChassisSpecSheet = require('./spec-sheet.js')
+let ChassisStyleSheet = require('./style-sheet.js')
 
 module.exports = (function () {
   let _private = new WeakMap()

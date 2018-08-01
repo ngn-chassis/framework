@@ -37,6 +37,10 @@ button {
       user-select: none;
     }
 
+    $(selector) .icon {
+      height: $(icon-height);
+    }
+
     $(selector) .left.icon {
       order: -1;
       transform: $(left-icon-offset);
