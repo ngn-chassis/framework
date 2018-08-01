@@ -107,6 +107,7 @@ module.exports = (function () {
 				cleanseCfg: cfg => {
 					let { scale } = chassis.constants.typography
 
+					// TODO: Make this configurable
 					this.envCfg = {
 						stage: 0,
 						features: {

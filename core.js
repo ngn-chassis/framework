@@ -94,6 +94,8 @@ module.exports = (function () {
 
 		get css () {
 			return _private.get(this).chassis.utils.css.newRoot([
+				this.charset,
+				this.viewport,
 				this.reset,
 				this.customProperties,
 				this.customMedia,
@@ -110,6 +112,30 @@ module.exports = (function () {
 				this.inlineBlockComponentReset,
 				this.blockComponentReset
 			])
+		}
+
+		// TODO: Make this customizable via config params
+		get charset () {
+			let { utils } = _private.get(this).chassis
+
+			return utils.css.newAtRule({
+				name: 'charset',
+				params: '"UTF-8"'
+			})
+		}
+
+		// TODO: Make this customizable via config params
+		// NOTE: autoprefixer chokes if we create the @viewport rule manually, so
+		// we're parsing it from a spec sheet as a workaround.
+		// TODO: Look into a solution to the above issue
+		get viewport () {
+			let { utils } = _private.get(this).chassis
+
+			let root = _private.get(this).parseSpecSheet('../style-sheets/viewport.css')
+
+			root.nodes[0].push(utils.css.newDecl('width', 'device-width'))
+
+			return root
 		}
 
 		get reset () {
@@ -163,30 +189,30 @@ module.exports = (function () {
 				let props = [
 					utils.css.newAtRule({
 						name: 'custom-media',
-						params: `--viewport-${range.name} (min-width: ${range.lowerBound}px) and (max-width: ${range.upperBound}px)`
+						params: `--${range.name}-vwr screen and (min-width: ${range.lowerBound}px) and (max-width: ${range.upperBound}px)`
 					})
 				]
 
 				if (range.lowerBound > 0) {
 					props.unshift(utils.css.newAtRule({
 						name: 'custom-media',
-						params: `--viewport-at-or-below-${range.name} (max-width: ${range.lowerBound}px)`
+						params: `--${range.name}-vwr-and-below screen and (max-width: ${range.lowerBound}px)`
 					}))
 
 					props.unshift(utils.css.newAtRule({
 						name: 'custom-media',
-						params: `--viewport-below-${range.name} (max-width: ${range.lowerBound - 1}px)`
+						params: `--below-${range.name}-vwr screen and (max-width: ${range.lowerBound - 1}px)`
 					}))
 				}
 
 				props.push(utils.css.newAtRule({
 					name: 'custom-media',
-					params: `--viewport-at-or-above-${range.name} (min-width: ${range.lowerBound}px)`
+					params: `--${range.name}-vwr-and-above screen and (min-width: ${range.lowerBound}px)`
 				}))
 
 				props.push(utils.css.newAtRule({
 					name: 'custom-media',
-					params: `--viewport-above-${range.name} (min-width: ${range.upperBound + 1}px)`
+					params: `--above-${range.name}-vwr screen and (min-width: ${range.upperBound + 1}px)`
 				}))
 
 				nodes.push(...props)
