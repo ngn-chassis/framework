@@ -50,12 +50,17 @@ module.exports = (function () {
 						value.upperBound
 					]
 
-					if (buffer < 0) {
-						values[0] += buffer
-					}
+					if (Array.isArray(buffer)) {
+						values[0] -= buffer[0]
+						values[1] += buffer[1]
+					} else {
+						if (buffer < 0) {
+							values[0] += buffer
+						}
 
-					if (buffer > 0) {
-						values[1] += buffer
+						if (buffer > 0) {
+							values[1] += buffer
+						}
 					}
 
 					return `(${props[0]}: ${values[0]}px) and (${props[1]}: ${values[1]}px)`
@@ -116,11 +121,19 @@ module.exports = (function () {
 
 			switch (operator) {
 				case '<':
+					if (Array.isArray(buffer)) {
+						console.error(`[ERROR] Chassis Media Query: '<' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
+					}
+
 					query = _private.get(this).getLessThanQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case 'to':
 				case '<=':
+					if (Array.isArray(buffer)) {
+						console.error(`[ERROR] Chassis Media Query: '<=' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
+					}
+
 					query = _private.get(this).getLessThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
@@ -134,10 +147,18 @@ module.exports = (function () {
 
 				case 'from':
 				case '>=':
+					if (Array.isArray(buffer)) {
+						console.error(`[ERROR] Chassis Media Query: '>=' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
+					}
+
 					query = _private.get(this).getGreaterThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case '>':
+					if (Array.isArray(buffer)) {
+						console.error(`[ERROR] Chassis Media Query: '>' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
+					}
+
 					query = _private.get(this).getGreaterThanQuery(dimension, isRange, isEnv, value, buffer)
 					break
 

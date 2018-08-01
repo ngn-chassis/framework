@@ -55,7 +55,13 @@ module.exports = (function () {
           }
 
           name = params[0]
-          buffer = utils.string.getUnits(params[1]) ? utils.string.stripUnits(params[1]) : params[1]
+
+          if (params[1].includes(',')) {
+            buffer = params[1].split(',').map(value => parseInt(utils.string.stripUnits(value)))
+
+          } else {
+            buffer = utils.string.getUnits(params[1]) ? utils.string.stripUnits(params[1]) : params[1]
+          }
         }
 
   			width = settings.viewportWidthRanges.find({name})[0]
@@ -108,12 +114,20 @@ module.exports = (function () {
   			}
   		}
 
-      if (typeof buffer === 'string' && buffer.startsWith('+')) {
-				buffer = buffer.substring(1)
-			}
+      if (typeof buffer === 'string') {
+        if (buffer.startsWith('+-') || buffer.startsWith('-+')) {
+          buffer = [parseInt(buffer.substring(2)), parseInt(buffer.substring(2))]
+        } else if (buffer.startsWith('+')) {
+  				buffer = buffer.substring(1)
+  			}
+      }
+
+      if (!Array.isArray(buffer)) {
+        buffer = parseInt(buffer)
+      }
 
   		let mediaQuery = utils.css.newMediaQuery(
-  			viewport.getMediaQueryParams('width', operator, width, parseInt(buffer)),
+  			viewport.getMediaQueryParams('width', operator, width, buffer),
   			nodes
   		)
 
