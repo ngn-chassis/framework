@@ -30,6 +30,7 @@
     "ngn-data": "^0.1.11",
     "perfectionist": "^2.4.0",
     "postcss": "^6.0.23",
+    "postcss-custom-properties": "^7.0.0",
     "postcss-discard-comments": "^2.0.4",
     "postcss-merge-rules": "^2.1.2",
     "postcss-nesting": "^4.2.1",
