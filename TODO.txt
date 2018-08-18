@@ -4,6 +4,32 @@ padding remains in proportion to the container if the font size or container
 dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
+TEXT MODIFIERS
+truncate should be:
+.text-truncate {
+  overflow: hidden;
+}
+
+add:
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+CONSTRAINTS
+Optimization:
+If layout.gutter is set to a value not affected by the viewport size (ie vw),
+it is unnecessary to output the media queries which constrain the gutter below
+and above layout.minWidth and layout.maxWidth respectively.
+
+For example, if I set layout.gutter: '1em', the media queries for .width.constraint
+will simply duplicate the padding-left and padding-right decls. Hence, the
+media queries can be removed altogether.
+
+
+THEME
+Elements in reset need to be themeable, ie ol and ul, blockquote, etc.
+
 BUTTONS
 - Icons screw up the height of the buttons.
 

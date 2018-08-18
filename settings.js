@@ -53,6 +53,21 @@ module.exports = (function () {
 						default: true
 					},
 
+					minify: {
+						type: Boolean,
+						default: false
+					},
+
+					sourceMap: {
+						type: Boolean,
+						default: false
+					},
+
+					sourceMapPath: {
+						type: String,
+						default: null
+					},
+
 					zIndex: {
 						type: Object,
 						default: {
@@ -186,6 +201,18 @@ module.exports = (function () {
 
 		get layout () {
 			return _private.get(this).model.layout
+		}
+
+		get minify () {
+			return _private.get(this).model.minify
+		}
+
+		get sourceMap () {
+			return _private.get(this).model.sourceMap
+		}
+
+		get sourceMapPath () {
+			return _private.get(this).model.sourceMapPath
 		}
 
 		get theme () {

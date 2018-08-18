@@ -1,7 +1,3 @@
-const postcss = require('postcss')
-const nesting = require('postcss-nesting')
-const processNot = require('postcss-selector-not')
-
 module.exports = (function () {
 	let _private = new WeakMap()
 

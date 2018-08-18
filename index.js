@@ -7,6 +7,7 @@ let env = require('postcss-preset-env')
 // const mergeAdjacentRules = require('postcss-merge-rules')
 let removeComments = require('postcss-discard-comments')
 let perfectionist = require('perfectionist')
+let CleanCss = require('clean-css')
 
 const ChassisStyleSheet = require('./style-sheet.js')
 
@@ -36,7 +37,7 @@ module.exports = class Chassis {
 		this.componentOverrides = {}
   }
 
-  process (css, cb, from = undefined) {
+  process (css, cb, from = void 0) {
     let root = postcss.parse(css)
     let input, output
 
@@ -70,7 +71,7 @@ module.exports = class Chassis {
       postcss([env(this.settings.envCfg)]).process(output, {from}).then(processed => {
         output = processed.css
         next()
-      }, err => console.log(err))
+      }, cb)
     })
 
     tasks.add('Cleaning up...', next => {
@@ -106,5 +107,9 @@ module.exports = class Chassis {
 
     tasks.on('complete', () => cb(null, output.toString()))
     tasks.run(true)
+  }
+
+  minify (css, sourceMap = false) {
+    return new CleanCss({sourceMap}).minify(css)
   }
 }

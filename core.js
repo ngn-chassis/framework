@@ -153,7 +153,6 @@ module.exports = (function () {
 			let headingSizeAliases = settings.typography.fontSizes.headings
 
 	    let rootLineHeightMult = utils.unit.pxToEm(root.lineHeight, root.fontSize)
-	    let calcLineHeight = typography.calculateInlineHeight(rootLineHeightMult)
 
 			let props = _private.get(this).parseSpecSheet('../style-sheets/custom-properties.css', {
 				'layout-min-width': `${settings.layout.minWidth}px`,
@@ -164,7 +163,7 @@ module.exports = (function () {
 
 				'typography-scale-ratio': settings.typography.scaleRatio,
 				'root-font-size': `${root.fontSize}px`,
-				'root-line-height': calcLineHeight,
+				'root-line-height': rootLineHeightMult,
 
 				'inline-block-margin-x': `${typography.calculateInlineMarginX(rootLineHeightMult)}em`,
 				'inline-block-margin-y': `${typography.calculateInlineMarginY(rootLineHeightMult)}em`,
@@ -189,30 +188,30 @@ module.exports = (function () {
 				let props = [
 					utils.css.newAtRule({
 						name: 'custom-media',
-						params: `--${range.name}-vwr screen and (min-width: ${range.lowerBound}px) and (max-width: ${range.upperBound}px)`
+						params: `--${range.name}-vp screen and (min-width: ${range.lowerBound}px) and (max-width: ${range.upperBound}px)`
 					})
 				]
 
 				if (range.lowerBound > 0) {
 					props.unshift(utils.css.newAtRule({
 						name: 'custom-media',
-						params: `--${range.name}-vwr-and-below screen and (max-width: ${range.lowerBound}px)`
+						params: `--${range.name}-vp-and-below screen and (max-width: ${range.lowerBound}px)`
 					}))
 
 					props.unshift(utils.css.newAtRule({
 						name: 'custom-media',
-						params: `--below-${range.name}-vwr screen and (max-width: ${range.lowerBound - 1}px)`
+						params: `--below-${range.name}-vp screen and (max-width: ${range.lowerBound - 1}px)`
 					}))
 				}
 
 				props.push(utils.css.newAtRule({
 					name: 'custom-media',
-					params: `--${range.name}-vwr-and-above screen and (min-width: ${range.lowerBound}px)`
+					params: `--${range.name}-vp-and-above screen and (min-width: ${range.lowerBound}px)`
 				}))
 
 				props.push(utils.css.newAtRule({
 					name: 'custom-media',
-					params: `--above-${range.name}-vwr screen and (min-width: ${range.upperBound + 1}px)`
+					params: `--above-${range.name}-vp screen and (min-width: ${range.upperBound + 1}px)`
 				}))
 
 				nodes.push(...props)
