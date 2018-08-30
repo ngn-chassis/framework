@@ -307,7 +307,7 @@ module.exports = (function () {
 			})
 
 			// Strip comments from spec sheet
-			_private.get(this).spec.walkComments(comment => comment.remove())
+			chassis.utils.css.stripComments(_private.get(this).spec)
 
 			// Get selector list from first line of spec sheet
 			this.selectors = _private.get(this).spec.nodes[0].selector.split(',')

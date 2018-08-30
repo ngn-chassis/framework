@@ -99,7 +99,7 @@ module.exports = (function () {
 				this.reset,
 				this.customProperties,
 				this.customMedia,
-				this.modifiers,
+				this.globalModifiers,
 				this.constraints,
 				this.html,
 				this.body,
@@ -227,7 +227,7 @@ module.exports = (function () {
 			])
 		}
 
-		get modifiers () {
+		get globalModifiers () {
 			// TODO: Add font-weight stuff here
 
 			return _private.get(this).parseSpecSheet('../style-sheets/global-modifiers.css')
@@ -236,7 +236,7 @@ module.exports = (function () {
 		get constraints () {
 			let { layout, settings, utils } = _private.get(this).chassis
 
-			let css = utils.css.newRoot([
+			let rules = [
 				utils.css.newRule('.chassis .constraint.width', [
 					utils.css.newDeclObj('width', '100%'),
 					utils.css.newDeclObj('min-width', `${settings.layout.minWidth}px`),
@@ -244,30 +244,41 @@ module.exports = (function () {
 					utils.css.newDeclObj('margin', '0 auto'),
 					utils.css.newDeclObj('padding-left', `${settings.layout.gutter}`),
 					utils.css.newDeclObj('padding-right', `${settings.layout.gutter}`)
-				]),
-				utils.css.newAtRule({
-					name: 'media',
-					params: `screen and (max-width: ${settings.layout.minWidth}px)`,
-					nodes: [
-						utils.css.newRule('.chassis .constraint.width', [
-							utils.css.newDecl('padding-left', layout.minGutterWidth),
-							utils.css.newDecl('padding-right', layout.minGutterWidth)
-						])
-					]
-				}),
-				utils.css.newAtRule({
-					name: 'media',
-					params: `screen and (min-width: ${settings.layout.maxWidth}px)`,
-					nodes: [
-						utils.css.newRule('.chassis .constraint.width', [
-							utils.css.newDecl('padding-left', layout.maxGutterWidth),
-							utils.css.newDecl('padding-right', layout.maxGutterWidth)
-						])
-					]
-				})
-			])
+				])
+			]
 
-			return css
+			let calculatedValueUnits = [
+				'vw', '%'
+			]
+
+			let gutterUnits = utils.string.getUnits(settings.layout.gutter)
+
+			if (calculatedValueUnits.includes(gutterUnits)) {
+				rules.push(...[
+					utils.css.newAtRule({
+						name: 'media',
+						params: `screen and (max-width: ${settings.layout.minWidth}px)`,
+						nodes: [
+							utils.css.newRule('.chassis .constraint.width', [
+								utils.css.newDecl('padding-left', layout.minGutterWidth),
+								utils.css.newDecl('padding-right', layout.minGutterWidth)
+							])
+						]
+					}),
+					utils.css.newAtRule({
+						name: 'media',
+						params: `screen and (min-width: ${settings.layout.maxWidth}px)`,
+						nodes: [
+							utils.css.newRule('.chassis .constraint.width', [
+								utils.css.newDecl('padding-left', layout.maxGutterWidth),
+								utils.css.newDecl('padding-right', layout.maxGutterWidth)
+							])
+						]
+					})
+				])
+			}
+
+			return utils.css.newRoot(rules)
 		}
 
 		get html () {

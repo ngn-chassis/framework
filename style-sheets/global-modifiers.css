@@ -56,6 +56,10 @@
 }
 
 .chassis .text-truncate {
-	overflow: hidden;
-	text-overflow: ellipsis;
+	overflow: hidden !important;
+}
+
+.chassis .text-ellipsis {
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
 }

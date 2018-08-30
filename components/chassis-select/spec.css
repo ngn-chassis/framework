@@ -9,7 +9,7 @@ chassis-select {
       user-select: none;
     }
 
-    $(selector) chassis-select-title {
+    $(selector) chassis-selected-option {
       @chassis apply inline-block padding;
     }
 
@@ -22,7 +22,7 @@ chassis-select {
       @chassis apply inline-block padding;
     }
 
-    $(selector) chassis-select-title svg.icon,
+    $(selector) chassis-selected-option svg.icon,
     $(selector) chassis-option svg.icon {
       transform: $(icon-offset);
     }
@@ -31,7 +31,7 @@ chassis-select {
       border-radius: $(pill-border-radius);
     }
 
-    $(selector).pill chassis-select-title {
+    $(selector).pill chassis-selected-option {
       border-radius: $(pill-border-radius);
     }
 
@@ -39,7 +39,7 @@ chassis-select {
       border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
     }
 
-    $(selector).pill chassis-select-title,
+    $(selector).pill chassis-selected-option,
     $(selector).pill chassis-option,
     $(selector).pill chassis-optgroup-label {
       padding-right: $(pill-padding-x);
@@ -94,7 +94,7 @@ chassis-select {
     }
 
     $(selector)[open].pill,
-    $(selector)[open].pill chassis-select-title {
+    $(selector)[open].pill chassis-selected-option {
       border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
     }
   }

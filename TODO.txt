@@ -5,19 +5,19 @@ dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
 TEXT MODIFIERS
-truncate should be:
+* truncate should be:
 .text-truncate {
   overflow: hidden;
 }
 
-add:
+* add:
 .text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 CONSTRAINTS
-Optimization:
+* Optimization:
 If layout.gutter is set to a value not affected by the viewport size (ie vw),
 it is unnecessary to output the media queries which constrain the gutter below
 and above layout.minWidth and layout.maxWidth respectively.
@@ -35,7 +35,7 @@ BUTTONS
 
 MIXINS
 - Consider adding "padding-base(fontSizeAlias)" and "margin-base(fontSizeAlias)"
-  to inline-block-layout mixin. For example, if the font-size of chassis-select-title
+  to inline-block-layout mixin. For example, if the font-size of chassis-selected-option
   is set to root but chassis-option is set to small, the padding on either side
   of each option won't line up with the title
 - Another possible solution for the above is to simply take the horizontal

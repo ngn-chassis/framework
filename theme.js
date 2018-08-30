@@ -10,6 +10,7 @@ class ChassisTheme {
 		let pathIsAbsolute = chassis.utils.file.pathIsAbsolute(chassis.settings.theme)
 
 		this.tree = chassis.utils.file.parseStyleSheet(chassis.settings.theme, !pathIsAbsolute)
+		chassis.utils.css.stripComments(this.tree)
 
 		this.hasCustomProperties = this.tree.some(rule => rule.selector === 'custom-properties')
 		this.hasRootBlock = this.tree.some(rule => rule.selector === ':root')

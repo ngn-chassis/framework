@@ -1,4 +1,4 @@
-chassis-select-title {
+chassis-selected-option {
   @state initial {
     $(selector) {}
   }
