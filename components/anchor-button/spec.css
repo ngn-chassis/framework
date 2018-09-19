@@ -1,0 +1,73 @@
+a.button {
+  @state initial {
+    $(selector) {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      @chassis apply inline-block padding;
+      vertical-align: middle;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    $(selector) .icon {
+      height: $(icon-height);
+    }
+
+    $(selector) .left.icon {
+      order: -1;
+      transform: $(left-icon-offset);
+    }
+
+    $(selector) .right.icon {
+      order: 99;
+      transform: $(right-icon-offset);
+    }
+
+    $(selector).pill {
+      padding-left: $(pill-padding-x);
+      padding-right: $(pill-padding-x);
+      border-radius: $(pill-border-radius);
+    }
+  }
+
+  @state link {
+		$(selector):link {}
+	}
+
+  @state visited {
+    $(selector):visited {}
+  }
+
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+
+  @state active {
+    $(selector):active {}
+  }
+
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+		$(selector):enabled {}
+	}
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
+}

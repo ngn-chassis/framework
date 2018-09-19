@@ -1,0 +1,17 @@
+chassis-selected-option {
+  @state initial {
+    $(selector) {}
+  }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state placeholder {
+    $(selector)[placeholder] {}
+  }
+}
