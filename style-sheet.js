@@ -31,7 +31,7 @@ module.exports = (function () {
 					return selector
 				},
 
-				processAtRule: atRule => {
+				processAtRule: (atRule, cb) => {
 					let data = Object.assign({
 						root: _private.get(this).tree,
 						atRule
@@ -68,6 +68,13 @@ module.exports = (function () {
 					_private.get(this).tree.walkAtRules('chassis', atRule => {
 						if (atRule.params.startsWith('import')) {
 							_private.get(this).processAtRule(atRule)
+						}
+					})
+
+					// Recursively handle nested imports
+					_private.get(this).tree.walkAtRules(atRule => {
+						if (atRule.params.includes('import')) {
+							_private.get(this).processImports()
 						}
 					})
 				},
