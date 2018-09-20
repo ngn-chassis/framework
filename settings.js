@@ -128,6 +128,9 @@ module.exports = (function () {
 						features: {
 							'custom-properties': {
 								preserve: false
+							},
+							'color-mod-function': {
+								unresolved: 'warn'
 							}
 						}
 					}

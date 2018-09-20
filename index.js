@@ -68,7 +68,8 @@ module.exports = class Chassis {
 		})
 
     tasks.add('Processing CSS4 syntax...', next => {
-      postcss([env(this.settings.envCfg)]).process(output, {from}).then(processed => {
+      env.process(output, {from}, this.settings.envCfg).then(processed => {
+        this.utils.console.printTree(processed);
         output = processed.css
         next()
       }, cb)
