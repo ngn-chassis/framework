@@ -58,6 +58,8 @@ module.exports = (function () {
 
     set cfg (cfg) {
       _private.get(this).processCfg(cfg)
+      this.settings.typography.ranges.reload(this.typography.ranges)
+      this.settings.viewportWidthRanges.reload(this.viewport.getWidthRanges(this.settings.layout.breakpoints))
     }
 
     process (css, cb, from = void 0) {

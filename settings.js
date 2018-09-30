@@ -176,6 +176,8 @@ module.exports = (function () {
 					return cfg
 				}
 			})
+
+			_private.get(this).model.on('load', evt => this.emit('load'))
 		}
 
 		get componentResetSelectors () {
