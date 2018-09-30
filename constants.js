@@ -96,7 +96,7 @@ class ChassisConstants {
 
 	static get theme () {
 		return {
-			defaultFilePath: '../style-sheets/default-theme.css'
+			defaultFilePath: '../default.theme'
 		}
 	}
 
