@@ -1,6 +1,6 @@
 {
   "name": "@chassis/core",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "CSS4 pre-processor and responsive framework for modern UI development",
   "main": "index.js",
   "scripts": {
@@ -12,11 +12,18 @@
   },
   "keywords": [
     "css",
+    "css3",
+    "css4",
+    "cssnext",
+    "css-next",
     "preprocessor",
     "pre-processor",
     "framework",
     "responsive",
-    "postcss"
+    "postcss",
+    "sass",
+    "less",
+    "stylus"
   ],
   "author": "Graham Butler",
   "license": "BSD-3-Clause",
