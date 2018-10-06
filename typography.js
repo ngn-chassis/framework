@@ -7,7 +7,7 @@ module.exports = (function () {
 				chassis,
 
 				fontSizeAliases: chassis.constants.typography.sizeAliases,
-				root: chassis.settings.typography.baseFontSize,
+				rootFontSize: chassis.settings.typography.baseFontSize,
 				scale: {
 					threshold: chassis.constants.typography.scale.threshold,
 					ratio: chassis.settings.typography.scaleRatio
@@ -17,7 +17,7 @@ module.exports = (function () {
 
 		get ranges () {
 			let { constants, settings } = _private.get(this).chassis
-			let rootFontSize = _private.get(this).root
+			let { rootFontSize } = _private.get(this)
 
 			let breakpoints = constants.typography.breakpoints.filter(breakpoint => {
 				return breakpoint <= settings.layout.maxWidth
@@ -44,7 +44,7 @@ module.exports = (function () {
 			}).filter(Boolean)
 		}
 
-		calculateFontSize (alias, multiplier = 1, root = _private.get(this).root) {
+		calculateFontSize (alias, multiplier = 1, root = _private.get(this).rootFontSize) {
 			if (alias === 'root') {
 				return root
 			}

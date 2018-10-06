@@ -1,4 +1,10 @@
 let postcss = require('postcss')
+let env = require('postcss-preset-env')
+
+// const mergeAdjacentRules = require('postcss-merge-rules')
+let removeComments = require('postcss-discard-comments')
+let perfectionist = require('perfectionist')
+let CleanCss = require('clean-css')
 let nesting = require('postcss-nesting')
 let processNot = require('postcss-selector-not')
 let valueParser = require('postcss-value-parser')
@@ -6,13 +12,15 @@ let valueParser = require('postcss-value-parser')
 module.exports = (function () {
 	let _private = new WeakMap()
 
-	return class {
-		constructor (chassis, tree, namespaced = true) {
-			this.chassis = chassis
+	return class extends NGN.EventEmitter {
+		constructor (chassis, raw, namespaced = true) {
+			super()
+
+			this.tree = postcss.parse(raw)
 
 			_private.set(this, {
+				chassis,
 				atRules: {},
-				tree,
 				namespaced,
 
 				generateNamespacedSelector: selector => {
@@ -31,17 +39,35 @@ module.exports = (function () {
 					return selector
 				},
 
+				namespaceSelectors: () => {
+					this.tree.walkRules(rule => {
+						// Cleanup empty rulesets
+						if (rule.nodes.length === 0) {
+							rule.remove()
+							return
+						}
+
+						if (rule.parent && rule.parent.type === 'atrule' && rule.parent.name === 'keyframes') {
+							return
+						}
+
+						if (namespaced) {
+							rule.selector = _private.get(this).generateNamespacedSelector(rule.selector)
+						}
+					})
+				},
+
 				processAtRule: (atRule, cb) => {
 					let data = Object.assign({
-						root: _private.get(this).tree,
+						root: this.tree,
 						atRule
-					}, this.chassis.atRules.getProperties(atRule))
+					}, chassis.atRules.getProperties(atRule))
 
-					this.chassis.atRules.process(data)
+					chassis.atRules.process(data)
 				},
 
 				processAtRules: type => {
-					if (_private.get(this).atRules.hasOwnProperty(type)) {
+					if (_private.get(this).atRules.hasOwnProperty(type) && _private.get(this).atRules[type].length > 0) {
 						_private.get(this).atRules[type].forEach(atRule => {
 							_private.get(this).processAtRule(atRule)
 						})
@@ -51,12 +77,12 @@ module.exports = (function () {
 				},
 
 				processFunctions: type => {
-					_private.get(this).tree.walkDecls(decl => {
+					this.tree.walkDecls(decl => {
 						let parsed = valueParser(decl.value)
 
 						if (parsed.nodes.some(node => node.type === 'function')) {
-							decl.value = this.chassis.functions.process({
-								root: _private.get(this).tree,
+							decl.value = chassis.functions.process({
+								root: this.tree,
 								raw: decl,
 								parsed
 							})
@@ -64,27 +90,59 @@ module.exports = (function () {
 					})
 				},
 
-				processImports: () => {
-					_private.get(this).tree.walkAtRules('chassis', atRule => {
-						if (atRule.params.startsWith('import')) {
-							_private.get(this).processAtRule(atRule)
-						}
-					})
+				processImport: (atRule) => {
+					if (atRule.params.startsWith('import')) {
+						_private.get(this).processAtRule(atRule)
+					}
+				},
 
-					// Recursively handle nested imports
-					_private.get(this).tree.walkAtRules(atRule => {
+				processImports: () => {
+					let {
+						processImport,
+						processImports
+					} = _private.get(this)
+
+					this.tree.walkAtRules('chassis', atRule => processImport(atRule))
+
+					this.tree.walkAtRules(atRule => {
 						if (atRule.params.includes('import')) {
-							_private.get(this).processImports()
+							processImports()
 						}
 					})
+				},
+
+				processMixins: () => {
+					let {
+						processAtRules,
+						processMixins,
+						storeAtRules
+					} = _private.get(this)
+
+					storeAtRules()
+
+					if (Object.keys(_private.get(this).atRules).length === 0) {
+						return
+					}
+
+					// Process all but 'include', 'new' and 'extend' mixins as those need to be
+					// processed after the unnest operation to properly resolve nested selectors
+					processAtRules('other')
+
+					// Process remaining 'new', 'extend', and 'include' mixins
+					processAtRules('new')
+					processAtRules('extend')
+					processAtRules('include')
+
+					// Recurse to handle any mixins brought in via include
+					processMixins()
 				},
 
 				processNesting: () => {
-					_private.get(this).tree = postcss.parse(nesting.process(_private.get(this).tree))
+					this.tree = postcss.parse(nesting.process(this.tree))
 				},
 
 				processNot: () => {
-					_private.get(this).tree = postcss.parse(processNot.process(_private.get(this).tree))
+					this.tree = postcss.parse(processNot.process(this.tree))
 				},
 
 				storeAtRule: atRule => {
@@ -110,53 +168,156 @@ module.exports = (function () {
 
 				storeAtRules: () => {
 					_private.get(this).atRules = {}
-					_private.get(this).tree.walkAtRules('chassis', atRule => _private.get(this).storeAtRule(atRule))
+					this.tree.walkAtRules('chassis', atRule => _private.get(this).storeAtRule(atRule))
 				}
 			})
 		}
 
+		get isInitialized () {
+			return this.tree.some(node => {
+				return node.type === 'atrule' && node.name === 'chassis' && node.params === 'init'
+			})
+		}
+
 		// TODO: Account for multiple "include" mixins
-		get css () {
+		process (from) {
+			let {
+				chassis,
+				generateNamespacedSelector,
+				namespaced,
+				namespaceSelectors,
+				processImports,
+				processNesting,
+				processAtRules,
+				processMixins,
+				processNot,
+				processFunctions,
+				storeAtRules
+			} = _private.get(this)
+
+			let {
+				atRules,
+				core,
+				post,
+				settings,
+				utils
+			} = chassis
+
 			let tasks = new NGN.Tasks()
+			let sourceMap
 
-			_private.get(this).processImports()
-			_private.get(this).processNesting()
-
-			_private.get(this).storeAtRules()
-
-			// Process all but 'include', 'new' and 'extend' mixins as those need to be
-			// processed after the unnest operation to properly resolve nested selectors
-			_private.get(this).processAtRules('other')
-
-			// Process remaining 'new', 'extend', and 'include' mixins
-			_private.get(this).processAtRules('new')
-			_private.get(this).processAtRules('extend')
-			_private.get(this).processAtRules('include')
-
-			// Process ":not()" instances before namespace is prepended
-			_private.get(this).processNot()
-
-			_private.get(this).processNesting()
-			_private.get(this).processFunctions()
-
-			// Cleanup empty rulesets and prepend .chassis namespace to all selectors
-			// except 'html' and ':root'
-			_private.get(this).tree.walkRules(rule => {
-				if (rule.nodes.length === 0) {
-					rule.remove()
-					return
-				}
-
-				if (rule.parent.type === 'atrule' && rule.parent.name === 'keyframes') {
-					return
-				}
-
-				if (_private.get(this).namespaced) {
-					rule.selector = _private.get(this).generateNamespacedSelector(rule.selector)
-				}
+			tasks.add('Processing Imports', next => {
+				processImports()
+				processNesting()
+				next()
 			})
 
-			return _private.get(this).tree
+			tasks.add('Processing Mixins', next => {
+				processMixins()
+				processNot()
+				processNesting()
+
+				next()
+			})
+
+			tasks.add('Processing Functions', next => {
+				processFunctions()
+				next()
+			})
+
+			tasks.add('Namespacing Selectors', next => {
+				namespaceSelectors()
+				next()
+			})
+
+			if (this.isInitialized) {
+				tasks.add('Initializing Typography Engine', next => {
+					this.tree = core.css.append(this.tree)
+					next()
+				})
+			}
+
+			tasks.add('Running post-processing routines', next => {
+				this.tree.walkAtRules('chassis-post', atRule => {
+  				let data = Object.assign({
+  					root: this.tree,
+  					atRule
+  				}, atRules.getProperties(atRule))
+
+  				post.process(data)
+  			})
+
+  			next()
+			})
+
+			tasks.add('Processing CSS4 Syntax', next => {
+				env.process(this.tree, {from}, settings.envCfg).then(processed => {
+					// console.log(processed.messages);
+					// TODO: Check processed for errors here
+          this.tree = processed.root
+          next()
+        }, () => {
+					this.emit('processing.error', new Error('Error Processing CSS4 Syntax'))
+				})
+			})
+
+			// tasks.add('Merging matching adjacent rules...', next => {
+  		// 	output = mergeAdjacentRules.process(output.toString())
+  		// 	next()
+  		// })
+
+			tasks.add('Beautifying Output', next => {
+				removeComments.process(this.tree).then(result => {
+					perfectionist.process(result.css).then(result => {
+						this.tree = result.root
+
+						// Remove empty rulesets
+						this.tree.walkRules(rule => {
+							if (rule.nodes.length === 0) {
+								rule.remove()
+								return
+							}
+						})
+
+						next()
+					}, () => {
+						this.emit('processing.error', new Error('Error Beautifying Output'))
+					})
+				}, () => {
+					this.emit('processing.error', new Error('Error Removing Comments'))
+				})
+			})
+
+			if (settings.minify) {
+				let minified
+
+				tasks.add('Minifying Output', next => {
+					minified = new CleanCss({
+						sourceMap: settings.sourceMap
+					}).minify(this.tree.toString())
+
+					this.tree = minified.styles
+					next()
+				})
+
+				if (settings.sourceMap) {
+					tasks.add('Generating source map', next => {
+						sourceMap = minified.sourceMap.toString()
+						next()
+					})
+				}
+			}
+
+			// tasks.on('taskstart', evt => console.log(`${evt.name}...`))
+			// tasks.on('taskcomplete', evt => console.log('Done.'))
+
+			tasks.on('complete', () => this.emit('processing.complete', {
+				css: this.tree.toString(),
+				sourceMap
+			}))
+
+			this.emit('processing')
+			tasks.run(true)
 		}
 	}
 })()

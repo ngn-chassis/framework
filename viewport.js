@@ -185,7 +185,7 @@ module.exports = (function () {
 				spec = [0, 'min', ...spec]
 			}
 
-			if (typeof lastEntry === 'number' && lastEntry > settings.layout.maxWidth) {
+			if (typeof lastEntry === 'number' && lastEntry < settings.layout.maxWidth) {
 				spec.push('max')
 			}
 

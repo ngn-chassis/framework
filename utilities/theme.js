@@ -121,10 +121,10 @@ class ChassisThemeUtils {
 		return json
 	}
 
-	static generateCustomProperties (root) {
+	static generateCustomProperties (rule) {
 		let json = {}
 
-		root.nodes.forEach(node => {
+		rule.nodes.forEach(node => {
 			json[node.prop] = node.value
 		})
 

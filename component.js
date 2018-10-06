@@ -24,7 +24,7 @@ module.exports = (function () {
          * @private
          */
         getStateTheme: state => {
-          let theme = _private.get(this).chassis.theme.getComponent(this.type)
+          let theme = chassis.theme.getComponent(this.type)
 
       		if (!theme || !theme.hasOwnProperty(state)) {
       			return null
@@ -42,7 +42,7 @@ module.exports = (function () {
          * @private
          */
         storeComponentOverrides: () => {
-          _private.get(this).chassis.componentOverrides[this.type] = {}
+          chassis.componentOverrides[this.type] = {}
 
           this.defaultSpec.states.forEach(state => {
             let theme = _private.get(this).getStateTheme(state)
@@ -51,7 +51,7 @@ module.exports = (function () {
               return
             }
 
-            _private.get(this).chassis.componentOverrides[type][state] = {
+            chassis.componentOverrides[type][state] = {
               properties: theme.properties,
               rules: theme.rules
             }
@@ -84,7 +84,7 @@ module.exports = (function () {
     }
 
     get themedCss () {
-      let { chassis } = this
+      let { chassis } = _private.get(this)
 
       if (this.instance.isOverridable) {
         _private.get(this).storeComponentOverrides()

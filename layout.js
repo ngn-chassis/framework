@@ -55,8 +55,8 @@ module.exports = (function () {
 		 * Only applicable at min or max
 		 */
 		getGutterLimit (width) {
-			let { utils } = _private.get(this).chassis
-			let { typography } = _private.get(this).chassis.settings
+			let { settings, utils } = _private.get(this).chassis
+			let { typography } = settings
 
 			let unit = utils.string.getUnits(this.gutter)
 

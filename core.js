@@ -13,7 +13,7 @@ module.exports = (function () {
 				},
 
 				appendNestedRulesets: (root, selectors, nestedRules) => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 
 					Object.keys(nestedRules).forEach(nestedRule => {
 						let nestedSelector = selectors.map(selector => `${selector} ${nestedRule}`).join(', ')
@@ -31,8 +31,8 @@ module.exports = (function () {
 					})
 				},
 
-				applyTheme: (element, initialRule, root = _private.get(this).chassis.utils.css.newRoot([])) => {
-					let { theme, utils } = _private.get(this).chassis
+				applyTheme: (element, initialRule, root = chassis.utils.css.newRoot([])) => {
+					let { theme, utils } = chassis
 
 					let selectors = initialRule.selector.split(',').map(selector => selector.trim())
 					let themeData = theme.getElement(element)
@@ -64,7 +64,7 @@ module.exports = (function () {
 				},
 
 				parseSpecSheet: (path, variables = {}) => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 
 					let tree = utils.file.parseStyleSheet(path)
 

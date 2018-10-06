@@ -1,7 +1,3 @@
-let functions = {
-	math: require('./functions/math.js')
-}
-
 module.exports = (function () {
 	let _private = new WeakMap()
 
@@ -11,7 +7,7 @@ module.exports = (function () {
 				chassis,
 
 				functions: {
-					math: new functions.math(chassis)
+					math: new (require('./functions/math.js'))(chassis)
 				}
 			})
 		}

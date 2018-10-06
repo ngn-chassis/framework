@@ -13,7 +13,7 @@ module.exports = (function () {
 				spec,
 
 				applyCustomizedState: (state, customState) => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 
 					if (!this.states.includes(customState.params)) {
 						console.warn(`[WARNING] Chassis "${this.type}" component does not support "${customState.params}" state. Discarding...`)
@@ -71,7 +71,7 @@ module.exports = (function () {
 				},
 
 				generateCustomizedState: (state, customState, cb) => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 
 					if (!this.states.includes(customState.params)) {
 						console.warn(`[WARNING] Chassis "${this.type}" component does not support "${customState.params}" state. Discarding...`)
@@ -107,7 +107,7 @@ module.exports = (function () {
 				},
 
 				generateCustomTemplate: customSpec => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 					let root = utils.css.newRoot([])
 
 					_private.get(this).spec.walkAtRules(state => {
@@ -137,7 +137,7 @@ module.exports = (function () {
 				},
 
 				generateOverrides: (type, state) => {
-					let { componentOverrides, theme, utils } = _private.get(this).chassis
+					let { componentOverrides, theme, utils } = chassis
 
 					if (!componentOverrides.hasOwnProperty(type)) {
 						return
@@ -225,7 +225,7 @@ module.exports = (function () {
 				},
 
 				generateTemplate: (customSpec = null) => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 					let root = utils.css.newRoot([])
 
 					_private.get(this).spec.walkAtRules(atRule => {
@@ -283,13 +283,13 @@ module.exports = (function () {
 					let data = Object.assign({
 						root: this.tree,
 						atRule
-					}, _private.get(this).chassis.atRules.getProperties(atRule))
+					}, chassis.atRules.getProperties(atRule))
 
-					_private.get(this).chassis.atRules.process(data)
+					chassis.atRules.process(data)
 				},
 
 				resolveVariables: (root, variables = this.variables) => {
-					let { utils } = _private.get(this).chassis
+					let { utils } = chassis
 
 					root.walkRules(rule => {
 						rule.selector = this.variables.selectors.map(selector => {
