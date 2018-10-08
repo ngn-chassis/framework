@@ -71,7 +71,7 @@ module.exports = (function () {
   	 * Get calculated z-index value from project settings
   	 */
   	zIndex () {
-  		let { settings, utils } = this.chassis
+  		let { settings, utils } = _.get(this).chassis
       let { args, atRule, source } = arguments[0]
 
   		let index = settings.data.zIndex[args[0]]
