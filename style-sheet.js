@@ -10,7 +10,7 @@ let processNot = require('postcss-selector-not')
 let valueParser = require('postcss-value-parser')
 
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class extends NGN.EventEmitter {
 		constructor (chassis, raw, namespaced = true) {
@@ -18,7 +18,7 @@ module.exports = (function () {
 
 			this.tree = postcss.parse(raw)
 
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 				atRules: {},
 				namespaced,
@@ -52,7 +52,7 @@ module.exports = (function () {
 						}
 
 						if (namespaced) {
-							rule.selector = _private.get(this).generateNamespacedSelector(rule.selector)
+							rule.selector = _.get(this).generateNamespacedSelector(rule.selector)
 						}
 					})
 				},
@@ -67,12 +67,12 @@ module.exports = (function () {
 				},
 
 				processAtRules: type => {
-					if (_private.get(this).atRules.hasOwnProperty(type) && _private.get(this).atRules[type].length > 0) {
-						_private.get(this).atRules[type].forEach(atRule => {
-							_private.get(this).processAtRule(atRule)
+					if (_.get(this).atRules.hasOwnProperty(type) && _.get(this).atRules[type].length > 0) {
+						_.get(this).atRules[type].forEach(atRule => {
+							_.get(this).processAtRule(atRule)
 						})
 
-						delete _private.get(this).atRules[type]
+						delete _.get(this).atRules[type]
 					}
 				},
 
@@ -92,7 +92,7 @@ module.exports = (function () {
 
 				processImport: (atRule) => {
 					if (atRule.params.startsWith('import')) {
-						_private.get(this).processAtRule(atRule)
+						_.get(this).processAtRule(atRule)
 					}
 				},
 
@@ -100,7 +100,7 @@ module.exports = (function () {
 					let {
 						processImport,
 						processImports
-					} = _private.get(this)
+					} = _.get(this)
 
 					this.tree.walkAtRules('chassis', atRule => processImport(atRule))
 
@@ -116,11 +116,11 @@ module.exports = (function () {
 						processAtRules,
 						processMixins,
 						storeAtRules
-					} = _private.get(this)
+					} = _.get(this)
 
 					storeAtRules()
 
-					if (Object.keys(_private.get(this).atRules).length === 0) {
+					if (Object.keys(_.get(this).atRules).length === 0) {
 						return
 					}
 
@@ -151,24 +151,24 @@ module.exports = (function () {
 					let containers = ['import', 'include', 'new', 'extend']
 
 					if (containers.includes(container)) {
-						if (!_private.get(this).atRules.hasOwnProperty(container)) {
-							_private.get(this).atRules[container] = []
+						if (!_.get(this).atRules.hasOwnProperty(container)) {
+							_.get(this).atRules[container] = []
 						}
 
-						_private.get(this).atRules[container].push(atRule)
+						_.get(this).atRules[container].push(atRule)
 						return
 					}
 
-					if (!_private.get(this).atRules.hasOwnProperty('other')) {
-						_private.get(this).atRules.other = []
+					if (!_.get(this).atRules.hasOwnProperty('other')) {
+						_.get(this).atRules.other = []
 					}
 
-					_private.get(this).atRules.other.push(atRule)
+					_.get(this).atRules.other.push(atRule)
 				},
 
 				storeAtRules: () => {
-					_private.get(this).atRules = {}
-					this.tree.walkAtRules('chassis', atRule => _private.get(this).storeAtRule(atRule))
+					_.get(this).atRules = {}
+					this.tree.walkAtRules('chassis', atRule => _.get(this).storeAtRule(atRule))
 				}
 			})
 		}
@@ -180,7 +180,7 @@ module.exports = (function () {
 		}
 
 		// TODO: Account for multiple "include" mixins
-		process (from) {
+		process (filepath) {
 			let {
 				chassis,
 				generateNamespacedSelector,
@@ -193,7 +193,7 @@ module.exports = (function () {
 				processNot,
 				processFunctions,
 				storeAtRules
-			} = _private.get(this)
+			} = _.get(this)
 
 			let {
 				atRules,
@@ -251,7 +251,7 @@ module.exports = (function () {
 			})
 
 			tasks.add('Processing CSS4 Syntax', next => {
-				env.process(this.tree, {from}, settings.envCfg).then(processed => {
+				env.process(this.tree, {from: filepath}, settings.envCfg).then(processed => {
 					// console.log(processed.messages);
 					// TODO: Check processed for errors here
           this.tree = processed.root

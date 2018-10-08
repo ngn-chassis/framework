@@ -1,15 +1,15 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-	    _private.set(this, {chassis})
+	    _.set(this, {chassis})
 
 	    this.resetType = 'inline-block'
 		}
 
 		get variables () {
-			let { settings, utils } = _private.get(this).chassis
+			let { settings, utils } = _.get(this).chassis
 			let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
 
 			let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)

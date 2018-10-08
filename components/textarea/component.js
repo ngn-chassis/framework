@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {chassis})
+			_.set(this, {chassis})
 
 			this.resetType = 'inline-block'
 		}

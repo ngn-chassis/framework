@@ -1,11 +1,11 @@
 let valueParser = require('postcss-value-parser')
 
 module.exports = (function () {
-  let _private = new WeakMap()
+  let _ = new WeakMap()
 
   return class {
     constructor (chassis) {
-      _private.set(this, {chassis})
+      _.set(this, {chassis})
     }
 
     /**
@@ -97,7 +97,7 @@ module.exports = (function () {
 
     round () {
       let node = arguments[0]
-      let { utils } = _private.get(this).chassis
+      let { utils } = _.get(this).chassis
 
       let number = node.nodes[0].value
       let decimalPlaces = node.nodes.length === 3 ? node.nodes[2].value : 0

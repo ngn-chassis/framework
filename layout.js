@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis
 			})
 
@@ -29,7 +29,7 @@ module.exports = (function () {
 		}
 
 		calculateMarginBottom (lineHeight, type = null) {
-			let { typography } = _private.get(this).chassis.settings
+			let { typography } = _.get(this).chassis.settings
 
 			switch (type) {
 				case 'outer':
@@ -55,7 +55,7 @@ module.exports = (function () {
 		 * Only applicable at min or max
 		 */
 		getGutterLimit (width) {
-			let { settings, utils } = _private.get(this).chassis
+			let { settings, utils } = _.get(this).chassis
 			let { typography } = settings
 
 			let unit = utils.string.getUnits(this.gutter)

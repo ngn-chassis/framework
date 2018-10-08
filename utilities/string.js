@@ -1,4 +1,4 @@
-class ChassisStringUtils {
+module.exports = class ChassisStringUtils {
 	/**
 	 * @method getUnit
 	 * Get the units from a CSS Property value
@@ -74,5 +74,3 @@ class ChassisStringUtils {
 		return arr.join('')
 	}
 }
-
-module.exports = ChassisStringUtils

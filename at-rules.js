@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 
 				mixins: {
@@ -18,35 +18,35 @@ module.exports = (function () {
 		}
 
 		get 'apply' () {
-			return data => _private.get(this).mixins.typography.applyProps(data)
+			return data => _.get(this).mixins.typography.applyProps(data)
 		}
 
 		get 'constrain-width' () {
-			return data => _private.get(this).mixins.layout.constrainWidth(data)
+			return data => _.get(this).mixins.layout.constrainWidth(data)
 		}
 
 		get 'constrain' () {
-			return data => _private.get(this).mixins.layout.constrain(data)
+			return data => _.get(this).mixins.layout.constrain(data)
 		}
 
 		get 'ellipsis' () {
-			return data => _private.get(this).mixins.typography.ellipsis(data)
+			return data => _.get(this).mixins.typography.ellipsis(data)
 		}
 
 		get 'extend' () {
-			return data => _private.get(this).mixins.component.extend(data)
+			return data => _.get(this).mixins.component.extend(data)
 		}
 
 		get 'ie-only' () {
-			return data => _private.get(this).mixins.browser.ieOnly(data)
+			return data => _.get(this).mixins.browser.ieOnly(data)
 		}
 
 		get 'import' () {
-			return data => _private.get(this).mixins.styleSheet.import(data)
+			return data => _.get(this).mixins.styleSheet.import(data)
 		}
 
 		get 'include' () {
-			return data => _private.get(this).mixins.component.include(data)
+			return data => _.get(this).mixins.component.include(data)
 		}
 
 		get 'init' () {
@@ -54,31 +54,31 @@ module.exports = (function () {
 		}
 
 		get 'font-size' () {
-			return data => _private.get(this).mixins.typography.fontSize(data)
+			return data => _.get(this).mixins.typography.fontSize(data)
 		}
 
 		get 'new' () {
-			return data => _private.get(this).mixins.component.new(data)
+			return data => _.get(this).mixins.component.new(data)
 		}
 
 		get 'viewport-height' () {
-			return data => _private.get(this).mixins.viewport.height(data)
+			return data => _.get(this).mixins.viewport.height(data)
 		}
 
 		get 'vp-height' () {
-			return data => _private.get(this).mixins.viewport.height(data)
+			return data => _.get(this).mixins.viewport.height(data)
 		}
 
 		get 'viewport-width' () {
-			return data => _private.get(this).mixins.viewport.width(data)
+			return data => _.get(this).mixins.viewport.width(data)
 		}
 
 		get 'vp-width' () {
-			return data => _private.get(this).mixins.viewport.width(data)
+			return data => _.get(this).mixins.viewport.width(data)
 		}
 
 		get 'z-index' () {
-			return data => _private.get(this).mixins.layout.zIndex(data)
+			return data => _.get(this).mixins.layout.zIndex(data)
 		}
 
 		getProperties (atRule) {

@@ -1,6 +1,6 @@
 let postcss = require('postcss')
 
-class ChassisCssUtils {
+module.exports = class ChassisCssUtils {
 	static generateDeclsFromTheme (theme) {
 		if (!theme.hasOwnProperty('properties')) {
 			return []
@@ -141,5 +141,3 @@ class ChassisCssUtils {
 		tree.walkComments(comment => comment.remove())
 	}
 }
-
-module.exports = ChassisCssUtils

@@ -1,12 +1,12 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis, type, spec, instance) {
 			this.type = type
 			this.states = []
 
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 
 				overrides: NGN.coalesce(instance.overrides),
@@ -24,17 +24,17 @@ module.exports = (function () {
 					let customDecls = customState.nodes.filter(node => node.type === 'decl')
 					let overrides = null
 
-					if (_private.get(this).overrides) {
-						overrides = _private.get(this).generateOverrides(_private.get(this).overrides, state)
+					if (_.get(this).overrides) {
+						overrides = _.get(this).generateOverrides(_.get(this).overrides, state)
 					}
 
 					state.walkRules((rule, index) => {
 						// Initial state is always first
 						if (index === 0) {
-							_private.get(this).mergeDecls(rule, customDecls)
+							_.get(this).mergeDecls(rule, customDecls)
 
 							if (overrides) {
-								_private.get(this).mergeDecls(rule, overrides)
+								_.get(this).mergeDecls(rule, overrides)
 							}
 						}
 
@@ -47,7 +47,7 @@ module.exports = (function () {
 
 						if (match) {
 							customRules.splice(customRuleIndex, 1)
-							_private.get(this).mergeRules(rule, match)
+							_.get(this).mergeRules(rule, match)
 						}
 					})
 
@@ -110,16 +110,16 @@ module.exports = (function () {
 					let { utils } = chassis
 					let root = utils.css.newRoot([])
 
-					_private.get(this).spec.walkAtRules(state => {
+					_.get(this).spec.walkAtRules(state => {
 						switch (state.name) {
 							case 'state':
-								let customState = _private.get(this).findMatchingState(state, customSpec)
+								let customState = _.get(this).findMatchingState(state, customSpec)
 
 								if (!customState) {
 									return
 								}
 
-								_private.get(this).generateCustomizedState(state, customState, result => {
+								_.get(this).generateCustomizedState(state, customState, result => {
 									state.nodes.forEach(node => root.append(node))
 								})
 								break
@@ -228,17 +228,17 @@ module.exports = (function () {
 					let { utils } = chassis
 					let root = utils.css.newRoot([])
 
-					_private.get(this).spec.walkAtRules(atRule => {
+					_.get(this).spec.walkAtRules(atRule => {
 						switch (atRule.name) {
 							case 'state':
 								if (customSpec) {
-									let customState = _private.get(this).findMatchingState(atRule, customSpec)
+									let customState = _.get(this).findMatchingState(atRule, customSpec)
 
 									if (!customState) {
 										return
 									}
 
-									_private.get(this).applyCustomizedState(atRule, customState)
+									_.get(this).applyCustomizedState(atRule, customState)
 								}
 
 								return atRule.nodes.forEach(node => root.append(node.clone()))
@@ -276,7 +276,7 @@ module.exports = (function () {
 					let customRules = custom.nodes.filter(node => node.type === 'rule')
 					let customDecls = custom.nodes.filter(node => node.type === 'decl')
 
-					_private.get(this).mergeDecls(rule, customDecls)
+					_.get(this).mergeDecls(rule, customDecls)
 				},
 
 				processAtRule: atRule => {
@@ -307,10 +307,10 @@ module.exports = (function () {
 			})
 
 			// Strip comments from spec sheet
-			chassis.utils.css.stripComments(_private.get(this).spec)
+			chassis.utils.css.stripComments(_.get(this).spec)
 
 			// Get selector list from first line of spec sheet
-			this.selectors = _private.get(this).spec.nodes[0].selector.split(',')
+			this.selectors = _.get(this).spec.nodes[0].selector.split(',')
 
 			if (chassis.componentExtensions.hasOwnProperty(type)) {
 	      this.selectors.push(...chassis.componentExtensions[type]);
@@ -321,48 +321,48 @@ module.exports = (function () {
 			})
 
 			// Store states
-			_private.get(this).spec.walkAtRules('state', atRule => this.states.push(atRule.params))
+			_.get(this).spec.walkAtRules('state', atRule => this.states.push(atRule.params))
 		}
 
 		get css () {
-			let template = _private.get(this).generateTemplate()
+			let template = _.get(this).generateTemplate()
 
-			return _private.get(this).resolveVariables(template)
+			return _.get(this).resolveVariables(template)
 		}
 
 		getCustomizedCss (customSpec) {
-			let template = _private.get(this).generateCustomTemplate(customSpec)
+			let template = _.get(this).generateCustomTemplate(customSpec)
 
 			let customVariables = Object.assign(this.variables, {
 				selectors: customSpec.nodes[0].selector.split(',')
 			})
 
-			let resolved = _private.get(this).resolveVariables(template, customVariables)
+			let resolved = _.get(this).resolveVariables(template, customVariables)
 
-			resolved.walkAtRules('chassis', atRule => _private.get(this).processAtRule(atRule))
+			resolved.walkAtRules('chassis', atRule => _.get(this).processAtRule(atRule))
 
 			return resolved
 		}
 
 		getUnthemedCss (customSpec) {
-			let template = _private.get(this).generateTemplate(customSpec)
+			let template = _.get(this).generateTemplate(customSpec)
 
 			let customVariables = Object.assign(this.variables, {
 				selectors: customSpec.nodes[0].selector.split(',')
 			})
 
-			let resolved = _private.get(this).resolveVariables(template, customVariables)
+			let resolved = _.get(this).resolveVariables(template, customVariables)
 
-			resolved.walkAtRules('chassis', atRule => _private.get(this).processAtRule(atRule))
+			resolved.walkAtRules('chassis', atRule => _.get(this).processAtRule(atRule))
 
 			return resolved
 		}
 
 		getThemedCss (theme) {
-			let template = _private.get(this).generateTemplate(theme)
-			let resolved = _private.get(this).resolveVariables(template)
+			let template = _.get(this).generateTemplate(theme)
+			let resolved = _.get(this).resolveVariables(template)
 
-			resolved.walkAtRules('chassis', atRule => _private.get(this).processAtRule(atRule))
+			resolved.walkAtRules('chassis', atRule => _.get(this).processAtRule(atRule))
 
 			return resolved
 		}

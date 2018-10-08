@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 
 				fontSizeAliases: chassis.constants.typography.sizeAliases,
@@ -16,8 +16,8 @@ module.exports = (function () {
 		}
 
 		get ranges () {
-			let { constants, settings } = _private.get(this).chassis
-			let { rootFontSize } = _private.get(this)
+			let { constants, settings } = _.get(this).chassis
+			let { rootFontSize } = _.get(this)
 
 			let breakpoints = constants.typography.breakpoints.filter(breakpoint => {
 				return breakpoint <= settings.layout.maxWidth
@@ -33,7 +33,7 @@ module.exports = (function () {
 					upper: breakpoints[index + 1]
 				}
 
-				if (bounds.lower >= _private.get(this).scale.threshold) {
+				if (bounds.lower >= _.get(this).scale.threshold) {
 					rootFontSize++
 				}
 
@@ -44,7 +44,7 @@ module.exports = (function () {
 			}).filter(Boolean)
 		}
 
-		calculateFontSize (alias, multiplier = 1, root = _private.get(this).rootFontSize) {
+		calculateFontSize (alias, multiplier = 1, root = _.get(this).rootFontSize) {
 			if (alias === 'root') {
 				return root
 			}
@@ -53,19 +53,19 @@ module.exports = (function () {
 
 			switch (alias) {
 				case 'small':
-					modifier = 1 / Math.sqrt(_private.get(this).scale.ratio)
+					modifier = 1 / Math.sqrt(_.get(this).scale.ratio)
 					break
 
 				case 'large':
-					modifier = Math.sqrt(_private.get(this).scale.ratio)
+					modifier = Math.sqrt(_.get(this).scale.ratio)
 					break
 
 				case 'larger':
-					modifier = _private.get(this).scale.ratio
+					modifier = _.get(this).scale.ratio
 					break
 
 				case 'largest':
-					modifier = Math.pow(_private.get(this).scale.ratio, 2)
+					modifier = Math.pow(_.get(this).scale.ratio, 2)
 					break
 
 				default:
@@ -75,19 +75,19 @@ module.exports = (function () {
 			return root * modifier * multiplier
 		}
 
-		calculateInlineHeight (baseLineHeight, ratio = _private.get(this).scale.ratio) {
+		calculateInlineHeight (baseLineHeight, ratio = _.get(this).scale.ratio) {
 			return baseLineHeight + Math.sqrt(ratio)
 		}
 
-		calculateInlineMarginY (baseLineHeight, ratio = _private.get(this).scale.ratio) {
+		calculateInlineMarginY (baseLineHeight, ratio = _.get(this).scale.ratio) {
 			return 1
 		}
 
-		calculateInlineMarginX (baseLineHeight, ratio = _private.get(this).scale.ratio) {
+		calculateInlineMarginX (baseLineHeight, ratio = _.get(this).scale.ratio) {
 			return Math.log(baseLineHeight)
 		}
 
-		calculateInlinePaddingX (baseLineHeight, ratio = _private.get(this).scale.ratio) {
+		calculateInlinePaddingX (baseLineHeight, ratio = _.get(this).scale.ratio) {
 			return Math.sin(baseLineHeight)
 		}
 
@@ -95,15 +95,15 @@ module.exports = (function () {
 			return (this.calculateInlineHeight(baseLineHeight) - baseLineHeight) / 2
 		}
 
-		calculateLineHeight (fontSize, viewportWidth, ratio = _private.get(this).scale.ratio) {
+		calculateLineHeight (fontSize, viewportWidth, ratio = _.get(this).scale.ratio) {
 			return (ratio - 1 / (2 * ratio) * (1 - viewportWidth / this.calculateOptimalLineWidth(fontSize))) * fontSize
 		}
 
-		calculateOptimalLineWidth (fontSize, ratio = _private.get(this).scale.ratio) {
+		calculateOptimalLineWidth (fontSize, ratio = _.get(this).scale.ratio) {
 			return Math.pow(fontSize * ratio, 2)
 		}
 
-		calculateMarginBottom (lineHeight, ratio = _private.get(this).scale.ratio) {
+		calculateMarginBottom (lineHeight, ratio = _.get(this).scale.ratio) {
 			return lineHeight / ratio
 		}
 
@@ -111,7 +111,7 @@ module.exports = (function () {
 			let averageViewportWidth = (vwr.bounds.lower + vwr.bounds.upper) / 2
 			let rules = {}
 
-			_private.get(this).fontSizeAliases.forEach(alias => {
+			_.get(this).fontSizeAliases.forEach(alias => {
 				let fontSize = this.calculateFontSize(alias, 1, vwr.rootFontSize)
 
 				rules[alias] = {

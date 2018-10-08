@@ -2,7 +2,7 @@ let fs = require('fs')
 let path = require('path')
 let postcss = require('postcss')
 
-class ChassisFileUtils {
+module.exports = class ChassisFileUtils {
 	/**
 	 * @method fileExists
 	 * Determine whether or not a filepath points to an existing file
@@ -107,5 +107,3 @@ class ChassisFileUtils {
 		return path.join(__dirname, filepath)
 	}
 }
-
-module.exports = ChassisFileUtils

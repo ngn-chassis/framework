@@ -1,17 +1,19 @@
+const path = require('path')
+
 module.exports = (function () {
-  let _private = new WeakMap()
+  let _ = new WeakMap()
 
   return class {
     constructor (chassis) {
-      _private.set(this, {
+      _.set(this, {
         chassis,
 
         getDirectory: path => {
-          return _private.get(this).chassis.utils.file.parseDirectory(path, false)
+          return _.get(this).chassis.utils.file.parseDirectory(path, false)
         },
 
         getImportedContent: input => {
-          let { settings, utils } = _private.get(this).chassis
+          let { settings, utils } = _.get(this).chassis
 
           let importPath = ''
           let file = `_${utils.file.getFileName(input)}`
@@ -38,17 +40,17 @@ module.exports = (function () {
   	 * @mixin import
   	 */
   	import () {
-  		let { settings, utils } = _private.get(this).chassis
+      let { chassis, getDirectory, getImportedContent } = _.get(this)
+  		let { settings, utils } = chassis
       let { args, atRule, nodes, source } = arguments[0]
-      let input = args[0]
-      let dirPath = `${settings.importBasePath}/${input}`
 
-      let content = utils.file.isDirectory(dirPath) ?
-        _private.get(this).getDirectory(dirPath) :
-        _private.get(this).getImportedContent(input)
+      let input = args[0]
+      let dirPath = path.join(settings.importBasePath, input)
+
+      let content = utils.file.isDirectory(dirPath) ? getDirectory(dirPath) : getImportedContent(input)
 
       if (!content) {
-        console.log(`[ERROR] Line ${source.line}: File "${file}" not found in "${settings.importBasePath}/${path}"`);
+        console.log(`[ERROR] Line ${source.line}: File "${file}" not found in "${path.join(settings.importBasePath, path)}"`);
         atRule.remove()
         return
       }

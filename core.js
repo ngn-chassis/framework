@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 				baseTypography: chassis.settings.typography.ranges.first.typography,
 
@@ -26,7 +26,7 @@ module.exports = (function () {
 						root.append(utils.css.newRule(nestedSelector, decls))
 
 						if (Object.keys(rules).length > 0) {
-							_private.get(this).appendNestedRulesets(root, [nestedSelector], rules)
+							_.get(this).appendNestedRulesets(root, [nestedSelector], rules)
 						}
 					})
 				},
@@ -57,7 +57,7 @@ module.exports = (function () {
 					root.append(initialRule)
 
 					if (ruleKeys.length > 0) {
-						let rulesets = _private.get(this).appendNestedRulesets(root, selectors, themeData.rules)
+						let rulesets = _.get(this).appendNestedRulesets(root, selectors, themeData.rules)
 					}
 
 					return root
@@ -93,7 +93,7 @@ module.exports = (function () {
 		}
 
 		get css () {
-			return _private.get(this).chassis.utils.css.newRoot([
+			return _.get(this).chassis.utils.css.newRoot([
 				this.charset,
 				this.viewport,
 				this.reset,
@@ -116,7 +116,7 @@ module.exports = (function () {
 
 		// TODO: Make this customizable via config params
 		get charset () {
-			let { utils } = _private.get(this).chassis
+			let { utils } = _.get(this).chassis
 
 			return utils.css.newAtRule({
 				name: 'charset',
@@ -129,9 +129,9 @@ module.exports = (function () {
 		// we're parsing it from a spec sheet as a workaround.
 		// TODO: Look into a solution to the above issue
 		get viewport () {
-			let { utils } = _private.get(this).chassis
+			let { utils } = _.get(this).chassis
 
-			let root = _private.get(this).parseSpecSheet('../style-sheets/viewport.css')
+			let root = _.get(this).parseSpecSheet('../style-sheets/viewport.css')
 
 			root.nodes[0].push(utils.css.newDecl('width', 'device-width'))
 
@@ -139,22 +139,22 @@ module.exports = (function () {
 		}
 
 		get reset () {
-			let { utils } = _private.get(this).chassis
-			let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+			let { utils } = _.get(this).chassis
+			let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-			return _private.get(this).parseSpecSheet('../style-sheets/reset.css', {
+			return _.get(this).parseSpecSheet('../style-sheets/reset.css', {
 				'root-line-height': utils.unit.pxToEm(lineHeight, fontSize)
 			})
 		}
 
 		get customProperties () {
-			let { settings, theme, typography, utils } = _private.get(this).chassis
+			let { settings, theme, typography, utils } = _.get(this).chassis
 			let { root, small, large, larger, largest } = settings.typography.ranges.first.typography
 			let headingSizeAliases = settings.typography.fontSizes.headings
 
 	    let rootLineHeightMult = utils.unit.pxToEm(root.lineHeight, root.fontSize)
 
-			let props = _private.get(this).parseSpecSheet('../style-sheets/custom-properties.css', {
+			let props = _.get(this).parseSpecSheet('../style-sheets/custom-properties.css', {
 				'layout-min-width': `${settings.layout.minWidth}px`,
 				'layout-max-width': `${settings.layout.maxWidth}px`,
 				'layout-gutter': settings.layout.gutter,
@@ -180,7 +180,7 @@ module.exports = (function () {
 		}
 
 		get customMedia () {
-			let { settings, utils } = _private.get(this).chassis
+			let { settings, utils } = _.get(this).chassis
 
 			let nodes = []
 
@@ -230,11 +230,11 @@ module.exports = (function () {
 		get globalModifiers () {
 			// TODO: Add font-weight stuff here
 
-			return _private.get(this).parseSpecSheet('../style-sheets/global-modifiers.css')
+			return _.get(this).parseSpecSheet('../style-sheets/global-modifiers.css')
 		}
 
 		get constraints () {
-			let { layout, settings, utils } = _private.get(this).chassis
+			let { layout, settings, utils } = _.get(this).chassis
 
 			let rules = [
 				utils.css.newRule('.chassis .constraint.width', [
@@ -282,10 +282,10 @@ module.exports = (function () {
 		}
 
 		get html () {
-			let { constants, settings, theme, utils } = _private.get(this).chassis
-			let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+			let { constants, settings, theme, utils } = _.get(this).chassis
+			let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-			let root = _private.get(this).applyTheme('html', utils.css.newRule('html.chassis', [
+			let root = _.get(this).applyTheme('html', utils.css.newRule('html.chassis', [
 				utils.css.newDeclObj('font-size', `${fontSize}px`)
 			]))
 
@@ -293,10 +293,10 @@ module.exports = (function () {
 		}
 
 		get body () {
-			let { settings, theme, utils } = _private.get(this).chassis
-			let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+			let { settings, theme, utils } = _.get(this).chassis
+			let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-			return _private.get(this).applyTheme('body', utils.css.newRule('.chassis body', [
+			return _.get(this).applyTheme('body', utils.css.newRule('.chassis body', [
 				utils.css.newDeclObj('min-width', `${settings.layout.minWidth}px`),
 				utils.css.newDeclObj('font-family', 'var(--font-family, initial)'),
 				utils.css.newDeclObj('color', 'var(--text-color, initial)')
@@ -304,42 +304,42 @@ module.exports = (function () {
 		}
 
 		get rootHeadings () {
-			let { settings, theme, typography, utils } = _private.get(this).chassis
-			let { root } = _private.get(this).baseTypography
+			let { settings, theme, typography, utils } = _.get(this).chassis
+			let { root } = _.get(this).baseTypography
 
 			let headingSizeAliases = settings.typography.fontSizes.headings
 			let formLegendAlias = settings.typography.fontSizes.formLegend
 			let rules = utils.css.newRoot([])
 
 			for (let i = 1; i <= 6; i++) {
-				_private.get(this).applyTheme(`h${i}`, utils.css.newRule(`.chassis h${i}`, [
+				_.get(this).applyTheme(`h${i}`, utils.css.newRule(`.chassis h${i}`, [
 					utils.css.newDeclObj(
 						'font-size',
-						`${utils.unit.pxToEm(_private.get(this).baseTypography[headingSizeAliases[i]].fontSize, root.fontSize)}em`
+						`${utils.unit.pxToEm(_.get(this).baseTypography[headingSizeAliases[i]].fontSize, root.fontSize)}em`
 					),
 					utils.css.newDeclObj(
 						'line-height',
-						`${utils.unit.pxToEm(_private.get(this).baseTypography[headingSizeAliases[i]].lineHeight, _private.get(this).baseTypography[headingSizeAliases[i]].fontSize)}`
+						`${utils.unit.pxToEm(_.get(this).baseTypography[headingSizeAliases[i]].lineHeight, _.get(this).baseTypography[headingSizeAliases[i]].fontSize)}`
 					),
 					utils.css.newDeclObj(
 						'margin-bottom',
-						`${utils.unit.pxToEm(typography.calculateMarginBottom(_private.get(this).baseTypography[headingSizeAliases[i]].lineHeight), _private.get(this).baseTypography[headingSizeAliases[i]].fontSize)}em`
+						`${utils.unit.pxToEm(typography.calculateMarginBottom(_.get(this).baseTypography[headingSizeAliases[i]].lineHeight), _.get(this).baseTypography[headingSizeAliases[i]].fontSize)}em`
 					)
 				]), rules)
 			}
 
-			_private.get(this).applyTheme('legend', utils.css.newRule('.chassis legend', [
+			_.get(this).applyTheme('legend', utils.css.newRule('.chassis legend', [
 				utils.css.newDeclObj(
 					'font-size',
-					`${utils.unit.pxToEm(_private.get(this).baseTypography[formLegendAlias].fontSize, root.fontSize)}rem`
+					`${utils.unit.pxToEm(_.get(this).baseTypography[formLegendAlias].fontSize, root.fontSize)}rem`
 				),
 				utils.css.newDeclObj(
 					'line-height',
-					`${utils.unit.pxToEm(_private.get(this).baseTypography[formLegendAlias].lineHeight, _private.get(this).baseTypography[formLegendAlias].fontSize)}`
+					`${utils.unit.pxToEm(_.get(this).baseTypography[formLegendAlias].lineHeight, _.get(this).baseTypography[formLegendAlias].fontSize)}`
 				),
 				utils.css.newDeclObj(
 					'margin-bottom',
-					`${utils.unit.pxToEm(typography.calculateMarginBottom(_private.get(this).baseTypography[formLegendAlias].lineHeight), _private.get(this).baseTypography[formLegendAlias].fontSize)}em`
+					`${utils.unit.pxToEm(typography.calculateMarginBottom(_.get(this).baseTypography[formLegendAlias].lineHeight), _.get(this).baseTypography[formLegendAlias].fontSize)}em`
 				)
 			]), rules)
 
@@ -347,7 +347,7 @@ module.exports = (function () {
 		}
 
 		get typographyRanges () {
-			let { layout, settings, typography, utils } = _private.get(this).chassis
+			let { layout, settings, typography, utils } = _.get(this).chassis
 
 			let { ranges } = settings.typography
 			let mediaQueries = utils.css.newRoot([])
@@ -364,7 +364,7 @@ module.exports = (function () {
 
 				let htmlRule = utils.css.newRule('html.chassis', [])
 
-				if (fontSize !== _private.get(this).baseTypography.root.fontSize) {
+				if (fontSize !== _.get(this).baseTypography.root.fontSize) {
 					htmlRule.append(utils.css.newDecl('font-size', `${fontSize}px`))
 				}
 
@@ -405,14 +405,14 @@ module.exports = (function () {
 					)
 				]))
 
-				mediaQuery.nodes.push(utils.css.newRule(_private.get(this).selectors.outerContainers, [
+				mediaQuery.nodes.push(utils.css.newRule(_.get(this).selectors.outerContainers, [
 					utils.css.newDeclObj(
 						'margin-bottom',
 						`${utils.unit.pxToEm(layout.calculateMarginBottom(range.typography.root.lineHeight, 'outer'), range.typography.root.fontSize)}em`
 					)
 				]))
 
-				mediaQuery.nodes.push(utils.css.newRule(_private.get(this).selectors.innerContainers, [
+				mediaQuery.nodes.push(utils.css.newRule(_.get(this).selectors.innerContainers, [
 					utils.css.newDeclObj(
 						'margin-bottom',
 						`${utils.unit.pxToEm(layout.calculateMarginBottom(range.typography.root.lineHeight, 'inner'), range.typography.root.fontSize)}em`
@@ -437,44 +437,44 @@ module.exports = (function () {
 		}
 
 		get outerContainers () {
-			let { layout, utils } = _private.get(this).chassis
-			let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+			let { layout, utils } = _.get(this).chassis
+			let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-			return _private.get(this).parseSpecSheet('../style-sheets/outer-containers.css', {
-				'selectors': _private.get(this).selectors.outerContainers,
+			return _.get(this).parseSpecSheet('../style-sheets/outer-containers.css', {
+				'selectors': _.get(this).selectors.outerContainers,
 				'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'outer'), fontSize)}em`
 			})
 		}
 
 		get innerContainers () {
-			let { layout, utils } = _private.get(this).chassis
-			let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+			let { layout, utils } = _.get(this).chassis
+			let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-			return _private.get(this).parseSpecSheet('../style-sheets/inner-containers.css', {
-				'selectors': _private.get(this).selectors.innerContainers,
+			return _.get(this).parseSpecSheet('../style-sheets/inner-containers.css', {
+				'selectors': _.get(this).selectors.innerContainers,
 				'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'inner'), fontSize)}em`
 			})
 		}
 
 		get paragraph () {
-			let { layout, utils } = _private.get(this).chassis
-			let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+			let { layout, utils } = _.get(this).chassis
+			let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-			return _private.get(this).parseSpecSheet('../style-sheets/paragraph.css', {
+			return _.get(this).parseSpecSheet('../style-sheets/paragraph.css', {
 				'margin-bottom': `${utils.unit.pxToEm(lineHeight, fontSize)}em`
 			})
 		}
 
 		get inlineComponentReset () {
-			return _private.get(this).parseSpecSheet('../style-sheets/inline-component-reset.css')
+			return _.get(this).parseSpecSheet('../style-sheets/inline-component-reset.css')
 		}
 
 		get inlineBlockComponentReset () {
-			return _private.get(this).parseSpecSheet('../style-sheets/inline-block-component-reset.css')
+			return _.get(this).parseSpecSheet('../style-sheets/inline-block-component-reset.css')
 		}
 
 		get blockComponentReset () {
-			return _private.get(this).parseSpecSheet('../style-sheets/block-component-reset.css')
+			return _.get(this).parseSpecSheet('../style-sheets/block-component-reset.css')
 		}
 	}
 })()

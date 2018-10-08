@@ -1,4 +1,4 @@
-class ChassisConsoleUtils {
+module.exports = class ChassisConsoleUtils {
 	/**
 	 * @method printTree
 	 * Print a prettified JSON respresentation of an object to console
@@ -7,5 +7,3 @@ class ChassisConsoleUtils {
 		console.log(JSON.stringify(tree, null, 2));
 	}
 }
-
-module.exports = ChassisConsoleUtils

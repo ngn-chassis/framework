@@ -3,7 +3,7 @@ const ChassisLayoutModel = require('./models/layout.js')
 const ChassisTypographyModel = require('./models/typography.js')
 
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class extends NGN.EventEmitter {
 		constructor (chassis) {
@@ -28,7 +28,7 @@ module.exports = (function () {
 
 					importBasePath: {
 						type: String,
-						default: './',
+						default: null,
 						validate (filepath) {
 							return chassis.utils.file.isDirectory(filepath)
 						}
@@ -114,7 +114,7 @@ module.exports = (function () {
 	 			}
 			})
 
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 
 				model: new Model(),
@@ -177,80 +177,84 @@ module.exports = (function () {
 				}
 			})
 
-			_private.get(this).model.on('load', evt => this.emit('load'))
+			_.get(this).model.on('load', evt => this.emit('load'))
 		}
 
 		get componentResetSelectors () {
-			return _private.get(this).model.componentResetSelectors
+			return _.get(this).model.componentResetSelectors
 		}
 
 		get componentResetSelectorLists () {
-			return _private.get(this).model.componentResetSelectorLists
+			return _.get(this).model.componentResetSelectorLists
 		}
 
 		get data () {
-			return _private.get(this).model.data
+			return _.get(this).model.data
 		}
 
 		get importBasePath () {
-			return _private.get(this).model.importBasePath
+			return _.get(this).model.importBasePath
+		}
+
+		set importBasePath (path) {
+			_.get(this).model.importBasePath = path
 		}
 
 		get isValid () {
-			return _private.get(this).model.valid
+			return _.get(this).model.valid
 		}
 
 		get invalidAttributes () {
-			return _private.get(this).model.invalidDataAttributes
+			return _.get(this).model.invalidDataAttributes
 		}
 
 		get layout () {
-			return _private.get(this).model.layout
+			return _.get(this).model.layout
 		}
 
 		get minify () {
-			return _private.get(this).model.minify
+			return _.get(this).model.minify
 		}
 
 		get sourceMap () {
-			return _private.get(this).model.sourceMap
+			return _.get(this).model.sourceMap
 		}
 
 		get sourceMapPath () {
-			return _private.get(this).model.sourceMapPath
+			return _.get(this).model.sourceMapPath
 		}
 
 		get theme () {
-			return _private.get(this).model.theme
+			return _.get(this).model.theme
 		}
 
 		set theme (theme) {
-			_private.get(this).model.theme = theme
+			_.get(this).model.theme = theme
 		}
 
 		get typography () {
-			return _private.get(this).model.typography
+			return _.get(this).model.typography
 		}
 
 		get viewportWidthRanges () {
-			return _private.get(this).model.viewportWidthRanges
+			return _.get(this).model.viewportWidthRanges
 		}
 
 		load (cfg) {
-			cfg = _private.get(this).cleanseCfg(cfg)
-			_private.get(this).model.load(cfg)
+			let {
+				cleanseCfg,
+				model
+			} = _.get(this)
+
+			model.load(cleanseCfg(cfg))
 		}
 
 		validate () {
 			if (!this.isValid) {
-				console.error('[ERROR] Chassis Configuration: Invalid fields:')
-				console.error(this.invalidAttributes.join(', '))
-
-				if (this.invalidAttributes.includes('theme')) {
-					console.error(`[ERROR] Chassis Theme: "${this.theme}" is not a valid theme file. Chassis themes must have a ".theme" extension.`)
-					this.theme = _private.get(this).chassis.constants.theme.defaultFilePath
-				}
+				return this.emit('validation.failed', this.invalidAttributes)
 			}
+
+			this.emit('validation.succeeded')
 		}
 	}
 })()

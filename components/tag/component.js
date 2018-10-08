@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor	(chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 				baseTypography: chassis.settings.typography.ranges.first.typography
 			})
@@ -12,8 +12,8 @@ module.exports = (function () {
 		}
 
 		get variables () {
-			let { settings, typography, utils } = _private.get(this).chassis
-	    let { fontSize, lineHeight } = _private.get(this).baseTypography.small
+			let { settings, typography, utils } = _.get(this).chassis
+	    let { fontSize, lineHeight } = _.get(this).baseTypography.small
 			let { scaleRatio } = settings.typography
 
 	    let lineHeightMultiplier = utils.unit.pxToEm(lineHeight, fontSize)
@@ -38,7 +38,7 @@ module.exports = (function () {
 			}
 
 	    return {
-				'font-size': `${utils.unit.pxToEm(fontSize, _private.get(this).baseTypography.root.fontSize)}em`,
+				'font-size': `${utils.unit.pxToEm(fontSize, _.get(this).baseTypography.root.fontSize)}em`,
 	      'line-height': `${lineHeightMultiplier}`,
 				'padding': `${paddingY} ${paddingX}`,
 				'icon-width': iconDimension,

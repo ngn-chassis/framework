@@ -1,13 +1,13 @@
 module.exports = (function () {
-  let _private = new WeakMap()
+  let _ = new WeakMap()
 
   return class {
     constructor (chassis) {
-      _private.set(this, {chassis})
+      _.set(this, {chassis})
     }
 
     height () {
-  		let { settings, utils, viewport } = _private.get(this).chassis
+  		let { settings, utils, viewport } = _.get(this).chassis
       let { atRule, args, nodes, source } = arguments[0]
 
   		let operator = args[0]
@@ -28,7 +28,7 @@ module.exports = (function () {
   	}
 
     width () {
-      let { settings, utils, viewport } = _private.get(this).chassis
+      let { settings, utils, viewport } = _.get(this).chassis
       let { atRule, args, nodes, source } = arguments[0]
 
   		let operator = args[0]

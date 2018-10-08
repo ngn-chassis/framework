@@ -2,7 +2,7 @@ let ChassisSpecSheet = require('./spec-sheet.js')
 let ChassisStyleSheet = require('./style-sheet.js')
 
 module.exports = (function () {
-  let _private = new WeakMap()
+  let _ = new WeakMap()
 
   return class {
     constructor (chassis, type, customSpec = null) {
@@ -13,7 +13,7 @@ module.exports = (function () {
       this.defaultSpec = new ChassisSpecSheet(chassis, type, chassis.utils.file.parseStyleSheet(`../components/${type}/spec.css`), this.instance),
       this.theme = chassis.theme.getComponentSpec(type),
 
-      _private.set(this, {
+      _.set(this, {
         chassis,
 
         /**
@@ -45,7 +45,7 @@ module.exports = (function () {
           chassis.componentOverrides[this.type] = {}
 
           this.defaultSpec.states.forEach(state => {
-            let theme = _private.get(this).getStateTheme(state)
+            let theme = _.get(this).getStateTheme(state)
 
             if (!theme || Object.keys(theme).length === 0) {
               return
@@ -84,10 +84,10 @@ module.exports = (function () {
     }
 
     get themedCss () {
-      let { chassis } = _private.get(this)
+      let { chassis } = _.get(this)
 
       if (this.instance.isOverridable) {
-        _private.get(this).storeComponentOverrides()
+        _.get(this).storeComponentOverrides()
       }
 
       return this.theme ? this.defaultSpec.getThemedCss(this.theme) : this.defaultSpec.css

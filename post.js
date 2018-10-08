@@ -1,13 +1,13 @@
 module.exports = (function() {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {chassis})
+			_.set(this, {chassis})
 		}
 
 		'component-reset' () {
-			let { settings, utils } = _private.get(this).chassis
+			let { settings, utils } = _.get(this).chassis
 	    let { atRule, args, nodes } = arguments[0]
 
 			let type = args[0]

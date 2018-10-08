@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis
 			})
 
@@ -49,7 +49,7 @@ module.exports = (function () {
 				this.rules.push(rule.selector)
 			})
 
-			this.json = _private.get(this).chassis.utils.theme.generateJson(this.tree)
+			this.json = _.get(this).chassis.utils.theme.generateJson(this.tree)
 		}
 
 		get hasCustomProperties () {

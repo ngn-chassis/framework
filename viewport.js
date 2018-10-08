@@ -1,9 +1,9 @@
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 				validOperators: ['<', '<=', '=', '>=', '>', 'from', 'to'],
 
@@ -101,11 +101,11 @@ module.exports = (function () {
 		}
 
 		operatorIsValid (operator) {
-			return _private.get(this).validOperators.includes(operator)
+			return _.get(this).validOperators.includes(operator)
 		}
 
 		getMediaQueryParams (dimension, operator, value, buffer = 0) {
-			let { settings } = _private.get(this).chassis
+			let { settings } = _.get(this).chassis
 			let query
 
 			let isRange = typeof value === 'object'
@@ -125,7 +125,7 @@ module.exports = (function () {
 						console.error(`[ERROR] Chassis Media Query: '<' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
 					}
 
-					query = _private.get(this).getLessThanQuery(dimension, isRange, isEnv, value, buffer)
+					query = _.get(this).getLessThanQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case 'to':
@@ -134,12 +134,12 @@ module.exports = (function () {
 						console.error(`[ERROR] Chassis Media Query: '<=' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
 					}
 
-					query = _private.get(this).getLessThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
+					query = _.get(this).getLessThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case '=':
 					if (isRange) {
-						query = _private.get(this).getEqualQuery(dimension, value, buffer)
+						query = _.get(this).getEqualQuery(dimension, value, buffer)
 					} else {
 						query = `(${dimension}: (${isEnv ? value : `${value}px`}))`
 					}
@@ -151,7 +151,7 @@ module.exports = (function () {
 						console.error(`[ERROR] Chassis Media Query: '>=' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
 					}
 
-					query = _private.get(this).getGreaterThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
+					query = _.get(this).getGreaterThanOrEqualQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				case '>':
@@ -159,7 +159,7 @@ module.exports = (function () {
 						console.error(`[ERROR] Chassis Media Query: '>' type media query buffers do not support the '+-' operator. Please use '+' or '-' only.`)
 					}
 
-					query = _private.get(this).getGreaterThanQuery(dimension, isRange, isEnv, value, buffer)
+					query = _.get(this).getGreaterThanQuery(dimension, isRange, isEnv, value, buffer)
 					break
 
 				default:
@@ -171,7 +171,7 @@ module.exports = (function () {
 		}
 
 		getWidthRanges (string) {
-			let { settings } = _private.get(this).chassis
+			let { settings } = _.get(this).chassis
 
 			let spec = string.split(' ').map(entry => isNaN(parseInt(entry)) ? entry : parseInt(entry))
 			let firstEntry = spec[0]

@@ -1,4 +1,4 @@
-class ChassisUnitUtils {
+module.exports = class ChassisUnitUtils {
 	static pxToEm (pxValue, root) {
 		return pxValue / root
 	}
@@ -7,5 +7,3 @@ class ChassisUnitUtils {
 		return emValue * root
 	}
 }
-
-module.exports = ChassisUnitUtils

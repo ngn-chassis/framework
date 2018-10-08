@@ -1,4 +1,4 @@
-class ChassisMathUtils {
+module.exports = class ChassisMathUtils {
 	static precisionRound (number, precision = 1) {
 		let shift = (number, precision, reverseShift) => {
 			if (reverseShift) {
@@ -13,5 +13,3 @@ class ChassisMathUtils {
 		return shift(Math.round(shift(number, precision, false)), precision, true)
 	}
 }
-
-module.exports = ChassisMathUtils

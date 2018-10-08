@@ -1,4 +1,4 @@
-class ChassisThemeUtils {
+module.exports = class ChassisThemeUtils {
 	static componentSelectorIsValid (component) {
 		let hasCommas = component.selector.includes(',')
 		let numIssues = 0
@@ -158,5 +158,3 @@ class ChassisThemeUtils {
 		return json
 	}
 }
-
-module.exports = ChassisThemeUtils

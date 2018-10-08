@@ -13,7 +13,6 @@ module.exports = class Chassis extends NGN.EventEmitter {
 
     this.settings = new (require('./settings.js'))(this)
     this.settings.load(NGN.coalesce(cfg, {}))
-    this.settings.validate()
 
     this.typography = new (require('./typography.js'))(this)
     this.settings.typography.ranges.load(this.typography.ranges)
@@ -32,21 +31,40 @@ module.exports = class Chassis extends NGN.EventEmitter {
     this.componentOverrides = {}
   }
 
-  process (filepath, cb, from = void 0) {
+  process (filepath = void 0, cb) {
     if (path.basename(filepath).startsWith('_')) {
       return
     }
 
-    fs.readFile(filepath, (err, css) => {
-      if (err) {
-        return cb(err, null)
+    if (!this.settings.importBasePath) {
+      this.settings.importBasePath = path.dirname(filepath)
+    }
+
+    this.settings.on('validation.failed', invalidAttributes => {
+      if (this.invalidAttributes.includes('theme')) {
+        console.warn(`[WARNING] Chassis Theme: "${this.theme}" is not a valid theme file. Chassis themes must have a ".theme" extension. Reverting to default theme...`)
+        this.settings.theme = this.constants.theme.defaultFilePath
+        return this.settings.validate()
       }
 
-      let styleSheet = new (require('./style-sheet.js'))(this, css.toString().trim())
-
-      styleSheet.on('processing.error', err => cb(err, null))
-      styleSheet.on('processing.complete', output => cb(null, output))
-      styleSheet.process(from)
+      console.error('[ERROR] Chassis Configuration: Invalid fields:')
+			console.error(invalidAttributes.join(', '))
     })
+
+    this.settings.on('validation.succeeded', () => {
+      fs.readFile(filepath, (err, css) => {
+        if (err) {
+          return cb(err, null)
+        }
+
+        let styleSheet = new (require('./style-sheet.js'))(this, css.toString().trim())
+
+        styleSheet.on('processing.error', err => cb(err, null))
+        styleSheet.on('processing.complete', output => cb(null, output))
+        styleSheet.process(filepath)
+      })
+    })
+
+    this.settings.validate()
   }
 }

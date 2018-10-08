@@ -1,11 +1,11 @@
 const ChassisComponent = require('../component')
 
 module.exports = (function () {
-	let _private = new WeakMap()
+	let _ = new WeakMap()
 
 	return class {
 		constructor (chassis) {
-			_private.set(this, {
+			_.set(this, {
 				chassis,
 
 				components: chassis.constants.components
@@ -13,11 +13,12 @@ module.exports = (function () {
 	  }
 
 		extend () {
-			let { componentExtensions, settings, utils } = _private.get(this).chassis
+			let { chassis, components } = _.get(this)
+			let { componentExtensions, settings, utils } = chassis
 			let { args, atRule, source } = arguments[0]
 			let type = args[0]
 
-			if (!_private.get(this).components.has(type)) {
+			if (!components.has(type)) {
 				console.warn(`[WARNING] Line ${source.line}: Extensible component "${type}" not found. Discarding...`)
 				atRule.remove()
 				return
@@ -34,31 +35,31 @@ module.exports = (function () {
 			let spec = utils.css.newRule(atRule.parent.selector)
 			spec.nodes = atRule.nodes
 
-			let component = new ChassisComponent(_private.get(this).chassis, type, utils.css.newRoot([spec]), true)
+			let component = new ChassisComponent(chassis, type, utils.css.newRoot([spec]), true)
 
 			atRule.parent.replaceWith(component.customRules)
 		}
 
 		include () {
-			let { settings, utils } = _private.get(this).chassis
+			let { settings, utils } = _.get(this).chassis
 			let { args, atRule, root, source } = arguments[0]
 
 			let requestedComponents = []
 
 			if (args.includes('all')) {
-				for (let [key, value] of _private.get(this).components) {
+				for (let [key, value] of _.get(this).components) {
 					if (!Array.isArray(value)) {
 						requestedComponents.push(key)
 					}
 				}
 			} else {
 				for (let component of args) {
-					if (!_private.get(this).components.has(component)) {
+					if (!_.get(this).components.has(component)) {
 						console.warn(`[WARNING] Line ${source.line}: Component "${type}" not found. Discarding...`)
 						continue
 					}
 
-					let data = _private.get(this).components.get(component)
+					let data = _.get(this).components.get(component)
 
 					if (Array.isArray(data)) {
 						requestedComponents.push(...data)
@@ -71,7 +72,7 @@ module.exports = (function () {
 			// Order component includes for correct cascade behavior
 			let sorted = []
 
-			for (let [key, value] of _private.get(this).components) {
+			for (let [key, value] of _.get(this).components) {
 				if (requestedComponents.includes(key)) {
 					if (Array.isArray(value)) {
 						sorted.push(...value)
@@ -87,7 +88,7 @@ module.exports = (function () {
 			}
 
 			let css = NGN.dedupe(sorted).map(type => {
-				let component = new ChassisComponent(_private.get(this).chassis, type)
+				let component = new ChassisComponent(_.get(this).chassis, type)
 				let { themedCss } = component
 
 				// console.log(type);
@@ -116,11 +117,11 @@ module.exports = (function () {
 		}
 
 		new () {
-			let { settings, theme, utils } = _private.get(this).chassis
+			let { settings, theme, utils } = _.get(this).chassis
 			let { args, atRule, source } = arguments[0]
 			let type = args[0]
 
-			if (!_private.get(this).components.has(type)) {
+			if (!_.get(this).components.has(type)) {
 				console.warn(`[WARNING] Line ${source.line}: Chassis Component "${type}" not found. Discarding...`)
 				atRule.remove()
 				return
@@ -129,7 +130,7 @@ module.exports = (function () {
 			let spec = utils.css.newRule(atRule.parent.selector)
 			spec.nodes = atRule.nodes
 
-			let component = new ChassisComponent(_private.get(this).chassis, type, utils.css.newRoot([spec]))
+			let component = new ChassisComponent(_.get(this).chassis, type, utils.css.newRoot([spec]))
 
 			if (component.instance.resetType !== 'none') {
 				settings.componentResetSelectors[component.instance.resetType].push(...atRule.parent.selector.split(','))

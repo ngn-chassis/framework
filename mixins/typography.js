@@ -1,9 +1,9 @@
-const ChassisTypographyMixins = (function () {
-  let _private = new WeakMap()
+module.exports = (function () {
+  let _ = new WeakMap()
 
-  return class {
+  return class ChassisTypographyMixins {
     constructor (chassis) {
-      _private.set(this, {
+      _.set(this, {
         chassis,
         baseTypography: chassis.settings.typography.ranges.first.typography,
 
@@ -19,10 +19,10 @@ const ChassisTypographyMixins = (function () {
         },
 
         getInlineBlockDecls: (args, source) => {
-          let { settings, typography, utils } = _private.get(this).chassis
-          let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+          let { settings, typography, utils } = _.get(this).chassis
+          let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
-          args = _private.get(this).cleanseArgs(args, [
+          args = _.get(this).cleanseArgs(args, [
             'inline-block',
             'rtl',
             'margin',
@@ -74,7 +74,7 @@ const ChassisTypographyMixins = (function () {
           props.margin[rtl ? 'left' : 'right'] = margin.x
 
           if (!hasArgs) {
-            return _private.get(this).getApplyDecls(props)
+            return _.get(this).getApplyDecls(props)
           }
 
           let alteredProps = {}
@@ -205,12 +205,12 @@ const ChassisTypographyMixins = (function () {
             }
           })
 
-          return _private.get(this).getApplyDecls(alteredProps)
+          return _.get(this).getApplyDecls(alteredProps)
         },
 
         getApplyDecls: props => {
-          let { settings, typography, utils } = _private.get(this).chassis
-          let { fontSize, lineHeight } = _private.get(this).baseTypography.root
+          let { settings, typography, utils } = _.get(this).chassis
+          let { fontSize, lineHeight } = _.get(this).baseTypography.root
 
           let decls = []
 
@@ -247,7 +247,7 @@ const ChassisTypographyMixins = (function () {
 
       switch (type) {
         case 'inline-block':
-          decls = _private.get(this).getInlineBlockDecls(args, source)
+          decls = _.get(this).getInlineBlockDecls(args, source)
           break
       }
 
@@ -258,7 +258,7 @@ const ChassisTypographyMixins = (function () {
   	 * @mixin ellipsis
   	 */
   	ellipsis () {
-  		let { utils } = _private.get(this).chassis
+  		let { utils } = _.get(this).chassis
       let { atRule } = arguments[0]
 
   		atRule.replaceWith([
@@ -269,7 +269,7 @@ const ChassisTypographyMixins = (function () {
   	}
 
     fontSize () {
-  		let { constants, settings, typography, utils } = _private.get(this).chassis
+  		let { constants, settings, typography, utils } = _.get(this).chassis
   		let { args, atRule, source } = arguments[0]
 
   		let alias = args[0]
@@ -307,5 +307,3 @@ const ChassisTypographyMixins = (function () {
     }
   }
 })()
-
-module.exports = ChassisTypographyMixins
