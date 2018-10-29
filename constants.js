@@ -61,13 +61,13 @@ module.exports = class ChassisConstants {
 				component: require('./components/chassis-option/component.js'),
 				dependencies: []
 			}],
-			['chassis-selected-option', {
-				component: require('./components/chassis-selected-option/component.js'),
+			['chassis-selected-options', {
+				component: require('./components/chassis-selected-options/component.js'),
 				dependencies: []
 			}],
 			['chassis-select', {
 				component: require('./components/chassis-select/component.js'),
-				dependencies: ['chassis-selected-option', 'chassis-options', 'chassis-option', 'chassis-optgroup', 'chassis-optgroup-label', 'chassis-select']
+				dependencies: ['chassis-selected-options', 'chassis-options', 'chassis-option', 'chassis-optgroup', 'chassis-optgroup-label', 'chassis-select']
 			}],
 			['chassis-datalist', {
 				component: require('./components/chassis-datalist/component.js'),

@@ -1,15 +1,10 @@
 chassis-select {
   @state initial {
     $(selector) {
-      position: relative;
-      flex-direction: column;
-      vertical-align: middle;
-      outline: none;
-      cursor: pointer;
       user-select: none;
     }
 
-    $(selector) chassis-selected-option {
+    $(selector) chassis-selected-options {
       @chassis apply inline-block padding;
     }
 
@@ -22,7 +17,7 @@ chassis-select {
       @chassis apply inline-block padding;
     }
 
-    $(selector) chassis-selected-option svg.icon,
+    $(selector) chassis-selected-options svg.icon,
     $(selector) chassis-option svg.icon {
       transform: $(icon-offset);
     }
@@ -31,7 +26,7 @@ chassis-select {
       border-radius: $(pill-border-radius);
     }
 
-    $(selector).pill chassis-selected-option {
+    $(selector).pill chassis-selected-options {
       border-radius: $(pill-border-radius);
     }
 
@@ -39,7 +34,7 @@ chassis-select {
       border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
     }
 
-    $(selector).pill chassis-selected-option,
+    $(selector).pill chassis-selected-options,
     $(selector).pill chassis-option,
     $(selector).pill chassis-optgroup-label {
       padding-right: $(pill-padding-x);
@@ -86,15 +81,15 @@ chassis-select {
 		$(selector):invalid {}
 	}
 
+  @state multiple {
+    $(selector)[multiple] {}
+  }
+
   @state open {
     $(selector)[open] {}
 
-    $(selector)[open] chassis-options {
-      @chassis apply inline-block margin-bottom;
-    }
-
     $(selector)[open].pill,
-    $(selector)[open].pill chassis-selected-option {
+    $(selector)[open].pill chassis-selected-options {
       border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
     }
   }

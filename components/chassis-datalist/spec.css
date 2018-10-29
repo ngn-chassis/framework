@@ -1,11 +1,6 @@
 chassis-datalist {
   @state initial {
     $(selector) {
-      position: relative;
-      flex-direction: column;
-      vertical-align: middle;
-      outline: none;
-      cursor: pointer;
       user-select: none;
     }
 
@@ -72,10 +67,6 @@ chassis-datalist {
 
   @state open {
     $(selector)[open] {}
-
-    $(selector)[open] chassis-options {
-      @chassis apply inline-block margin-bottom;
-    }
 
     $(selector)[open].pill {
       border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;

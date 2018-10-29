@@ -4,6 +4,37 @@ padding remains in proportion to the container if the font size or container
 dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
+THEME
+Components need to be able to accept nested selectors. For example, to style an input within a chassis-control:
+
+chassis-control {
+  @state initial {
+    & input {
+      background: red;
+    }
+  }
+}
+
+..." input" needs to get appended to the selector list for the initial state.
+As of now, it only gets appended to the very end, and so only applies to the final
+element in the list.
+
+Add the following objects:
+headings {
+  h1 {}
+  h2 {}
+  h3 {}
+  h4 {}
+  h5 {}
+  h6 {}
+  legend {}
+}
+
+global {
+  ...any style overrides that the user wants to apply globally. These should be injected at the top of the stylesheet.
+}
+
+
 TEXT MODIFIERS
 * truncate should be:
 .text-truncate {
