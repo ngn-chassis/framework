@@ -50,12 +50,6 @@ button {
       order: 99;
       transform: $(right-icon-offset);
     }
-
-    $(selector).pill {
-      padding-left: $(pill-padding-x);
-      padding-right: $(pill-padding-x);
-      border-radius: $(pill-border-radius);
-    }
   }
 
   @state visited {

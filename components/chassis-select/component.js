@@ -17,9 +17,7 @@ module.exports = (function () {
   		let padding = (inlineHeight - lineHeightMultiplier) / 2
 
       return {
-        'icon-offset': `translateX(-${(typography.calculateInlinePaddingX(lineHeightMultiplier) / 2) - utils.unit.pxToEm(fontSize / (settings.typography.scaleRatio * 10), fontSize)}em)`,
-        'pill-padding-x': `${settings.typography.scaleRatio}em`,
-        'pill-border-radius': `${lineHeightMultiplier}em`
+        'icon-offset': `translateX(-${(typography.calculateInlinePaddingX(lineHeightMultiplier) / 2) - utils.unit.pxToEm(fontSize / (settings.typography.scaleRatio * 10), fontSize)}em)`
       }
     }
 	}

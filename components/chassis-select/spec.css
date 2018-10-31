@@ -21,25 +21,6 @@ chassis-select {
     $(selector) chassis-option svg.icon {
       transform: $(icon-offset);
     }
-
-    $(selector).pill {
-      border-radius: $(pill-border-radius);
-    }
-
-    $(selector).pill chassis-selected-options {
-      border-radius: $(pill-border-radius);
-    }
-
-    $(selector).pill chassis-options {
-      border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
-    }
-
-    $(selector).pill chassis-selected-options,
-    $(selector).pill chassis-option,
-    $(selector).pill chassis-optgroup-label {
-      padding-right: $(pill-padding-x);
-      padding-left: $(pill-padding-x);
-    }
   }
 
   @state hover {
@@ -87,11 +68,6 @@ chassis-select {
 
   @state open {
     $(selector)[open] {}
-
-    $(selector)[open].pill,
-    $(selector)[open].pill chassis-selected-options {
-      border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
-    }
   }
 
   @state optional {

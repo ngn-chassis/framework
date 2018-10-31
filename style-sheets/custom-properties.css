@@ -12,6 +12,9 @@
 	--inline-block-padding-x: $(inline-block-padding-x);
 	--inline-block-padding-y: $(inline-block-padding-y);
 
+	--pill-padding-x: $(pill-padding-x);
+	--pill-border-radius: $(pill-border-radius);
+
 	/* Copic Greys */
 	/* Cool greys */
 	--grey-c00 : rgb(232,240,243);

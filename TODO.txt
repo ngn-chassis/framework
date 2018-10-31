@@ -4,6 +4,14 @@ padding remains in proportion to the container if the font size or container
 dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
+PILL
+Remove default pill classes and make a mixin that generates the correct
+border-radius for pills.
+
+OR
+Create a custom property for the pill border-radius. This will get around the
+extra code needed for more complex components like select menus.
+
 THEME
 Components need to be able to accept nested selectors. For example, to style an input within a chassis-control:
 

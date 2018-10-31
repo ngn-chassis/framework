@@ -18,6 +18,142 @@ module.exports = (function () {
           }).filter(Boolean)
         },
 
+        getPillVariationDecls: (args, source) => {
+          let { settings, typography, utils } = _.get(this).chassis
+          let { fontSize, lineHeight } = _.get(this).baseTypography.root
+
+          args = _.get(this).cleanseArgs(args, [
+            'pill',
+            'padding',
+            'padding-x',
+            'padding-y',
+            'padding-top',
+            'padding-right',
+            'padding-bottom',
+            'padding-left',
+            'radius',
+            'radius-top',
+            'radius-top-left',
+            'radius-top-right',
+            'radius-right',
+            'radius-bottom',
+            'radius-bottom-left',
+            'radius-bottom-right',
+            'radius-left',
+          ])
+
+          let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
+          let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
+          let hasArgs = args.length > 1
+
+          let padding = {
+            x: `${settings.typography.scaleRatio}em`,
+            y: `${typography.calculateInlinePaddingY(lineHeightMult)}em`
+          }
+
+          let props = {
+            padding: {
+              top: padding.y,
+              right: padding.x,
+              bottom: padding.y,
+              left: padding.x
+            },
+            borderRadius: `${lineHeightMult}em`
+          }
+
+          if (!hasArgs) {
+            return _.get(this).getApplyDecls(props)
+          }
+
+          let alteredProps = {}
+
+          if (args.some(arg => arg.includes('padding'))) {
+            alteredProps.padding = {}
+          }
+
+          if (args.some(arg => arg.includes('radius'))) {
+            alteredProps.borderRadius = [0, 0, 0, 0]
+          }
+
+          args.forEach(arg => {
+            switch (arg) {
+              case 'padding':
+                alteredProps.padding = props.padding
+                break
+
+              case 'padding-x':
+                alteredProps.padding.right = padding.x
+                alteredProps.padding.left = padding.x
+                break
+
+              case 'padding-y':
+                alteredProps.padding.top = padding.y
+                alteredProps.padding.bottom = padding.y
+                break
+
+              case 'padding-top':
+                alteredProps.padding.top = padding.y
+                break
+
+              case 'padding-right':
+                alteredProps.padding.right = padding.x
+                break
+
+              case 'padding-bottom':
+                alteredProps.padding.bottom = padding.y
+                break
+
+              case 'padding-left':
+                alteredProps.padding.left = padding.x
+                break
+
+              case 'radius':
+                alteredProps.borderRadius = props.borderRadius
+                break
+
+              case 'radius-top':
+                alteredProps.borderRadius[0] = props.borderRadius
+                alteredProps.borderRadius[1] = props.borderRadius
+                break
+
+              case 'radius-bottom':
+                alteredProps.borderRadius[2] = props.borderRadius
+                alteredProps.borderRadius[3] = props.borderRadius
+                break
+
+              case 'radius-right':
+                alteredProps.borderRadius[1] = props.borderRadius
+                alteredProps.borderRadius[2] = props.borderRadius
+                break
+
+              case 'radius-left':
+                alteredProps.borderRadius[0] = props.borderRadius
+                alteredProps.borderRadius[3] = props.borderRadius
+                break
+
+              case 'radius-top-left':
+                alteredProps.borderRadius[0] = props.borderRadius
+                break
+
+              case 'radius-top-right':
+                alteredProps.borderRadius[1] = props.borderRadius
+                break
+
+              case 'radius-bottom-right':
+                alteredProps.borderRadius[2] = props.borderRadius
+                break
+
+              case 'radius-bottom-left':
+                alteredProps.borderRadius[3] = props.borderRadius
+                break
+
+              default: return
+            }
+          })
+
+          return _.get(this).getApplyDecls(alteredProps)
+        },
+
         getInlineBlockDecls: (args, source) => {
           let { settings, typography, utils } = _.get(this).chassis
           let { fontSize, lineHeight } = _.get(this).baseTypography.root
@@ -79,13 +215,17 @@ module.exports = (function () {
 
           let alteredProps = {}
 
+          if (args.some(arg => arg.includes('padding'))) {
+            alteredProps.padding = {}
+          }
+
+          if (args.some(arg => arg.includes('margin'))) {
+            alteredProps.margin = {}
+          }
+
           args.forEach(arg => {
             switch (arg) {
               case 'rtl':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.left = margin.x
 
                 if (alteredProps.margin.hasOwnProperty('right')) {
@@ -98,52 +238,28 @@ module.exports = (function () {
                 break
 
               case 'margin-x':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.right = margin.x
                 alteredProps.margin.left = margin.x
                 break
 
               case 'margin-y':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.top = margin.y
                 alteredProps.margin.bottom = margin.y
                 break
 
               case 'margin-top':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.top = margin.y
                 break
 
               case 'margin-right':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.right = margin.x
                 break
 
               case 'margin-bottom':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.bottom = margin.y
                 break
 
               case 'margin-left':
-                if (!alteredProps.hasOwnProperty('margin')) {
-                  alteredProps.margin = {}
-                }
-
                 alteredProps.margin.left = margin.x
                 break
 
@@ -152,52 +268,28 @@ module.exports = (function () {
                 break
 
               case 'padding-x':
-                if (!alteredProps.hasOwnProperty('padding')) {
-                  alteredProps.padding = {}
-                }
-
                 alteredProps.padding.right = padding.x
                 alteredProps.padding.left = padding.x
                 break
 
               case 'padding-y':
-                if (!alteredProps.hasOwnProperty('padding')) {
-                  alteredProps.padding = {}
-                }
-
                 alteredProps.padding.top = padding.y
                 alteredProps.padding.bottom = padding.y
                 break
 
               case 'padding-top':
-                if (!alteredProps.hasOwnProperty('padding')) {
-                  alteredProps.padding = {}
-                }
-
                 alteredProps.padding.top = padding.y
                 break
 
               case 'padding-right':
-                if (!alteredProps.hasOwnProperty('padding')) {
-                  alteredProps.padding = {}
-                }
-
                 alteredProps.padding.right = padding.x
                 break
 
               case 'padding-bottom':
-                if (!alteredProps.hasOwnProperty('padding')) {
-                  alteredProps.padding = {}
-                }
-
                 alteredProps.padding.bottom = padding.y
                 break
 
               case 'padding-left':
-                if (!alteredProps.hasOwnProperty('padding')) {
-                  alteredProps.padding = {}
-                }
-
                 alteredProps.padding.left = padding.x
                 break
 
@@ -218,23 +310,26 @@ module.exports = (function () {
           let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
 
           if (props.hasOwnProperty('margin')) {
-            let margin = []
-
             for (let edge in props.margin) {
               decls.push(utils.css.newDecl(`margin-${edge}`, props.margin[edge]))
             }
           }
 
           if (props.hasOwnProperty('padding')) {
-            let padding = []
-
             for (let edge in props.padding) {
               decls.push(utils.css.newDecl(`padding-${edge}`, props.padding[edge]))
             }
           }
 
+          if (props.hasOwnProperty('borderRadius')) {
+            if (typeof props.borderRadius === 'string') {
+              decls.push(utils.css.newDecl('border-radius', props.borderRadius))
+            } else if (Array.isArray(props.borderRadius)) {
+              decls.push(utils.css.newDecl('border-radius', props.borderRadius.join(' ')))
+            }
+          }
 
-          return decls
+          return decls.length ? decls : null
         }
       })
     }
@@ -243,12 +338,43 @@ module.exports = (function () {
       let { args, atRule, source } = arguments[0]
 
       let type = args[0]
-      let decls = []
+      let decls = null
 
       switch (type) {
         case 'inline-block':
           decls = _.get(this).getInlineBlockDecls(args, source)
           break
+
+        default:
+          console.warn(`[WARNING] Chassis apply mixin: No property type specified. Discarding...`)
+          break
+      }
+
+      if (!decls) {
+        return atRule.remove()
+      }
+
+      atRule.replaceWith(decls)
+    }
+
+    applyVariation () {
+      let { args, atRule, source } = arguments[0]
+
+      let type = args[0]
+      let decls = null
+
+      switch (type) {
+        case 'pill':
+          decls = _.get(this).getPillVariationDecls(args, source)
+          break
+
+        default:
+          console.warn(`[WARNING] Chassis apply-variation mixin: No variation type specified. Discarding...`)
+          break
+      }
+
+      if (!decls) {
+        return atRule.remove()
       }
 
       atRule.replaceWith(decls)

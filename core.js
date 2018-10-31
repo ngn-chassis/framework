@@ -168,7 +168,10 @@ module.exports = (function () {
 				'inline-block-margin-x': `${typography.calculateInlineMarginX(rootLineHeightMult)}em`,
 				'inline-block-margin-y': `${typography.calculateInlineMarginY(rootLineHeightMult)}em`,
 				'inline-block-padding-x': `${typography.calculateInlinePaddingX(rootLineHeightMult)}em`,
-				'inline-block-padding-y': `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`
+				'inline-block-padding-y': `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`,
+
+				'pill-padding-x': `${settings.typography.scaleRatio}em`,
+				'pill-border-radius': `${rootLineHeightMult}em`
 			})
 
 			// Add user-specified custom properties to root

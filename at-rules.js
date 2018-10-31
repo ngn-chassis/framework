@@ -21,6 +21,10 @@ module.exports = (function () {
 			return data => _.get(this).mixins.typography.applyProps(data)
 		}
 
+		get 'apply-variation' () {
+			return data => _.get(this).mixins.typography.applyVariation(data)
+		}
+
 		get 'constrain-width' () {
 			return data => _.get(this).mixins.layout.constrainWidth(data)
 		}
