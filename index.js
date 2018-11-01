@@ -27,8 +27,8 @@ module.exports = class Chassis extends NGN.EventEmitter {
     this.post = new (require('./post.js'))(this)
     this.core = new (require('./core.js'))(this)
 
-    this.componentExtensions = {}
-    this.componentOverrides = {}
+    this.componentExtensions = new (require('./data/stores/component-extensions.js'))
+    this.componentOverrides = new (require('./data/stores/component-overrides.js'))
   }
 
   process (filepath = void 0, cb) {

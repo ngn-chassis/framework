@@ -1,6 +1,6 @@
-const ChassisViewportWidthRangeModel = require('./models/viewport-width-range.js')
-const ChassisLayoutModel = require('./models/layout.js')
-const ChassisTypographyModel = require('./models/typography.js')
+const ChassisViewportWidthRangeModel = require('./data/models/viewport-width-range.js')
+const ChassisLayoutModel = require('./data/models/layout.js')
+const ChassisTypographyModel = require('./data/models/typography.js')
 
 module.exports = (function () {
 	let _ = new WeakMap()

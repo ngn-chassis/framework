@@ -139,11 +139,11 @@ module.exports = (function () {
 				generateOverrides: (type, state) => {
 					let { componentOverrides, theme, utils } = chassis
 
-					if (!componentOverrides.hasOwnProperty(type)) {
+					if (!componentOverrides.contains(type)) {
 						return
 					}
 
-					let stateOverrides = componentOverrides[type][state.params]
+					let stateOverrides = componentOverrides.getState(type, state.params)
 
 					if (!stateOverrides) {
 						return
@@ -310,10 +310,10 @@ module.exports = (function () {
 			chassis.utils.css.stripComments(_.get(this).spec)
 
 			// Get selector list from first line of spec sheet
-			this.selectors = _.get(this).spec.nodes[0].selector.split(',')
+			this.selectors = chassis.utils.css.selectorListAsArray(_.get(this).spec.nodes[0].selector)
 
-			if (chassis.componentExtensions.hasOwnProperty(type)) {
-	      this.selectors.push(...chassis.componentExtensions[type]);
+			if (chassis.componentExtensions.contains(type)) {
+				this.selectors.push(...chassis.componentExtensions.get(type).selectors)
 			}
 
 			this.variables = Object.assign(NGN.coalesce(instance.variables, {}), {

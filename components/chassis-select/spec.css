@@ -81,4 +81,8 @@ chassis-select {
   @state valid {
     $(selector):valid {}
   }
+
+  @variation multiple {
+    
+  }
 }

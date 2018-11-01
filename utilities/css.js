@@ -140,4 +140,8 @@ module.exports = class ChassisCssUtils {
 	static stripComments (tree) {
 		tree.walkComments(comment => comment.remove())
 	}
+
+	static selectorListAsArray (list) {
+		return list.split(',').map(selector => selector.trim())
+	}
 }

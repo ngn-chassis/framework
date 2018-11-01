@@ -24,14 +24,9 @@ module.exports = (function () {
 				return
 			}
 
-			let selectors = atRule.parent.selector.split(',').map(selector => selector.trim())
-
-			if (componentExtensions.hasOwnProperty(type)) {
-				componentExtensions[type].push(...selectors)
-			} else {
-				componentExtensions[type] = selectors
-			}
-
+			let selectors = utils.css.selectorListAsArray(atRule.parent.selector)
+			componentExtensions.contains(type) ? componentExtensions.extend(type, selectors) : componentExtensions.add(type, selectors)
+			
 			let spec = utils.css.newRule(atRule.parent.selector)
 			spec.nodes = atRule.nodes
 

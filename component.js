@@ -42,7 +42,7 @@ module.exports = (function () {
          * @private
          */
         storeComponentOverrides: () => {
-          chassis.componentOverrides[this.type] = {}
+          chassis.componentOverrides.add(this.type)
 
           this.defaultSpec.states.forEach(state => {
             let theme = _.get(this).getStateTheme(state)
@@ -51,10 +51,11 @@ module.exports = (function () {
               return
             }
 
-            chassis.componentOverrides[type][state] = {
+            chassis.componentOverrides.addState(this.type, {
+              name: state,
               properties: theme.properties,
               rules: theme.rules
-            }
+            })
           })
         }
       })

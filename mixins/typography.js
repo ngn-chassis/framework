@@ -301,13 +301,8 @@ module.exports = (function () {
         },
 
         getApplyDecls: props => {
-          let { settings, typography, utils } = _.get(this).chassis
-          let { fontSize, lineHeight } = _.get(this).baseTypography.root
-
+          let { utils } = _.get(this).chassis
           let decls = []
-
-          let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
-          let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
 
           if (props.hasOwnProperty('margin')) {
             for (let edge in props.margin) {
