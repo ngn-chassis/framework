@@ -4,6 +4,11 @@ padding remains in proportion to the container if the font size or container
 dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
+@import
+Add support for css before @chassis init; call. As of now, this css is either
+stripped or inserted after the init mixin css, which prevents @import calls
+from working correctly.
+
 PILL
 * Remove default pill classes and make a mixin that generates the correct
 border-radius for pills.

@@ -16,11 +16,16 @@ module.exports = (function () {
 		constructor (chassis, raw, namespaced = true) {
 			super()
 
-			this.tree = postcss.parse(raw)
+			try {
+				this.tree = postcss.parse(raw)
+			} catch (e) {
+				throw e
+			}
 
 			_.set(this, {
 				chassis,
 				atRules: {},
+				imports: [],
 				namespaced,
 
 				generateNamespacedSelector: selector => {
@@ -207,6 +212,11 @@ module.exports = (function () {
 			let sourceMap
 
 			tasks.add('Processing Imports', next => {
+				this.tree.walkAtRules('import', atRule => {
+					chassis.imports.push(atRule.params)
+					atRule.remove()
+				})
+
 				processImports()
 				processNesting()
 				next()
@@ -237,7 +247,7 @@ module.exports = (function () {
 				})
 			}
 
-			tasks.add('Running post-processing routines', next => {
+			tasks.add('Running Post-Processing Routines', next => {
 				this.tree.walkAtRules('chassis-post', atRule => {
   				let data = Object.assign({
   					root: this.tree,
@@ -308,8 +318,8 @@ module.exports = (function () {
 				}
 			}
 
-			// tasks.on('taskstart', evt => console.log(`${evt.name}...`))
-			// tasks.on('taskcomplete', evt => console.log('Done.'))
+			tasks.on('taskstart', evt => console.log(`${evt.name}...`))
+			tasks.on('taskcomplete', evt => console.log('Done.'))
 
 			tasks.on('complete', () => this.emit('processing.complete', {
 				css: this.tree.toString(),

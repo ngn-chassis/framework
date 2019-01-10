@@ -77,6 +77,14 @@ module.exports = class ChassisConstants {
 				component: require('./components/chassis-control/component.js'),
 				dependencies: []
 			}],
+			['chassis-layout-cell', {
+				component: require('./components/chassis-layout-cell/component.js'),
+				dependencies: []
+			}],
+			['chassis-layout', {
+				component: require('./components/chassis-layout/component.js'),
+				dependencies: ['chassis-layout-cell']
+			}],
 			['form-controls', ['input', 'textarea', 'chassis-select', 'chassis-datalist', 'chassis-control']]
 		])
 	}

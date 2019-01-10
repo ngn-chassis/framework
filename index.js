@@ -20,6 +20,7 @@ module.exports = class Chassis extends NGN.EventEmitter {
     this.viewport = new (require('./viewport.js'))(this)
     this.settings.viewportWidthRanges.load(this.viewport.getWidthRanges(this.settings.layout.breakpoints))
 
+    this.imports = []
     this.theme = new (require('./theme.js'))(this)
     this.layout = new (require('./layout.js'))(this)
     this.atRules = new (require('./at-rules.js'))(this)
@@ -61,6 +62,7 @@ module.exports = class Chassis extends NGN.EventEmitter {
 
         styleSheet.on('processing.error', err => cb(err, null))
         styleSheet.on('processing.complete', output => cb(null, output))
+
         styleSheet.process(filepath)
       })
     })

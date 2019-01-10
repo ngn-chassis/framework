@@ -1,0 +1,5 @@
+chassis-layout-cell {
+	@state initial {
+		$(selector) {}
+	}
+}

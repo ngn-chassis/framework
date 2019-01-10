@@ -8,9 +8,9 @@ module.exports = (function () {
 
 			_.set(this, {
 				chassis,
+				spec,
 
 				overrides: NGN.coalesce(instance.overrides),
-				spec,
 
 				applyCustomizedState: (state, customState) => {
 					let { utils } = chassis

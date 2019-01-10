@@ -3,9 +3,11 @@ chassis-option {
     $(selector) {}
   }
 
+  /* No :hover here because chassis-option uses [hover] attribute internally
+  to manage hover state */
   @state hover {
-    $(selector):hover,
-    $(selector).hover {}
+    $(selector).hover,
+    $(selector)[hover] {}
   }
 
   @state active {
@@ -21,7 +23,8 @@ chassis-option {
   }
 
   @state disabled {
-    $(selector):disabled {
+    $(selector):disabled,
+    $(selector)[disabled] {
       pointer-events: none;
     }
   }
