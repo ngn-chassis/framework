@@ -1,23 +1,21 @@
-module.exports = (function () {
-	let _ = new WeakMap()
+module.exports = class {
+	constructor (chassis) {
+		Object.defineProperties(this, {
+			chassis: NGN.privateconst(chassis)
+		})
 
-	return class {
-		constructor (chassis) {
-	    _.set(this, {chassis})
+		this.resetType = 'inline-block'
+	}
 
-	    this.resetType = 'inline-block'
-		}
+	get variables () {
+		let { settings, utils } = this.chassis
+		let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
 
-		get variables () {
-			let { settings, utils } = _.get(this).chassis
-			let { fontSize, lineHeight } = settings.typography.ranges.first.typography.root
+		let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
 
-			let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
-
-			return {
-				'width': 'auto',
-				'height': `${lineHeightInEms}em`
-			}
+		return {
+			'width': 'auto',
+			'height': `${lineHeightInEms}em`
 		}
 	}
-})()
+}

@@ -1,497 +1,512 @@
-module.exports = (function () {
-	let PRIVATE = new WeakMap()
+module.exports = class {
+	constructor (chassis) {
+		Object.defineProperties(this, {
+			chassis: NGN.privateconst(chassis),
+			baseTypography: NGN.privateconst(chassis.settings.typography.ranges.first.typography),
 
-	return class {
-		constructor (chassis) {
-			PRIVATE.set(this, {
-				chassis,
-				baseTypography: chassis.settings.typography.ranges.first.typography,
+			selectors: NGN.privateconst({
+				outerContainers: '.chassis section, .chassis nav, .chassis form',
+				innerContainers: '.chassis nav section, .chassis section nav, .chassis nav nav, .chassis article, .chassis fieldset, .chassis figure, .chassis pre, .chassis blockquote, .chassis table, .chassis canvas, .chassis embed'
+			}),
 
-				selectors: {
-					outerContainers: '.chassis section, .chassis nav, .chassis form',
-					innerContainers: '.chassis nav section, .chassis section nav, .chassis nav nav, .chassis article, .chassis fieldset, .chassis figure, .chassis pre, .chassis blockquote, .chassis table, .chassis canvas, .chassis embed'
-				},
+			appendNestedRulesets: NGN.privateconst((root, selectors, nestedRules) => {
+				let { utils } = chassis
 
-				appendNestedRulesets: (root, selectors, nestedRules) => {
-					let { utils } = chassis
+				Object.keys(nestedRules).forEach(nestedRule => {
+					let nestedSelector = selectors.map(selector => `${selector} ${nestedRule}`).join(', ')
+					let { properties, rules } = nestedRules[nestedRule]
 
-					Object.keys(nestedRules).forEach(nestedRule => {
-						let nestedSelector = selectors.map(selector => `${selector} ${nestedRule}`).join(', ')
-						let { properties, rules } = nestedRules[nestedRule]
-
-						let decls = Object.keys(properties).map(property => {
-							return utils.css.newDeclObj(property, properties[property])
-						})
-
-						root.append(utils.css.newRule(nestedSelector, decls))
-
-						if (Object.keys(rules).length > 0) {
-							PRIVATE.get(this).appendNestedRulesets(root, [nestedSelector], rules)
-						}
+					let decls = Object.keys(properties).map(property => {
+						return utils.css.createDeclObj(property, properties[property])
 					})
-				},
 
-				applyTheme: (element, initialRule, root = chassis.utils.css.newRoot([])) => {
-					let { theme, utils } = chassis
+					root.append(utils.css.createRule(nestedSelector, decls))
 
-					let selectors = initialRule.selector.split(',').map(selector => selector.trim())
-					let themeData = theme.getElement(element)
+					if (Object.keys(rules).length > 0) {
+						this.appendNestedRulesets(root, [nestedSelector], rules)
+					}
+				})
+			}),
 
-					if (!themeData) {
-						return root.append(initialRule)
+			applyTheme: NGN.privateconst((element, initialRule, root = chassis.utils.css.createRoot([])) => {
+				let { theme, utils } = chassis
+
+				let selectors = initialRule.selector.split(',').map(selector => selector.trim())
+				let themeData = theme.getElement(element)
+
+				if (!themeData) {
+					return root.append(initialRule)
+				}
+
+				let propKeys = Object.keys(themeData.properties)
+				let ruleKeys = Object.keys(themeData.rules)
+
+				if (propKeys.length > 0) {
+					let decls = []
+
+					for (let property in themeData.properties) {
+						decls.push(utils.css.createDecl(property, themeData.properties[property]))
 					}
 
-					let propKeys = Object.keys(themeData.properties)
-					let ruleKeys = Object.keys(themeData.rules)
+					initialRule.nodes = utils.css.mergeDecls(initialRule.nodes, decls)
+				}
 
-					if (propKeys.length > 0) {
-						let decls = []
+				root.append(initialRule)
 
-						for (let property in themeData.properties) {
-							decls.push(utils.css.newDecl(property, themeData.properties[property]))
-						}
+				if (ruleKeys.length > 0) {
+					let rulesets = this.appendNestedRulesets(root, selectors, themeData.rules)
+				}
 
-						initialRule.nodes = utils.css.mergeDecls(initialRule.nodes, decls)
-					}
+				return root
+			}),
 
-					root.append(initialRule)
+			parseSpecSheet: NGN.privateconst((path, variables = {}) => {
+				let { utils } = chassis
 
-					if (ruleKeys.length > 0) {
-						let rulesets = PRIVATE.get(this).appendNestedRulesets(root, selectors, themeData.rules)
-					}
+				let tree = utils.file.parseStyleSheet(path)
 
-					return root
-				},
-
-				parseSpecSheet: (path, variables = {}) => {
-					let { utils } = chassis
-
-					let tree = utils.file.parseStyleSheet(path)
-
-					if (!variables) {
-						return tree
-					}
-
-					tree.walk(node => {
-						if (node.type === 'atrule') {
-							node.params = utils.string.resolveVariables(node.params, variables)
-						}
-
-						if (node.type === 'rule') {
-							node.selector = utils.string.resolveVariables(node.selector, variables)
-						}
-
-						if (node.type === 'decl') {
-							node.prop = utils.string.resolveVariables(node.prop, variables)
-							node.value = utils.string.resolveVariables(node.value, variables)
-						}
-			    })
-
+				if (!variables) {
 					return tree
 				}
+
+				tree.walk(node => {
+					if (node.type === 'atrule') {
+						node.params = utils.string.resolveVariables(node.params, variables)
+					}
+
+					if (node.type === 'rule') {
+						node.selector = utils.string.resolveVariables(node.selector, variables)
+					}
+
+					if (node.type === 'decl') {
+						node.prop = utils.string.resolveVariables(node.prop, variables)
+						node.value = utils.string.resolveVariables(node.value, variables)
+					}
+				})
+
+				return tree
 			})
-		}
+		})
+	}
 
-		get css () {
-			return PRIVATE.get(this).chassis.utils.css.newRoot([
-				this.charset,
-				this.imports,
-				this.viewport,
-				this.reset,
-				this.customProperties,
-				this.customMedia,
-				this.globalModifiers,
-				this.constraints,
-				this.html,
-				this.body,
-				this.rootHeadings,
-				this.outerContainers,
-				this.innerContainers,
-				this.paragraph,
-				this.typographyRanges,
-				this.inlineComponentReset,
-				this.inlineBlockComponentReset,
-				this.blockComponentReset
-			])
-		}
+	get css () {
+		return this.chassis.utils.css.createRoot([
+			this.charset,
+			this.imports,
+			this.viewport,
+			this.reset,
+			this.customProperties,
+			this.customMedia,
+			this.globalModifiers,
+			this.constraints,
+			this.html,
+			this.body,
+			this.rootHeadings,
+			this.outerContainers,
+			this.innerContainers,
+			this.paragraph,
+			this.typographyRanges,
+			this.inlineComponentReset,
+			this.inlineBlockComponentReset,
+			this.blockComponentReset
+		])
+	}
 
-		// TODO: Make this customizable via config params
-		get charset () {
-			let { utils } = PRIVATE.get(this).chassis
+	// TODO: Make this customizable via config params
+	get charset () {
+		let { utils } = this.chassis
 
-			return utils.css.newAtRule({
-				name: 'charset',
-				params: '"UTF-8"'
-			})
-		}
+		return utils.css.createAtRule({
+			name: 'charset',
+			params: '"UTF-8"'
+		})
+	}
 
-		get imports () {
-			let { imports, utils } = PRIVATE.get(this).chassis
+	get imports () {
+		let { imports, utils } = this.chassis
 
-			return utils.css.newRoot([
-				...imports.map(path => {
-					return utils.css.newAtRule({
-						name: 'import',
-						params: path
-					})
-				}),
-				utils.css.newRule('null', [])
-			])
-		}
+		return utils.css.createRoot([
+			...imports.map(path => {
+				return utils.css.createAtRule({
+					name: 'import',
+					params: path
+				})
+			}),
+			utils.css.createRule('null', [])
+		])
+	}
 
-		// TODO: Make this customizable via config params
-		// NOTE: autoprefixer chokes if we create the @viewport rule manually, so
-		// we're parsing it from a spec sheet as a workaround.
-		// TODO: Look into a solution to the above issue
-		get viewport () {
-			let { utils } = PRIVATE.get(this).chassis
-			let root = PRIVATE.get(this).parseSpecSheet('../style-sheets/viewport.css')
+	// TODO: Make this customizable via config params
+	// NOTE: autoprefixer chokes if we create the @viewport rule manually, so
+	// we're parsing it from a spec sheet as a workaround.
+	// TODO: Look into a solution to the above issue
+	get viewport () {
+		let { utils } = this.chassis
+		let root = this.parseSpecSheet('../style-sheets/viewport.css')
 
-			root.nodes[0].push(utils.css.newDecl('width', 'device-width'))
+		root.nodes[0].push(utils.css.createDecl('width', 'device-width'))
 
-			return root
-		}
+		return root
+	}
 
-		get reset () {
-			let { utils } = PRIVATE.get(this).chassis
-			let { fontSize, lineHeight } = PRIVATE.get(this).baseTypography.root
+	get reset () {
+		let { utils } = this.chassis
+		let { fontSize, lineHeight } = this.baseTypography.root
 
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/reset.css', {
-				'root-line-height': utils.unit.pxToEm(lineHeight, fontSize)
-			})
-		}
+		return this.parseSpecSheet('../style-sheets/reset.css', {
+			'root-line-height': utils.unit.pxToEm(lineHeight, fontSize)
+		})
+	}
 
-		get customProperties () {
-			let { settings, theme, typography, utils } = PRIVATE.get(this).chassis
-			let { root, small, large, larger, largest } = settings.typography.ranges.first.typography
-			let headingSizeAliases = settings.typography.fontSizes.headings
+	get customProperties () {
+		let { settings, theme, typography, utils } = this.chassis
+		let { root, small, large, larger, largest } = settings.typography.ranges.first.typography
+		let headingSizeAliases = settings.typography.fontSizes.headings
 
-	    let rootLineHeightMult = utils.unit.pxToEm(root.lineHeight, root.fontSize)
+		let rootLineHeightMult = utils.unit.pxToEm(root.lineHeight, root.fontSize)
 
-			let props = PRIVATE.get(this).parseSpecSheet('../style-sheets/custom-properties.css', {
-				'layout-min-width': `${settings.layout.minWidth}px`,
-				'layout-max-width': `${settings.layout.maxWidth}px`,
-				'layout-gutter': settings.layout.gutter,
+		let props = this.parseSpecSheet('../style-sheets/custom-properties.css', {
+			'layout-min-width': `${settings.layout.minWidth}px`,
+			'layout-max-width': `${settings.layout.maxWidth}px`,
+			'layout-gutter': settings.layout.gutter,
 
-				// TODO: add breakpoint vars
+			// TODO: add breakpoint vars
 
-				'typography-scale-ratio': settings.typography.scaleRatio,
-				'root-font-size': `${root.fontSize}px`,
-				'root-line-height': rootLineHeightMult,
+			'typography-scale-ratio': settings.typography.scaleRatio,
+			'root-font-size': `${root.fontSize}px`,
+			'root-line-height': rootLineHeightMult,
 
-				'inline-block-margin-x': `${typography.calculateInlineMarginX(rootLineHeightMult)}em`,
-				'inline-block-margin-y': `${typography.calculateInlineMarginY(rootLineHeightMult)}em`,
-				'inline-block-padding-x': `${typography.calculateInlinePaddingX(rootLineHeightMult)}em`,
-				'inline-block-padding-y': `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`,
+			'inline-block-margin-x': `${typography.calculateInlineMarginX(rootLineHeightMult)}em`,
+			'inline-block-margin-y': `${typography.calculateInlineMarginY(rootLineHeightMult)}em`,
+			'inline-block-padding-x': `${typography.calculateInlinePaddingX(rootLineHeightMult)}em`,
+			'inline-block-padding-y': `${typography.calculateInlinePaddingY(rootLineHeightMult)}em`,
 
-				'pill-padding-x': `${settings.typography.scaleRatio}em`,
-				'pill-border-radius': `${rootLineHeightMult}em`
-			})
+			'pill-padding-x': `${settings.typography.scaleRatio}em`,
+			'pill-border-radius': `${rootLineHeightMult}em`
+		})
 
-			// Add user-specified custom properties to root
-			Object.keys(theme.customProperties).forEach(prop => {
-				props.nodes[0].append(utils.css.newDeclObj(prop, theme.customProperties[prop]))
-			})
+		// Add user-specified custom properties to root
+		Object.keys(theme.customProperties).forEach(prop => {
+			props.nodes[0].append(utils.css.createDeclObj(prop, theme.customProperties[prop]))
+		})
 
-			return props
-		}
+		return props
+	}
 
-		get customMedia () {
-			let { settings, utils } = PRIVATE.get(this).chassis
+	get customMedia () {
+		let { settings, utils } = this.chassis
 
-			let nodes = []
+		let nodes = []
 
-			settings.viewportWidthRanges.records.forEach((range, index) => {
-				let props = [
-					utils.css.newAtRule({
-						name: 'custom-media',
-						params: `--${range.name}-vp screen and (min-width: ${range.lowerBound}px) and (max-width: ${range.upperBound}px)`
-					})
-				]
-
-				if (range.lowerBound > 0) {
-					props.unshift(utils.css.newAtRule({
-						name: 'custom-media',
-						params: `--${range.name}-vp-and-below screen and (max-width: ${range.lowerBound}px)`
-					}))
-
-					props.unshift(utils.css.newAtRule({
-						name: 'custom-media',
-						params: `--below-${range.name}-vp screen and (max-width: ${range.lowerBound - 1}px)`
-					}))
-				}
-
-				props.push(utils.css.newAtRule({
+		settings.viewportWidthRanges.records.forEach((range, index) => {
+			let props = [
+				utils.css.createAtRule({
 					name: 'custom-media',
-					params: `--${range.name}-vp-and-above screen and (min-width: ${range.lowerBound}px)`
-				}))
-
-				props.push(utils.css.newAtRule({
-					name: 'custom-media',
-					params: `--above-${range.name}-vp screen and (min-width: ${range.upperBound + 1}px)`
-				}))
-
-				nodes.push(...props)
-			})
-
-			return utils.css.newRoot([
-				...nodes,
-				// TODO: Find a better way to force a semicolon
-				// Without this empty rulest, postcss will not add a semicolon to the end
-				// of the last @custom-media at-rule. This empty ruleset will be cleaned
-				// up later, during Chassis.process() operation.
-				utils.css.newRule('.chassis', [])
-			])
-		}
-
-		get globalModifiers () {
-			// TODO: Add font-weight stuff here
-
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/global-modifiers.css')
-		}
-
-		get constraints () {
-			let { layout, settings, utils } = PRIVATE.get(this).chassis
-
-			let rules = [
-				utils.css.newRule('.chassis .constraint.width', [
-					utils.css.newDeclObj('width', '100%'),
-					utils.css.newDeclObj('min-width', `${settings.layout.minWidth}px`),
-					utils.css.newDeclObj('max-width', `${settings.layout.maxWidth}px`),
-					utils.css.newDeclObj('margin', '0 auto'),
-					utils.css.newDeclObj('padding-left', `${settings.layout.gutter}`),
-					utils.css.newDeclObj('padding-right', `${settings.layout.gutter}`)
-				])
+					params: `--${range.name}-vp screen and (min-width: ${range.lowerBound}px) and (max-width: ${range.upperBound}px)`
+				})
 			]
 
-			let calculatedValueUnits = [
-				'vw', '%'
-			]
+			if (range.lowerBound > 0) {
+				props.unshift(utils.css.createAtRule({
+					name: 'custom-media',
+					params: `--${range.name}-vp-and-below screen and (max-width: ${range.lowerBound}px)`
+				}))
 
-			let gutterUnits = utils.string.getUnits(settings.layout.gutter)
-
-			if (calculatedValueUnits.includes(gutterUnits)) {
-				rules.push(...[
-					utils.css.newAtRule({
-						name: 'media',
-						params: `screen and (max-width: ${settings.layout.minWidth}px)`,
-						nodes: [
-							utils.css.newRule('.chassis .constraint.width', [
-								utils.css.newDecl('padding-left', layout.minGutterWidth),
-								utils.css.newDecl('padding-right', layout.minGutterWidth)
-							])
-						]
-					}),
-					utils.css.newAtRule({
-						name: 'media',
-						params: `screen and (min-width: ${settings.layout.maxWidth}px)`,
-						nodes: [
-							utils.css.newRule('.chassis .constraint.width', [
-								utils.css.newDecl('padding-left', layout.maxGutterWidth),
-								utils.css.newDecl('padding-right', layout.maxGutterWidth)
-							])
-						]
-					})
-				])
+				props.unshift(utils.css.createAtRule({
+					name: 'custom-media',
+					params: `--below-${range.name}-vp screen and (max-width: ${range.lowerBound - 1}px)`
+				}))
 			}
 
-			return utils.css.newRoot(rules)
+			props.push(utils.css.createAtRule({
+				name: 'custom-media',
+				params: `--${range.name}-vp-and-above screen and (min-width: ${range.lowerBound}px)`
+			}))
+
+			props.push(utils.css.createAtRule({
+				name: 'custom-media',
+				params: `--above-${range.name}-vp screen and (min-width: ${range.upperBound + 1}px)`
+			}))
+
+			nodes.push(...props)
+		})
+
+		return utils.css.createRoot([
+			...nodes,
+			// TODO: Find a better way to force a semicolon
+			// Without this empty rulest, postcss will not add a semicolon to the end
+			// of the last @custom-media at-rule. This empty ruleset will be cleaned
+			// up later, during Chassis.process() operation.
+			utils.css.createRule('.chassis', [])
+		])
+	}
+
+	get globalModifiers () {
+		// TODO: Add font-weight stuff here
+
+		return this.parseSpecSheet('../style-sheets/global-modifiers.css')
+	}
+
+	get constraints () {
+		let { layout, settings, utils } = this.chassis
+
+		let rules = [
+			utils.css.createRule('.chassis .constraint.width', [
+				utils.css.createDeclObj('width', '100%'),
+				utils.css.createDeclObj('min-width', `${settings.layout.minWidth}px`),
+				utils.css.createDeclObj('max-width', `${settings.layout.maxWidth}px`),
+				utils.css.createDeclObj('margin', '0 auto'),
+				utils.css.createDeclObj('padding-left', `${settings.layout.gutter}`),
+				utils.css.createDeclObj('padding-right', `${settings.layout.gutter}`)
+			])
+		]
+
+		let calculatedValueUnits = [
+			'vw', '%'
+		]
+
+		let gutterUnits = utils.string.getUnits(settings.layout.gutter)
+
+		if (calculatedValueUnits.includes(gutterUnits)) {
+			rules.push(...[
+				utils.css.createAtRule({
+					name: 'media',
+					params: `screen and (max-width: ${settings.layout.minWidth}px)`,
+					nodes: [
+						utils.css.createRule('.chassis .constraint.width', [
+							utils.css.createDecl('padding-left', layout.minGutterWidth),
+							utils.css.createDecl('padding-right', layout.minGutterWidth)
+						])
+					]
+				}),
+				utils.css.createAtRule({
+					name: 'media',
+					params: `screen and (min-width: ${settings.layout.maxWidth}px)`,
+					nodes: [
+						utils.css.createRule('.chassis .constraint.width', [
+							utils.css.createDecl('padding-left', layout.maxGutterWidth),
+							utils.css.createDecl('padding-right', layout.maxGutterWidth)
+						])
+					]
+				})
+			])
 		}
 
-		get html () {
-			let { constants, settings, theme, utils } = PRIVATE.get(this).chassis
-			let { fontSize, lineHeight } = PRIVATE.get(this).baseTypography.root
+		return utils.css.createRoot(rules)
+	}
 
-			let root = PRIVATE.get(this).applyTheme('html', utils.css.newRule('html.chassis', [
-				utils.css.newDeclObj('font-size', `${fontSize}px`)
-			]))
+	get html () {
+		let { constants, settings, theme, utils } = this.chassis
+		let { fontSize, lineHeight } = this.baseTypography.root
 
-			return root
+		let root = this.applyTheme('html', utils.css.createRule('html.chassis', [
+			utils.css.createDeclObj('font-size', `${fontSize}px`)
+		]))
+
+		return root
+	}
+
+	get body () {
+		let { settings, theme, utils } = this.chassis
+		let { fontSize, lineHeight } = this.baseTypography.root
+
+		return this.applyTheme('body', utils.css.createRule('.chassis body', [
+			utils.css.createDeclObj('min-width', `${settings.layout.minWidth}px`),
+			utils.css.createDeclObj('font-family', 'var(--font-family, initial)'),
+			utils.css.createDeclObj('color', 'var(--text-color, initial)')
+		]))
+	}
+
+	get rootHeadings () {
+		let { settings, theme, typography, utils } = this.chassis
+		let { root } = this.baseTypography
+
+		let headingSizeAliases = settings.typography.fontSizes.headings
+		let formLegendAlias = settings.typography.fontSizes.formLegend
+		let rules = utils.css.createRoot([])
+
+		let heading
+
+		for (let i = 1; i <= 6; i++) {
+			heading = this.baseTypography[headingSizeAliases[i]]
+
+			this.applyTheme(`h${i}`, utils.css.createRule(`.chassis h${i}`, [
+				utils.css.createDeclObj(
+					'font-size',
+					`${utils.unit.pxToEm(heading.fontSize, root.fontSize)}em`
+				),
+
+				utils.css.createDeclObj(
+					'line-height',
+					`${utils.unit.pxToEm(heading.lineHeight, heading.fontSize)}`
+				),
+
+				utils.css.createDeclObj(
+					'margin-bottom',
+					`${utils.unit.pxToEm(typography.calculateMarginBottom(heading.lineHeight), heading.fontSize)}em`
+				)
+			]), rules)
 		}
 
-		get body () {
-			let { settings, theme, utils } = PRIVATE.get(this).chassis
-			let { fontSize, lineHeight } = PRIVATE.get(this).baseTypography.root
+		heading = this.baseTypography[formLegendAlias]
 
-			return PRIVATE.get(this).applyTheme('body', utils.css.newRule('.chassis body', [
-				utils.css.newDeclObj('min-width', `${settings.layout.minWidth}px`),
-				utils.css.newDeclObj('font-family', 'var(--font-family, initial)'),
-				utils.css.newDeclObj('color', 'var(--text-color, initial)')
-			]))
-		}
+		this.applyTheme('legend', utils.css.createRule('.chassis legend', [
+			utils.css.createDeclObj(
+				'font-size',
+				`${utils.unit.pxToEm(heading.fontSize, root.fontSize)}rem`
+			),
 
-		get rootHeadings () {
-			let { settings, theme, typography, utils } = PRIVATE.get(this).chassis
-			let { root } = PRIVATE.get(this).baseTypography
+			utils.css.createDeclObj(
+				'line-height',
+				`${utils.unit.pxToEm(heading.lineHeight, heading.fontSize)}`
+			),
+
+			utils.css.createDeclObj(
+				'margin-bottom',
+				`${utils.unit.pxToEm(typography.calculateMarginBottom(heading.lineHeight), heading.fontSize)}em`
+			)
+		]), rules)
+
+		return rules
+	}
+
+	get typographyRanges () {
+		let { layout, settings, typography, utils } = this.chassis
+
+		let { ranges } = settings.typography
+		let mediaQueries = utils.css.createRoot([])
+
+		for (let i = 1; i < ranges.recordCount; i++) {
+			let range = ranges.find(i)
+			let { fontSize, lineHeight } = range.typography.root
+
+			let mediaQuery = utils.css.createAtRule({
+				name: 'media',
+				params: `screen and (min-width: ${range.bounds.lower}px)`,
+				nodes: []
+			})
+
+			let htmlRule = utils.css.createRule('html.chassis', [])
+
+			if (fontSize !== this.baseTypography.root.fontSize) {
+				htmlRule.append(utils.css.createDecl('font-size', `${fontSize}px`))
+			}
+
+			htmlRule.append(utils.css.createDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`))
+
+			mediaQuery.nodes.push(htmlRule)
+
+			let bodyRule = utils.css.createRule('.chassis body', [
+				utils.css.createDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`)
+			])
+
+			mediaQuery.nodes.push(bodyRule)
 
 			let headingSizeAliases = settings.typography.fontSizes.headings
 			let formLegendAlias = settings.typography.fontSizes.formLegend
-			let rules = utils.css.newRoot([])
+
+			let heading
 
 			for (let i = 1; i <= 6; i++) {
-				PRIVATE.get(this).applyTheme(`h${i}`, utils.css.newRule(`.chassis h${i}`, [
-					utils.css.newDeclObj(
-						'font-size',
-						`${utils.unit.pxToEm(PRIVATE.get(this).baseTypography[headingSizeAliases[i]].fontSize, root.fontSize)}em`
-					),
-					utils.css.newDeclObj(
+				heading = range.typography[headingSizeAliases[i]]
+
+				mediaQuery.nodes.push(utils.css.createRule(`.chassis h${i}`, [
+					utils.css.createDeclObj(
 						'line-height',
-						`${utils.unit.pxToEm(PRIVATE.get(this).baseTypography[headingSizeAliases[i]].lineHeight, PRIVATE.get(this).baseTypography[headingSizeAliases[i]].fontSize)}`
+						`${utils.unit.pxToEm(heading.lineHeight, heading.fontSize)}`
 					),
-					utils.css.newDeclObj(
+
+					utils.css.createDeclObj(
 						'margin-bottom',
-						`${utils.unit.pxToEm(typography.calculateMarginBottom(PRIVATE.get(this).baseTypography[headingSizeAliases[i]].lineHeight), PRIVATE.get(this).baseTypography[headingSizeAliases[i]].fontSize)}em`
+						`${utils.unit.pxToEm(typography.calculateMarginBottom(heading.lineHeight), heading.fontSize)}em`
 					)
-				]), rules)
+				]))
 			}
 
-			PRIVATE.get(this).applyTheme('legend', utils.css.newRule('.chassis legend', [
-				utils.css.newDeclObj(
-					'font-size',
-					`${utils.unit.pxToEm(PRIVATE.get(this).baseTypography[formLegendAlias].fontSize, root.fontSize)}rem`
-				),
-				utils.css.newDeclObj(
+			heading = range.typography[formLegendAlias]
+
+			mediaQuery.nodes.push(utils.css.createRule('.chassis legend', [
+				utils.css.createDeclObj(
 					'line-height',
-					`${utils.unit.pxToEm(PRIVATE.get(this).baseTypography[formLegendAlias].lineHeight, PRIVATE.get(this).baseTypography[formLegendAlias].fontSize)}`
+					`${utils.unit.pxToEm(heading.lineHeight, heading.fontSize)}`
 				),
-				utils.css.newDeclObj(
+
+				utils.css.createDeclObj(
 					'margin-bottom',
-					`${utils.unit.pxToEm(typography.calculateMarginBottom(PRIVATE.get(this).baseTypography[formLegendAlias].lineHeight), PRIVATE.get(this).baseTypography[formLegendAlias].fontSize)}em`
+					`${utils.unit.pxToEm(typography.calculateMarginBottom(heading.lineHeight), heading.fontSize)}em`
 				)
-			]), rules)
+			]))
 
-			return rules
+			mediaQuery.nodes.push(utils.css.createRule(this.selectors.outerContainers, [
+				utils.css.createDeclObj(
+					'margin-bottom',
+					`${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'outer'), fontSize)}em`
+				)
+			]))
+
+			mediaQuery.nodes.push(utils.css.createRule(this.selectors.innerContainers, [
+				utils.css.createDeclObj(
+					'margin-bottom',
+					`${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'inner'), fontSize)}em`
+				)
+			]))
+
+			mediaQuery.nodes.push(utils.css.createRule('.chassis p', [
+				utils.css.createDeclObj(
+					'margin-bottom',
+					`${utils.unit.pxToEm(lineHeight, fontSize)}em`
+				),
+
+				utils.css.createDecl(
+					'line-height',
+					`${utils.unit.pxToEm(lineHeight, fontSize)}`
+				)
+			]))
+
+			mediaQueries.append(mediaQuery)
 		}
 
-		get typographyRanges () {
-			let { layout, settings, typography, utils } = PRIVATE.get(this).chassis
-
-			let { ranges } = settings.typography
-			let mediaQueries = utils.css.newRoot([])
-
-			for (let i = 1; i < ranges.recordCount; i++) {
-				let range = ranges.find(i)
-				let { fontSize, lineHeight } = range.typography.root
-
-				let mediaQuery = utils.css.newAtRule({
-					name: 'media',
-					params: `screen and (min-width: ${range.bounds.lower}px)`,
-					nodes: []
-				})
-
-				let htmlRule = utils.css.newRule('html.chassis', [])
-
-				if (fontSize !== PRIVATE.get(this).baseTypography.root.fontSize) {
-					htmlRule.append(utils.css.newDecl('font-size', `${fontSize}px`))
-				}
-
-				htmlRule.append(utils.css.newDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`))
-
-				mediaQuery.nodes.push(htmlRule)
-
-				let bodyRule = utils.css.newRule('.chassis body', [
-					utils.css.newDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`)
-				])
-
-				mediaQuery.nodes.push(bodyRule)
-
-				let headingSizeAliases = settings.typography.fontSizes.headings
-				let formLegendAlias = settings.typography.fontSizes.formLegend
-
-				for (let i = 1; i <= 6; i++) {
-					mediaQuery.nodes.push(utils.css.newRule(`.chassis h${i}`, [
-						utils.css.newDeclObj(
-							'line-height',
-							`${utils.unit.pxToEm(range.typography[headingSizeAliases[i]].lineHeight, range.typography[headingSizeAliases[i]].fontSize)}`
-						),
-						utils.css.newDeclObj(
-							'margin-bottom',
-							`${utils.unit.pxToEm(typography.calculateMarginBottom(range.typography[headingSizeAliases[i]].lineHeight), range.typography[headingSizeAliases[i]].fontSize)}em`
-						)
-					]))
-				}
-
-				mediaQuery.nodes.push(utils.css.newRule('.chassis legend', [
-					utils.css.newDeclObj(
-						'line-height',
-						`${utils.unit.pxToEm(range.typography[formLegendAlias].lineHeight, range.typography[formLegendAlias].fontSize)}`
-					),
-					utils.css.newDeclObj(
-						'margin-bottom',
-						`${utils.unit.pxToEm(typography.calculateMarginBottom(range.typography[formLegendAlias].lineHeight), range.typography[formLegendAlias].fontSize)}em`
-					)
-				]))
-
-				mediaQuery.nodes.push(utils.css.newRule(PRIVATE.get(this).selectors.outerContainers, [
-					utils.css.newDeclObj(
-						'margin-bottom',
-						`${utils.unit.pxToEm(layout.calculateMarginBottom(range.typography.root.lineHeight, 'outer'), range.typography.root.fontSize)}em`
-					)
-				]))
-
-				mediaQuery.nodes.push(utils.css.newRule(PRIVATE.get(this).selectors.innerContainers, [
-					utils.css.newDeclObj(
-						'margin-bottom',
-						`${utils.unit.pxToEm(layout.calculateMarginBottom(range.typography.root.lineHeight, 'inner'), range.typography.root.fontSize)}em`
-					)
-				]))
-
-				mediaQuery.nodes.push(utils.css.newRule('.chassis p', [
-					utils.css.newDeclObj(
-						'margin-bottom',
-						`${utils.unit.pxToEm(range.typography.root.lineHeight, range.typography.root.fontSize)}em`
-					),
-					utils.css.newDecl(
-						'line-height',
-						`${utils.unit.pxToEm(lineHeight, fontSize)}`
-					)
-				]))
-
-				mediaQueries.append(mediaQuery)
-			}
-
-			return mediaQueries
-		}
-
-		get outerContainers () {
-			let { layout, utils } = PRIVATE.get(this).chassis
-			let { fontSize, lineHeight } = PRIVATE.get(this).baseTypography.root
-
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/outer-containers.css', {
-				'selectors': PRIVATE.get(this).selectors.outerContainers,
-				'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'outer'), fontSize)}em`
-			})
-		}
-
-		get innerContainers () {
-			let { layout, utils } = PRIVATE.get(this).chassis
-			let { fontSize, lineHeight } = PRIVATE.get(this).baseTypography.root
-
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/inner-containers.css', {
-				'selectors': PRIVATE.get(this).selectors.innerContainers,
-				'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'inner'), fontSize)}em`
-			})
-		}
-
-		get paragraph () {
-			let { layout, utils } = PRIVATE.get(this).chassis
-			let { fontSize, lineHeight } = PRIVATE.get(this).baseTypography.root
-
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/paragraph.css', {
-				'margin-bottom': `${utils.unit.pxToEm(lineHeight, fontSize)}em`
-			})
-		}
-
-		get inlineComponentReset () {
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/inline-component-reset.css')
-		}
-
-		get inlineBlockComponentReset () {
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/inline-block-component-reset.css')
-		}
-
-		get blockComponentReset () {
-			return PRIVATE.get(this).parseSpecSheet('../style-sheets/block-component-reset.css')
-		}
+		return mediaQueries
 	}
-})()
+
+	get outerContainers () {
+		let { layout, utils } = this.chassis
+		let { fontSize, lineHeight } = this.baseTypography.root
+
+		return this.parseSpecSheet('../style-sheets/outer-containers.css', {
+			'selectors': this.selectors.outerContainers,
+			'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'outer'), fontSize)}em`
+		})
+	}
+
+	get innerContainers () {
+		let { layout, utils } = this.chassis
+		let { fontSize, lineHeight } = this.baseTypography.root
+
+		return this.parseSpecSheet('../style-sheets/inner-containers.css', {
+			'selectors': this.selectors.innerContainers,
+			'margin-bottom': `${utils.unit.pxToEm(layout.calculateMarginBottom(lineHeight, 'inner'), fontSize)}em`
+		})
+	}
+
+	get paragraph () {
+		let { layout, utils } = this.chassis
+		let { fontSize, lineHeight } = this.baseTypography.root
+
+		return this.parseSpecSheet('../style-sheets/paragraph.css', {
+			'margin-bottom': `${utils.unit.pxToEm(lineHeight, fontSize)}em`
+		})
+	}
+
+	get inlineComponentReset () {
+		return this.parseSpecSheet('../style-sheets/inline-component-reset.css')
+	}
+
+	get inlineBlockComponentReset () {
+		return this.parseSpecSheet('../style-sheets/inline-block-component-reset.css')
+	}
+
+	get blockComponentReset () {
+		return this.parseSpecSheet('../style-sheets/block-component-reset.css')
+	}
+}

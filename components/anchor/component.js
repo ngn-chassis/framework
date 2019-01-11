@@ -1,12 +1,10 @@
-module.exports = (function () {
-	let _ = new WeakMap()
+module.exports = class {
+	constructor	(chassis) {
+		Object.defineProperties(this, {
+			chassis: NGN.privateconst(chassis)
+		})
 
-	return class {
-		constructor	(chassis) {
-			_.set(this, {chassis})
-
-			this.resetType = 'inline'
-			this.isOverridable = true
-		}
+		this.resetType = 'inline'
+		this.isOverridable = true
 	}
-})()
+}
