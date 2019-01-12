@@ -1,3 +1,6 @@
+let postcss = require('postcss')
+let nesting = require('postcss-nesting')
+
 module.exports = class {
 	constructor (chassis, type, spec, instance) {
 		this.type = type
@@ -17,6 +20,8 @@ module.exports = class {
 				}
 
 				let customRules = customState.nodes.filter(node => node.type === 'rule')
+				// customRules = postcss.parse(nesting.process(customRules)).nodes
+
 				let customDecls = customState.nodes.filter(node => node.type === 'decl')
 				let overrides = null
 
@@ -34,6 +39,7 @@ module.exports = class {
 						}
 					}
 
+					// Merge any rules that are duplicated in the default state and the custom state
 					let customRuleIndex
 
 					let match = customRules.find((customRule, i) => {
@@ -220,15 +226,15 @@ module.exports = class {
 				return overrides.length > 0 ? overrides : null
 			}),
 
-			generateTemplate: NGN.privateconst((customSpec = null) => {
+			generateTemplate: NGN.privateconst((spec = null) => {
 				let { utils } = chassis
 				let root = utils.css.createRoot([])
 
 				this.spec.walkAtRules(atRule => {
 					switch (atRule.name) {
 						case 'state':
-							if (customSpec) {
-								let customState = this.findMatchingState(atRule, customSpec)
+							if (spec) {
+								let customState = this.findMatchingState(atRule, spec)
 
 								if (!customState) {
 									return
@@ -287,6 +293,8 @@ module.exports = class {
 			resolveVariables: NGN.privateconst((root, variables = this.variables) => {
 				let { utils } = chassis
 
+				root = postcss.parse(nesting.process(root))
+
 				root.walkRules(rule => {
 					rule.selector = this.variables.selectors.map(selector => {
 						return utils.string.resolveVariables(rule.selector, {selector})
@@ -322,11 +330,10 @@ module.exports = class {
 
 	get css () {
 		let template = this.generateTemplate()
-
 		return this.resolveVariables(template)
 	}
 
-	getCustomizedCss (customSpec) {
+	getCustomCss (customSpec) {
 		let template = this.generateCustomTemplate(customSpec)
 
 		let customVariables = Object.assign(this.variables, {

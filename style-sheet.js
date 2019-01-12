@@ -316,8 +316,8 @@ module.exports = class extends NGN.EventEmitter {
 			}
 		}
 
-		tasks.on('taskstart', evt => console.log(`${evt.name}...`))
-		tasks.on('taskcomplete', evt => console.log('Done.'))
+		// tasks.on('taskstart', evt => console.log(`${evt.name}...`))
+		// tasks.on('taskcomplete', evt => console.log('Done.'))
 
 		tasks.on('complete', () => this.emit('processing.complete', {
 			css: this.tree.toString(),

@@ -81,11 +81,7 @@ module.exports = class {
 			let component = new ChassisComponent(this.chassis, type)
 			let { themedCss } = component
 
-			// console.log(type);
-			// console.log(component.themedCss.toString());
-			// console.log('============================');
-			// console.log(component.unthemedCss.toString());
-
+			// Prepend :root with custom properties for each of the component's variables
 			if (component.variables) {
 				let rootRule = utils.css.createRule(':root', [])
 

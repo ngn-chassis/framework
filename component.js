@@ -6,9 +6,9 @@ module.exports = class {
     this.instance = new (chassis.constants.components.get(type)).component(chassis)
     this.type = type
 
+    this.theme = chassis.theme.getComponentSpec(type)
+    this.defaultSpec = new ChassisSpecSheet(chassis, type, chassis.utils.file.parseStyleSheet(`../components/${type}/spec.css`), this.instance)
     this.customSpec = customSpec
-    this.defaultSpec = new ChassisSpecSheet(chassis, type, chassis.utils.file.parseStyleSheet(`../components/${type}/spec.css`), this.instance),
-    this.theme = chassis.theme.getComponentSpec(type),
 
     Object.defineProperties(this, {
       chassis: NGN.privateconst(chassis),
@@ -72,15 +72,27 @@ module.exports = class {
     return Object.keys(scopedVariables).length ? scopedVariables : null
   }
 
-  // TODO: Revisit the name of this getter
+  /**
+   * @property customCss
+   * Returns a CSS AST including ONLY styles passed via either the 'extend' or 'new' mixin
+   * @return {AST}
+   */
   get customCss () {
     if (!this.customSpec) {
       return null
     }
 
-    return this.defaultSpec.getCustomizedCss(this.customSpec)
+    return this.defaultSpec.getCustomCss(this.customSpec)
   }
 
+  /**
+   * @property themedCss
+   * Returns a CSS AST including
+   * * the component Default Spec styles, AND
+   * * any styles passed via either the 'extend' or 'new' mixin, AND
+   * * styles from the master theme.
+   * @return {AST}
+   */
   get themedCss () {
     let { chassis } = this
 
@@ -91,6 +103,14 @@ module.exports = class {
     return this.theme ? this.defaultSpec.getThemedCss(this.theme) : this.defaultSpec.css
   }
 
+  /**
+   * @property unthemedCss
+   * Returns a CSS AST including
+   * * the component Default Spec styles, AND
+   * * any styles passed via either the 'extend' or 'new' mixin.
+   * Does NOT include styles from the master theme.
+   * @return {AST}
+   */
   get unthemedCss () {
     if (!this.customSpec) {
       return this.defaultSpec.css
