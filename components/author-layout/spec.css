@@ -1,4 +1,4 @@
-chassis-layout-cell {
+author-layout {
 	@state initial {
 		$(selector) {}
 	}

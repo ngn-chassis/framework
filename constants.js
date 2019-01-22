@@ -29,12 +29,16 @@ module.exports = class ChassisConstants {
 				component: require('./components/table/component.js'),
 				dependencies: []
 			}],
-			['overlay', {
-				component: require('./components/overlay/component.js'),
+			['author-data-table', {
+				component: require('./components/author-data-table/component.js'),
 				dependencies: []
 			}],
-			['modal', {
-				component: require('./components/modal/component.js'),
+			['author-overlay', {
+				component: require('./components/author-overlay/component.js'),
+				dependencies: []
+			}],
+			['author-modal', {
+				component: require('./components/author-modal/component.js'),
 				dependencies: []
 			}],
 			['input', {
@@ -45,47 +49,47 @@ module.exports = class ChassisConstants {
 				component: require('./components/textarea/component.js'),
 				dependencies: []
 			}],
-			['chassis-optgroup', {
-				component: require('./components/chassis-optgroup/component.js'),
+			['author-optgroup', {
+				component: require('./components/author-optgroup/component.js'),
 				dependencies: []
 			}],
-			['chassis-optgroup-label', {
-				component: require('./components/chassis-optgroup-label/component.js'),
+			['author-optgroup-label', {
+				component: require('./components/author-optgroup-label/component.js'),
 				dependencies: []
 			}],
-			['chassis-options', {
-				component: require('./components/chassis-options/component.js'),
+			['author-options', {
+				component: require('./components/author-options/component.js'),
 				dependencies: []
 			}],
-			['chassis-option', {
-				component: require('./components/chassis-option/component.js'),
+			['author-option', {
+				component: require('./components/author-option/component.js'),
 				dependencies: []
 			}],
-			['chassis-selected-options', {
-				component: require('./components/chassis-selected-options/component.js'),
+			['author-selected-options', {
+				component: require('./components/author-selected-options/component.js'),
 				dependencies: []
 			}],
-			['chassis-select', {
-				component: require('./components/chassis-select/component.js'),
-				dependencies: ['chassis-selected-options', 'chassis-options', 'chassis-option', 'chassis-optgroup', 'chassis-optgroup-label', 'chassis-select']
+			['author-select', {
+				component: require('./components/author-select/component.js'),
+				dependencies: ['author-selected-options', 'author-options', 'author-option', 'author-optgroup', 'author-optgroup-label', 'author-select']
 			}],
-			['chassis-datalist', {
-				component: require('./components/chassis-datalist/component.js'),
-				dependencies: ['chassis-options', 'chassis-option']
+			['author-datalist', {
+				component: require('./components/author-datalist/component.js'),
+				dependencies: ['author-options', 'author-option']
 			}],
-			['chassis-control', {
-				component: require('./components/chassis-control/component.js'),
+			['author-control', {
+				component: require('./components/author-control/component.js'),
 				dependencies: []
 			}],
-			['chassis-layout-cell', {
-				component: require('./components/chassis-layout-cell/component.js'),
+			['author-layout-cell', {
+				component: require('./components/author-layout-cell/component.js'),
 				dependencies: []
 			}],
-			['chassis-layout', {
-				component: require('./components/chassis-layout/component.js'),
-				dependencies: ['chassis-layout-cell']
+			['author-layout', {
+				component: require('./components/author-layout/component.js'),
+				dependencies: ['author-layout-cell']
 			}],
-			['form-controls', ['input', 'textarea', 'chassis-select', 'chassis-datalist', 'chassis-control']]
+			['form-controls', ['input', 'textarea', 'author-select', 'author-datalist', 'author-control']]
 		])
 	}
 

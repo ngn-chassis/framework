@@ -7,6 +7,7 @@ module.exports = class ChassisLayoutMixins {
 
   /**
    * @mixin constrainWidth
+   * Constrains the width of an element according to the provided parameters
    * @return {array} of decls
    */
   constrainWidth () {
@@ -67,7 +68,7 @@ module.exports = class ChassisLayoutMixins {
 
   /**
    * @mixin zIndex
-   * Get calculated z-index value from project settings
+   * Returns a calculated z-index value from project settings
    */
   zIndex () {
     let { settings, utils } = this.chassis

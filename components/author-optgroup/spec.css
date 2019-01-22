@@ -1,4 +1,4 @@
-chassis-options {
+author-optgroup {
   @state initial {
     $(selector) {}
   }
@@ -7,9 +7,19 @@ chassis-options {
     $(selector):defined {}
   }
 
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
   @state empty {
 		$(selector):empty {}
 	}
+
+  @state enabled {
+    $(selector):enabled {}
+  }
 
   @state focus-within {
 		$(selector):focus-within {}

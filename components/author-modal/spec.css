@@ -1,4 +1,4 @@
-chassis-modal {
+author-modal {
 	@state initial {
 		$(selector) {}
 	}

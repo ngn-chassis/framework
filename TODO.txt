@@ -21,9 +21,9 @@ extra code needed for more complex components like select menus.
   Pills don't look right at small type scale ratios.
 
 THEME
-Components need to be able to accept nested selectors. For example, to style an input within a chassis-control:
+Components need to be able to accept nested selectors. For example, to style an input within a author-control:
 
-chassis-control {
+author-control {
   @state initial {
     & input {
       background: red;
@@ -82,11 +82,11 @@ BUTTONS
 
 MIXINS
 - Consider adding "padding-base(fontSizeAlias)" and "margin-base(fontSizeAlias)"
-  to inline-block-layout mixin. For example, if the font-size of chassis-selected-option
-  is set to root but chassis-option is set to small, the padding on either side
+  to inline-block-layout mixin. For example, if the font-size of author-selected-option
+  is set to root but author-option is set to small, the padding on either side
   of each option won't line up with the title
 - Another possible solution for the above is to simply take the horizontal
-  padding off chassis-option and put it on chassis-select .options
+  padding off author-option and put it on author-select .options
 
 IE11
 - Links have permanent underlines

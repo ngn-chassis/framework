@@ -1,4 +1,4 @@
-chassis-control {
+author-control {
 	@state initial {
 		$(selector)[type="field"],
 		$(selector)[type="select"] {
@@ -39,7 +39,7 @@ chassis-control {
 
 
 		$(selector)[type="field"] textarea,
-		$(selector)[type="select"] chassis-select {
+		$(selector)[type="select"] author-select {
 			margin: $(input-margin-top) 0 0;
 		}
 

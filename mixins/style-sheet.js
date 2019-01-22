@@ -1,4 +1,5 @@
 const path = require('path')
+const parseValue = require('postcss-value-parser')
 
 module.exports = class {
   constructor (chassis) {
@@ -9,7 +10,7 @@ module.exports = class {
         return this.chassis.utils.file.parseDirectory(path, false)
       }),
 
-      getImportedContent: NGN.privateconst(input => {
+      getFileContents: NGN.privateconst(input => {
         let { settings, utils } = this.chassis
 
         let importPath = ''
@@ -35,23 +36,26 @@ module.exports = class {
 
   /**
    * @mixin import
+   * Import a file or directory of files into the style sheet.
    */
   import () {
-    let { chassis, getDirectory, getImportedContent } = this
+    let { chassis, getDirectory, getFileContents } = this
     let { settings, utils } = chassis
     let { args, atRule, nodes, source } = arguments[0]
 
     let input = args[0]
-    let dirPath = path.join(settings.importBasePath, input)
+    let parsed = parseValue(input).nodes[0]
+    let output = null
 
-    let content = utils.file.isDirectory(dirPath) ? getDirectory(dirPath) : getImportedContent(input)
+    output = parsed.type === 'function' && parsed.value === 'dir'
+      ? getDirectory(path.join(settings.importBasePath, parsed.nodes[0].value))
+      : getFileContents(parsed.value)
 
-    if (!content) {
-      console.log(`[ERROR] Line ${source.line}: File "${file}" not found in "${path.join(settings.importBasePath, path)}"`);
-      atRule.remove()
-      return
+    if (!output) {
+      console.log(`[ERROR] Line ${source.line}: Invalid import argument "${input}"`);
+      return atRule.remove()
     }
 
-    return atRule.replaceWith(content)
+    return atRule.replaceWith(output)
   }
 }

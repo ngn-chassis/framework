@@ -1,25 +1,32 @@
-chassis-select {
+author-datalist {
   @state initial {
     $(selector) {
       user-select: none;
     }
 
-    $(selector) chassis-selected-options {
-      @chassis apply inline-block padding;
-    }
-
-    $(selector) chassis-options {
+    $(selector) author-options {
       overflow: auto;
     }
 
-    $(selector) chassis-option,
-    $(selector) chassis-optgroup-label {
+    $(selector) author-option {
       @chassis apply inline-block padding;
     }
 
-    $(selector) chassis-selected-options svg.icon,
-    $(selector) chassis-option svg.icon {
+    $(selector) author-option svg.icon {
       transform: $(icon-offset);
+    }
+
+    $(selector).pill {
+      border-radius: $(pill-border-radius);
+    }
+
+    $(selector).pill author-options {
+      border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
+    }
+
+    $(selector).pill author-option {
+      padding-right: $(pill-padding-x);
+      padding-left: $(pill-padding-x);
     }
   }
 
@@ -28,16 +35,12 @@ chassis-select {
     $(selector).hover {}
   }
 
-  @state active {
-    $(selector):active {}
-  }
-
   @state defined {
     $(selector):defined {}
   }
 
   @state disabled {
-    $(selector).disabled {
+    $(selector):disabled {
       pointer-events: none;
     }
   }
@@ -47,8 +50,8 @@ chassis-select {
 	}
 
   @state enabled {
-    $(selector):enabled {}
-  }
+		$(selector):enabled {}
+	}
 
   @state focus {
     $(selector):focus {}
@@ -62,27 +65,15 @@ chassis-select {
 		$(selector):invalid {}
 	}
 
-  @state multiple {
-    $(selector)[multiple] {}
-  }
-
   @state open {
     $(selector)[open] {}
+
+    $(selector)[open].pill {
+      border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
+    }
   }
-
-  @state optional {
-		$(selector):optional {}
-	}
-
-  @state required {
-		$(selector):required {}
-	}
 
   @state valid {
     $(selector):valid {}
-  }
-
-  @variation multiple {
-
   }
 }

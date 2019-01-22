@@ -7,7 +7,7 @@ let perfectionist = require('perfectionist')
 let CleanCss = require('clean-css')
 let nesting = require('postcss-nesting')
 let processNot = require('postcss-selector-not')
-let valueParser = require('postcss-value-parser')
+let parseValue = require('postcss-value-parser')
 
 module.exports = class extends NGN.EventEmitter {
 	constructor (chassis, raw, isNamespaced = true) {
@@ -84,7 +84,7 @@ module.exports = class extends NGN.EventEmitter {
 
 			processFunctions: NGN.privateconst(type => {
 				this.tree.walkDecls(decl => {
-					let parsed = valueParser(decl.value)
+					let parsed = parseValue(decl.value)
 
 					if (parsed.nodes.some(node => node.type === 'function')) {
 						decl.value = chassis.functions.process({

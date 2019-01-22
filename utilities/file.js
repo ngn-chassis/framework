@@ -17,14 +17,35 @@ module.exports = class ChassisFileUtils {
 		return fs.existsSync(filepath)
 	}
 
+	/**
+	 * @method getFilePath
+	 * Strips the file name and extension from the provided path
+	 * @param  {string} filepath
+	 * @return {string}
+	 * @static
+	 */
 	static getFilePath (filepath) {
 		return filepath.substring(0, filepath.lastIndexOf("/"))
 	}
 
+	/**
+	 * @method getFileName
+	 * Returns the name of the file at the provided path
+	 * @param  {string} filepath
+	 * @return {string}
+	 * @static
+	 */
 	static getFileName (filepath) {
 		return path.basename(filepath)
 	}
 
+	/**
+	 * @method getFileExtension
+	 * Returns the extension name of a file.
+	 * @param  {string} filepath
+	 * Path to file.
+	 * @return {string}
+	 */
 	static getFileExtension (filepath) {
 		return path.extname(filepath)
 	}
@@ -45,19 +66,22 @@ module.exports = class ChassisFileUtils {
 
 	/**
 	 * @method parseDirectory
-	 * Parse all style sheets in a given directory
-	 * @param {string} dirpath
+	 * Parse all style sheets in a directory. This method does NOT parse subdirectories.
+	 * @param {string} dir
+	 * Directory to query for stylesheets.
 	 * @param {boolean} relative
 	 * Whether or not dirpath is relative (false means absolute)
 	 * @static
 	 */
-	static parseDirectory (dirpath, relative = true) {
-		if (relative) {
-			dirpath = this.resolve(dirpath)
-		}
+	static parseDirectory (dir, relative = true) {
+		dir = relative ? this.resolve(dir) : dir
 
-		let files = fs.readdirSync(dirpath).map(file => `${dirpath}/${file}`)
-		return this.parseStyleSheets(files, false)
+		let files = fs.readdirSync(dir)
+			.filter(item => !this.isDirectory(item))
+			.filter(file => this.getFileExtension(file) === '.css')
+			.map(file => path.join(dir, file))
+
+		return files.length > 0 ? this.parseStyleSheets(files, false) : ''
 	}
 
 	/**
@@ -77,7 +101,7 @@ module.exports = class ChassisFileUtils {
 
 	/**
 	 * @method parseStyleSheets
-	 * Parse an array of CSS style sheets into a single postcss AST
+	 * Parses an array of CSS style sheets into a single postcss AST
 	 * @param {array} filepaths
 	 * @return {AST}
 	 * @static
@@ -93,6 +117,13 @@ module.exports = class ChassisFileUtils {
 		return output
 	}
 
+	/**
+	 * @method pathIsAbsolute
+	 * Determines whether a path is absolute (true) or relative (false)
+	 * @param  {string} filepath
+	 * @return {boolean}
+	 * @static
+	 */
 	static pathIsAbsolute (filepath) {
 		return path.isAbsolute(filepath)
 	}

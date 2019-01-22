@@ -1,4 +1,4 @@
-chassis-selected-options {
+author-selected-options {
   @state initial {
     $(selector) {}
   }

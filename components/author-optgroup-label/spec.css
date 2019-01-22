@@ -1,4 +1,4 @@
-chassis-optgroup-label {
+author-optgroup-label {
   @state initial {
     $(selector) {}
   }

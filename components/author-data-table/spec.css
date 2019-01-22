@@ -1,0 +1,31 @@
+author-data-table {
+	@state initial {
+		$(selector) {
+			table-layout: fixed;
+			width: 100%;
+			border-collapse: collapse;
+	    border-spacing: 0;
+		}
+
+		$(selector) th,
+		$(selector) td {
+			overflow: hidden;
+			@chassis apply inline-block padding;
+			text-align: left;
+			text-overflow: ellipsis;
+			vertical-align: top;
+		}
+
+		$(selector) caption {
+			text-align: left;
+		}
+	}
+
+	@state empty {
+		$(selector):empty {}
+	}
+
+	@state focus-within {
+		$(selector):focus-within {}
+	}
+}

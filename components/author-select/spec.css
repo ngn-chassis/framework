@@ -1,0 +1,88 @@
+author-select {
+  @state initial {
+    $(selector) {
+      user-select: none;
+    }
+
+    $(selector) author-selected-options {
+      @chassis apply inline-block padding;
+    }
+
+    $(selector) author-options {
+      overflow: auto;
+    }
+
+    $(selector) author-option,
+    $(selector) author-optgroup-label {
+      @chassis apply inline-block padding;
+    }
+
+    $(selector) author-selected-options svg.icon,
+    $(selector) author-option svg.icon {
+      transform: $(icon-offset);
+    }
+  }
+
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+
+  @state active {
+    $(selector):active {}
+  }
+
+  @state defined {
+    $(selector):defined {}
+  }
+
+  @state disabled {
+    $(selector).disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state empty {
+		$(selector):empty {}
+	}
+
+  @state enabled {
+    $(selector):enabled {}
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
+
+  @state invalid {
+		$(selector):invalid {}
+	}
+
+  @state multiple {
+    $(selector)[multiple] {}
+  }
+
+  @state open {
+    $(selector)[open] {}
+  }
+
+  @state optional {
+		$(selector):optional {}
+	}
+
+  @state required {
+		$(selector):required {}
+	}
+
+  @state valid {
+    $(selector):valid {}
+  }
+
+  @variation multiple {
+
+  }
+}
