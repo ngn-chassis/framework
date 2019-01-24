@@ -66,7 +66,7 @@ module.exports = class {
 				break
 
 			default:
-				console.error(`[ERROR] Chassis Auto-Typography: Font scale "${alias}" not found. Defaulting to root.`)
+				console.error(`Typography Engine: Invalid font scale alias "${alias}". Reverting to "root".`)
 		}
 
 		return root * modifier * multiplier

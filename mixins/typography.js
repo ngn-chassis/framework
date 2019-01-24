@@ -4,22 +4,21 @@ module.exports = class ChassisTypographyMixins {
       chassis: NGN.privateconst(chassis),
       baseTypography: NGN.privateconst(chassis.settings.typography.ranges.first.typography),
 
-      cleanseArgs: NGN.privateconst((args, validArgs) => {
-        return args.map(arg => {
-          if (!validArgs.includes(arg)) {
-            console.error(`[ERROR] Chassis apply mixin: Invalid argument "${arg}". Discarding...`);
-            return
-          }
-
-          return arg
-        }).filter(Boolean)
+      validateArgs: NGN.privateconst((args, validArgs, source) => {
+        if (args.some(arg => !validArgs.includes(arg))) {
+          throw this.chassis.utils.error.create({
+            line: source.line,
+            mixin: 'apply',
+            message: `Invalid argument "${arg}"`
+          })
+        }
       }),
 
       getPillVariationDecls: NGN.privateconst((args, source) => {
         let { settings, typography, utils } = this.chassis
         let { fontSize, lineHeight } = this.baseTypography.root
 
-        args = this.cleanseArgs(args, [
+        this.validateArgs(args, [
           'pill',
           'padding',
           'padding-x',
@@ -37,7 +36,7 @@ module.exports = class ChassisTypographyMixins {
           'radius-bottom-left',
           'radius-bottom-right',
           'radius-left',
-        ])
+        ], source)
 
         let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
         let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
@@ -155,7 +154,7 @@ module.exports = class ChassisTypographyMixins {
         let { settings, typography, utils } = this.chassis
         let { fontSize, lineHeight } = this.baseTypography.root
 
-        args = this.cleanseArgs(args, [
+        this.validateArgs(args, [
           'inline-block',
           'rtl',
           'margin',
@@ -172,7 +171,7 @@ module.exports = class ChassisTypographyMixins {
           'padding-right',
           'padding-bottom',
           'padding-left'
-        ])
+        ], source)
 
         let lineHeightMult = utils.unit.pxToEm(lineHeight, fontSize)
         let calcLineHeight = typography.calculateInlineHeight(lineHeightMult)
@@ -337,9 +336,11 @@ module.exports = class ChassisTypographyMixins {
         decls = this.getInlineBlockDecls(args, source)
         break
 
-      default:
-        console.warn(`[WARNING] Chassis apply mixin: No property type specified. Discarding...`)
-        break
+      default: throw this.chassis.utils.error.create({
+        line: source.line,
+        mixin: 'apply',
+        message: `No box-model specified`
+      })
     }
 
     if (!decls) {
@@ -360,9 +361,11 @@ module.exports = class ChassisTypographyMixins {
         decls = this.getPillVariationDecls(args, source)
         break
 
-      default:
-        console.warn(`[WARNING] Chassis apply-variation mixin: No variation type specified. Discarding...`)
-        break
+      default: throw this.chassis.utils.error.create({
+  			line: source.line,
+        mixin: 'apply-variation',
+  			message: `No variation specified`
+  		})
     }
 
     if (!decls) {
@@ -391,34 +394,48 @@ module.exports = class ChassisTypographyMixins {
     let { args, atRule, source } = arguments[0]
 
     let alias = args[0]
-    let multiplier = 1
+    let suppliedMultiplier = null
+    let parsedMultiplier = null
     let addMargin = false
 
     if (!constants.typography.sizeAliases.includes(alias)) {
-      console.error(`[ERROR] Line ${source.line}: Font size alias "${alias}" not found.  Accepted values: ${utils.string.listValues(constants.typography.sizeAliases)}`);
       atRule.remove()
-      return
+
+      throw this.chassis.utils.error.create({
+  			line: source.line,
+        mixin: 'font-size',
+  			message: `Invalid alias "${alias}".  Accepted aliases: ${utils.string.listValues(constants.typography.sizeAliases)}`
+  		})
     }
 
     if (args.length > 0) {
       for (let i = 1; i < args.length; i++) {
         if (args[i].startsWith('mult')) {
-          multiplier = parseFloat(utils.string.stripParentheses(args[i].replace('mult', '')))
+          suppliedMultiplier = utils.string.stripParentheses(args[i].replace('mult', ''))
+          parsedMultiplier = parseFloat(suppliedMultiplier)
         } else if (args[i] === 'add-margin') {
           addMargin = true
         } else {
-          console.warn(`[WARNING] Line ${source.line}: Unkown argument "${arg}". Skipping...`)
+          throw this.chassis.utils.error.create({
+      			line: source.line,
+            mixin: 'font-size',
+      			message: `Unkown argument "${args[i]}"`
+      		})
         }
       }
     }
 
-    if (isNaN(multiplier)) {
-      console.warn(`[WARNING] Line ${source.line}: mult() value must be a valid decimal. Ignoring...`)
+    if (isNaN(parsedMultiplier)) {
+      throw this.chassis.utils.error.create({
+        line: source.line,
+        mixin: 'font-size',
+        message: `Invalid mult() value "${suppliedMultiplier}". Must be a valid decimal.`
+      })
     }
 
     let decl = utils.css.createDecl(
       'font-size',
-      `${utils.unit.pxToEm(typography.calculateFontSize(alias, multiplier), typography.calculateFontSize('root'))}rem`
+      `${utils.unit.pxToEm(typography.calculateFontSize(alias, parsedMultiplier), typography.calculateFontSize('root'))}rem`
     )
 
     atRule.replaceWith(decl)

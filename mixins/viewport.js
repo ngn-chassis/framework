@@ -9,13 +9,28 @@ module.exports = class {
     let { settings, utils, viewport } = this.chassis
     let { atRule, args, nodes, source } = arguments[0]
 
+    let mixin = atRule.params.split(' ')[0]
     let operator = args[0]
     let height = parseInt(args[1])
 
-    if (isNaN(height)) {
-      console.error(`[ERROR] Line ${source.line}: Invalid viewport height value "${args[1]}".`)
+    if (!viewport.operatorIsValid(operator)) {
       atRule.remove()
-      return
+
+      throw this.chassis.utils.error.create({
+  			line: source.line,
+        mixin,
+  			message: `Invalid media query operator "${operator}". Valid operators: ${viewport.validOperators.join(', ')}`
+  		})
+    }
+
+    if (isNaN(height)) {
+      atRule.remove()
+
+      throw this.chassis.utils.error.create({
+  			line: source.line,
+        mixin,
+  			message: `Invalid viewport height value "${args[1]}"`
+  		})
     }
 
     let mediaQuery = utils.css.createMediaQuery(
@@ -30,12 +45,17 @@ module.exports = class {
     let { settings, utils, viewport } = this.chassis
     let { atRule, args, nodes, source } = arguments[0]
 
+    let mixin = atRule.params.split(' ')[0]
     let operator = args[0]
 
     if (!viewport.operatorIsValid(operator)) {
-      console.error(`[ERROR] Line ${source.line}: Invalid media query operator "${operator}".`)
       atRule.remove()
-      return
+
+      throw this.chassis.utils.error.create({
+  			line: source.line,
+        mixin,
+  			message: `Invalid media query operator "${operator}". Valid operators: ${utils.string.listValues(viewport.validOperators)}`
+  		})
     }
 
     let isEnv = args[1].startsWith('env(')
@@ -66,9 +86,11 @@ module.exports = class {
       width = settings.viewportWidthRanges.find({name})[0]
 
       if (!width) {
-        console.error(`[ERROR] Line ${source.line}: Viewport Width Range "${args[1]}" not found.`)
-        atRule.remove()
-        return
+        throw this.chassis.utils.error.create({
+    			line: source.line,
+          mixin,
+    			message: `Invalid Viewport Width Range "${args[1]}". Valid ranges: ${utils.string.listValues(settings.viewportWidthRanges.data.map(vwr => vwr.name))}`
+    		})
       }
 
       isRange = true
@@ -79,9 +101,11 @@ module.exports = class {
 
       if (secondOperator !== undefined) {
         if (secondOperator !== 'to') {
-          console.error(`[ERROR] Line ${source.line}: Invalid second media query operator "${secondOperator}". Please use "to" instead.`)
-          atRule.remove()
-          return
+          throw this.chassis.utils.error.create({
+      			line: source.line,
+            mixin,
+      			message: `Invalid second media query operator "${secondOperator}". Please use "to" instead.`
+      		})
         }
 
         operator = '='
@@ -95,9 +119,11 @@ module.exports = class {
           })[0]
 
           if (!secondWidthValue) {
-            console.error(`[ERROR] Line ${source.line}: Viewport Width Range "${args[3]}" not found.`)
-            atRule.remove()
-            return
+            throw this.chassis.utils.error.create({
+        			line: source.line,
+              mixin,
+        			message: `Invalid Viewport Width Range "${args[3]}". Valid ranges: ${utils.string.listValues(settings.viewportWidthRanges.data.map(vwr => vwr.name))}`
+        		})
           }
 
           secondWidthValueIsRange = true

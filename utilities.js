@@ -7,6 +7,10 @@ module.exports = class {
 		return require('./utilities/css.js')
 	}
 
+	static get error () {
+		return require('./utilities/error.js')
+	}
+
 	static get file () {
 		return require('./utilities/file.js')
 	}

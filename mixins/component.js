@@ -15,9 +15,11 @@ module.exports = class {
 		let type = args[0]
 
 		if (!components.has(type)) {
-			console.warn(`[WARNING] Line ${source.line}: Extensible component "${type}" not found. Discarding...`)
-			atRule.remove()
-			return
+			throw this.chassis.utils.error.create({
+				line: source.line,
+				mixin: 'extend',
+				message: `Invalid component "${type}"`
+			})
 		}
 
 		let selectors = utils.css.getSelectorListAsArray(atRule.parent.selector)
@@ -45,8 +47,11 @@ module.exports = class {
 		} else {
 			for (let component of args) {
 				if (!this.components.has(component)) {
-					console.warn(`[WARNING] Line ${source.line}: Component "${type}" not found. Discarding...`)
-					continue
+					throw this.chassis.utils.error.create({
+						line: source.line,
+						mixin: 'include',
+						message: `Invalid component "${component}"`
+					})
 				}
 
 				let data = this.components.get(component)
@@ -108,9 +113,11 @@ module.exports = class {
 		let type = args[0]
 
 		if (!this.components.has(type)) {
-			console.warn(`[WARNING] Line ${source.line}: Chassis Component "${type}" not found. Discarding...`)
-			atRule.remove()
-			return
+			throw this.chassis.utils.error.create({
+				line: source.line,
+				mixin: 'new',
+				message: `Invalid component "${type}"`
+			})
 		}
 
 		let spec = utils.css.createRule(atRule.parent.selector)

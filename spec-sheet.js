@@ -15,8 +15,9 @@ module.exports = class {
 				let { utils } = chassis
 
 				if (!this.states.includes(customState.params)) {
-					console.warn(`[WARNING] Chassis "${this.type}" component does not support "${customState.params}" state. Discarding...`)
-					return
+					throw this.chassis.utils.error.create({
+						message: `"${this.type}" component does not support "${customState.params}" state.`
+					})
 				}
 
 				let customRules = customState.nodes.filter(node => node.type === 'rule')
@@ -76,8 +77,9 @@ module.exports = class {
 				let { utils } = chassis
 
 				if (!this.states.includes(customState.params)) {
-					console.warn(`[WARNING] Chassis "${this.type}" component does not support "${customState.params}" state. Discarding...`)
-					return
+					throw this.chassis.utils.error.create({
+						message: `"${this.type}" component does not support "${customState.params}" state.`
+					})
 				}
 
 				let customRules = customState.nodes.filter(node => node.type === 'rule')

@@ -3,83 +3,81 @@ module.exports = class {
 		Object.defineProperties(this, {
 			chassis: NGN.privateconst(chassis),
 
-			mixins: NGN.privateconst({
-				browser: new (require('./mixins/browser.js'))(chassis),
-				component: new (require('./mixins/component.js'))(chassis),
-				layout: new (require('./mixins/layout.js'))(chassis),
-				styleSheet: new (require('./mixins/style-sheet.js'))(chassis),
-				typography: new (require('./mixins/typography.js'))(chassis),
-				viewport: new (require('./mixins/viewport.js'))(chassis)
+			browser: NGN.privateconst(new (require('./mixins/browser.js'))(chassis)),
+			component: NGN.privateconst(new (require('./mixins/component.js'))(chassis)),
+			layout: NGN.privateconst(new (require('./mixins/layout.js'))(chassis)),
+			styleSheet: NGN.privateconst(new (require('./mixins/style-sheet.js'))(chassis)),
+			typography: NGN.privateconst(new (require('./mixins/typography.js'))(chassis)),
+			viewport: NGN.privateconst(new (require('./mixins/viewport.js'))(chassis)),
+
+			apply: NGN.privateconst(function () {
+				return this.typography.applyProps(...arguments)
+			}),
+
+			'apply-variation': NGN.privateconst(function () {
+				return this.typography.applyVariation(...arguments)
+			}),
+
+			'constrain-width': NGN.privateconst(function () {
+				return this.layout.constrainWidth(...arguments)
+			}),
+
+			constrain: NGN.privateconst(function () {
+				return this.layout.constrain(...arguments)
+			}),
+
+			ellipsis: NGN.privateconst(function () {
+				return this.typography.ellipsis(...arguments)
+			}),
+
+			extend: NGN.privateconst(function () {
+				return this.component.extend(...arguments)
+			}),
+
+			'ie-only': NGN.privateconst(function () {
+				return this.browser.ieOnly(...arguments)
+			}),
+
+			import: NGN.privateconst(function () {
+				return this.styleSheet.import(...arguments)
+			}),
+
+			include: NGN.privateconst(function () {
+				return this.component.include(...arguments)
+			}),
+
+			init: NGN.privateconst(function () {
+				return arguments[0].atRule.remove()
+			}),
+
+			'font-size': NGN.privateconst(function () {
+				return this.typography.fontSize(...arguments)
+			}),
+
+			new: NGN.privateconst(function () {
+				return this.component.new(...arguments)
+			}),
+
+			'viewport-height': NGN.privateconst(function () {
+				return this.viewport.height(...arguments)
+			}),
+
+			'vp-height': NGN.privateconst(function () {
+				return this.viewport.height(...arguments)
+			}),
+
+			'viewport-width': NGN.privateconst(function () {
+				return this.viewport.width(...arguments)
+			}),
+
+			'vp-width': NGN.privateconst(function () {
+				return this.viewport.width(...arguments)
+			}),
+
+			'z-index': NGN.privateconst(function () {
+				return this.layout.zIndex(...arguments)
 			})
 		})
-	}
-
-	get 'apply' () {
-		return data => this.mixins.typography.applyProps(data)
-	}
-
-	get 'apply-variation' () {
-		return data => this.mixins.typography.applyVariation(data)
-	}
-
-	get 'constrain-width' () {
-		return data => this.mixins.layout.constrainWidth(data)
-	}
-
-	get 'constrain' () {
-		return data => this.mixins.layout.constrain(data)
-	}
-
-	get 'ellipsis' () {
-		return data => this.mixins.typography.ellipsis(data)
-	}
-
-	get 'extend' () {
-		return data => this.mixins.component.extend(data)
-	}
-
-	get 'ie-only' () {
-		return data => this.mixins.browser.ieOnly(data)
-	}
-
-	get 'import' () {
-		return data => this.mixins.styleSheet.import(data)
-	}
-
-	get 'include' () {
-		return data => this.mixins.component.include(data)
-	}
-
-	get 'init' () {
-		return data => data.atRule.remove()
-	}
-
-	get 'font-size' () {
-		return data => this.mixins.typography.fontSize(data)
-	}
-
-	get 'new' () {
-		return data => this.mixins.component.new(data)
-	}
-
-	get 'viewport-height' () {
-		return data => this.mixins.viewport.height(data)
-	}
-
-	get 'vp-height' () {
-		return data => this.mixins.viewport.height(data)
-	}
-
-	get 'viewport-width' () {
-		return data => this.mixins.viewport.width(data)
-	}
-
-	get 'vp-width' () {
-		return data => this.mixins.viewport.width(data)
-	}
-
-	get 'z-index' () {
-		return data => this.mixins.layout.zIndex(data)
 	}
 
 	getProperties (atRule) {
@@ -100,10 +98,12 @@ module.exports = class {
 
 	process (data) {
 		if (data.mixin in this) {
-			this[data.mixin](data)
-			return
+			return this[data.mixin](data)
 		}
 
-		console.error(`[ERROR] Line ${data.source.line}: Mixin "${data.mixin}" not found.`)
+		throw this.chassis.utils.error.create({
+			line: data.source.line,
+			message: `Mixin "${data.mixin}" not found.`
+		})
 	}
 }

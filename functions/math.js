@@ -3,38 +3,29 @@ let valueParser = require('postcss-value-parser')
 module.exports = class {
   constructor (chassis) {
     Object.defineProperties(this, {
-      chassis: NGN.privateconst(chassis)
+      chassis: NGN.privateconst(chassis),
+
+      generateArgsArray: NGN.privateconst(nodes => {
+        return nodes
+          .filter(innerNode => innerNode.type === 'word')
+          .map(innerNode => parseInt(innerNode.value))
+      })
     })
   }
 
   /**
    * @function absolute
    */
-  absolute () {
-    let node = arguments[0]
-
-    if (!node.nodes.length) {
-      // TODO: throw error
-      return
-    }
-
-    return Math.abs(node.nodes[0].value)
+  absoluteValue () {
+    return Math.abs(arguments[0].nodes[0].value)
   }
 
-  cbrt () {
-    let node = arguments[0]
-    return Math.cbrt(node.nodes[0].value)
+  cubeRoot () {
+    return Math.cbrt(arguments[0].nodes[0].value)
   }
 
   ceiling () {
-    let node = arguments[0]
-
-    if (!node.nodes.length) {
-      // TODO: throw error
-      return
-    }
-
-    return Math.ceil(node.nodes[0].value)
+    return Math.ceil(arguments[0].nodes[0].value)
   }
 
   evaluate () {
@@ -50,19 +41,11 @@ module.exports = class {
   }
 
   floor () {
-    let node = arguments[0]
-
-    if (!node.nodes.length) {
-      // TODO: throw error
-      return
-    }
-
-    return Math.floor(node.nodes[0].value)
+    return Math.floor(arguments[0].nodes[0].value)
   }
 
-  pow () {
+  exponentPower () {
     let node = arguments[0]
-
     let base = node.nodes[0].value
     let exponent = node.nodes.length === 3 ? node.nodes[2].value : 1
 
@@ -70,47 +53,31 @@ module.exports = class {
   }
 
   max () {
-    let node = arguments[0]
-
-    let args = node.nodes.filter(innerNode => {
-      return innerNode.type === 'word'
-    }).map(innerNode => parseInt(innerNode.value))
-
-    return Math.max(...args)
+    return Math.max(...this.generateArgsArray(arguments[0].nodes))
   }
 
   min () {
-    let node = arguments[0]
-
-    let args = node.nodes.filter(innerNode => {
-      return innerNode.type === 'word'
-    }).map(innerNode => parseInt(innerNode.value))
-
-    return Math.min(...args)
+    return Math.min(...this.generateArgsArray(arguments[0].nodes))
   }
 
   random () {
-    let node = arguments[0]
-    return Math.random() * (node.nodes.length ? node.nodes[0].value : 1)
+    return Math.random() * (arguments[0].nodes.length ? arguments[0].nodes[0].value : 1)
   }
 
   round () {
     let node = arguments[0]
     let { utils } = this.chassis
-
     let number = node.nodes[0].value
     let decimalPlaces = node.nodes.length === 3 ? node.nodes[2].value : 0
 
     return utils.math.precisionRound(number, decimalPlaces)
   }
 
-  sqrt () {
-    let node = arguments[0]
-    return Math.sqrt(node.nodes[0].value)
+  squareRoot () {
+    return Math.sqrt(arguments[0].nodes[0].value)
   }
 
-  trunc () {
-    let node = arguments[0]
-    return Math.trunc(node.nodes[0].value)
+  truncate () {
+    return Math.trunc(arguments[0].nodes[0].value)
   }
 }

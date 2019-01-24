@@ -26,6 +26,10 @@ module.exports = class {
 			return
 		}
 
-		console.error(`[ERROR] Chassis Post-Processing: Mixin "${data.mixin}" not found.`)
+		throw this.chassis.utils.error.create({
+			line: data.source.line,
+			mixin: 'post',
+			message: `Invalid mixin "${data.mixin}"`
+		})
 	}
 }

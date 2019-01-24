@@ -4,6 +4,15 @@ padding remains in proportion to the container if the font size or container
 dimensions are changed, rather than in proportion to the viewport itself, which
 doesn't make sense.
 
+MEDIA QUERIES:
+this format does not work correctly:
+@chassis vp-width to _____ from _____ {}
+there is no handling for "to" as the first operator.
+
+ERROR HANDLING
+Errors need to be thrown if the user attempts to style an
+unsupported component state
+
 * @import
 * Add support for css before @chassis init; call. As of now, this css is either
 stripped or inserted after the init mixin css, which prevents @import calls

@@ -153,19 +153,19 @@ module.exports = class extends NGN.EventEmitter {
 								if (scale.ratios.hasOwnProperty(cfg.typography.scaleRatio)) {
 									cfg.typography.scaleRatio = scale.ratios[cfg.typography.scaleRatio]
 								} else {
-									console.error(`[ERROR] Chassis Typography: Scale Ratio "${cfg.typography.scaleRatio}" not found. Reverting to default...`)
+									console.warn(`[WARNING] Chassis Typography: Invalid Scale Ratio "${cfg.typography.scaleRatio}". Reverting to default...`)
 									delete cfg.typography.scaleRatio
 								}
-								break;
+								break
 
 							case 'number':
 								if (cfg.typography.scaleRatio < 1 || cfg.typography.scaleRatio > 2) {
 									console.warn(`[WARNING] Chassis Typography: In general, decimals between 1 and 2 work best for type scale ratios. The selected type scale ratio, ${cleansedCfg.typography.scaleRatio}, may produce undesirable results.`);
 								}
-								break;
+								break
 
 							default:
-								console.error(`[ERROR] Chassis Typography: Scale Ratio must be a decimal (ideally between 1 and 2) or a string. Reverting to default...`)
+								console.error(`[WARNING] Chassis Typography: Scale Ratio must be a decimal (ideally between 1 and 2) or a string. Reverting to default...`)
 						}
 					}
 				}

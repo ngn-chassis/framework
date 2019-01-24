@@ -52,8 +52,11 @@ module.exports = class {
       : getFileContents(parsed.value)
 
     if (!output) {
-      console.log(`[ERROR] Line ${source.line}: Invalid import argument "${input}"`);
-      return atRule.remove()
+      throw this.chassis.utils.error.create({
+  			line: source.line,
+        mixin: 'import',
+  			message: `Invalid argument "${input}"`
+  		})
     }
 
     return atRule.replaceWith(output)

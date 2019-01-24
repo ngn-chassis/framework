@@ -29,16 +29,9 @@ module.exports = class {
 		let { typography } = this.chassis.settings
 
 		switch (type) {
-			case 'outer':
-				return lineHeight * typography.scaleRatio
-				break
-
-			case 'inner':
-				return lineHeight
-				break
-
-			default:
-				return '1em'
+			case 'outer': return lineHeight * typography.scaleRatio
+			case 'inner': return lineHeight
+			default: return '1em'
 		}
 	}
 
@@ -60,23 +53,20 @@ module.exports = class {
 		switch (unit) {
 			case 'vw':
 				return `calc(${width}px * ${parseFloat(this.gutter)} / 100)`
-				break
 
 			case '%':
 				return `calc(${width}px * ${parseFloat(this.gutter)} / 100)`
-				break
 
 			case 'px':
 			case 'em':
 				return this.gutter
-				break
 
 			case 'rem':
 				return `${parseFloat(this.gutter) * typography.baseFontSize}px`
-				break
 
-			default:
-				console.error(`"${unit}" units cannot be used for Layout Gutter. Please use vw, %, px, em or rem instead.`)
+			default: throw this.chassis.utils.error.create({
+				message: `"${unit}" units cannot be used for Layout Gutter. Please use vw, %, px, em or rem instead.`
+			})
 		}
 	}
 }

@@ -32,6 +32,11 @@ module.exports = class Chassis extends NGN.EventEmitter {
     this.componentOverrides = new (require('./data/stores/component-overrides.js'))
   }
 
+  // handleError (data) {
+  //   let error = this.utils.console.createError(data)
+  //   throw error
+  // }
+
   process (filepath = void 0, cb) {
     if (path.basename(filepath).startsWith('_')) {
       return
@@ -48,8 +53,9 @@ module.exports = class Chassis extends NGN.EventEmitter {
         return this.settings.validate()
       }
 
-      console.error('[ERROR] Chassis Configuration: Invalid fields:')
-			console.error(invalidAttributes.join(', '))
+      cb(this.utils.console.createError({
+        message: 'Chassis Configuration: Invalid fields:/n' + invalidAttributes.join(', ')
+      }))
     })
 
     this.settings.on('validation.succeeded', () => {
@@ -60,10 +66,13 @@ module.exports = class Chassis extends NGN.EventEmitter {
 
         let styleSheet = new (require('./style-sheet.js'))(this, css.toString().trim())
 
-        styleSheet.on('processing.error', err => cb(err, null))
         styleSheet.on('processing.complete', output => cb(null, output))
 
-        styleSheet.process(filepath)
+        try {
+          styleSheet.process(filepath)
+        } catch (err) {
+          cb(err, null)
+        }
       })
     })
 
