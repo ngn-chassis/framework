@@ -395,7 +395,7 @@ module.exports = class ChassisTypographyMixins {
 
     let alias = args[0]
     let suppliedMultiplier = null
-    let parsedMultiplier = null
+    let parsedMultiplier = 1
     let addMargin = false
 
     if (!constants.typography.sizeAliases.includes(alias)) {
