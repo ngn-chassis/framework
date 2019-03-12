@@ -30,6 +30,31 @@ module.exports = class {
         if (utils.file.fileExists(importPath, false)) {
           return utils.file.parseStyleSheet(importPath, false)
         }
+      }),
+
+      getImport: NGN.privateconst(input => {
+        let { chassis, getDirectory, getFileContents } = this
+        let { settings, utils } = chassis
+
+        let parsed = parseValue(input)
+
+        if (!parsed.hasOwnProperty('nodes')) {
+          throw utils.error.create({
+      			line: source.line,
+            mixin: 'import',
+      			message: `Invalid argument "${input}"`
+      		})
+        }
+
+        if (parsed.nodes.length > 1) {
+          return getFileContents(input)
+        }
+
+        parsed = parsed.nodes[0]
+
+        return parsed.type === 'function' && parsed.value === 'dir'
+          ? getDirectory(path.join(settings.importBasePath, parsed.nodes[0].value))
+          : getFileContents(parsed.value)
       })
     })
   }
@@ -39,25 +64,11 @@ module.exports = class {
    * Import a file or directory of files into the style sheet.
    */
   import () {
-    let { chassis, getDirectory, getFileContents } = this
-    let { settings, utils } = chassis
+    let { getImport } = this
     let { args, atRule, nodes, source } = arguments[0]
 
     let input = args[0]
-    let parsed = parseValue(input).nodes[0]
-    let output = null
-
-    output = parsed.type === 'function' && parsed.value === 'dir'
-      ? getDirectory(path.join(settings.importBasePath, parsed.nodes[0].value))
-      : getFileContents(parsed.value)
-
-    if (!output) {
-      throw this.chassis.utils.error.create({
-  			line: source.line,
-        mixin: 'import',
-  			message: `Invalid argument "${input}"`
-  		})
-    }
+    let output = getImport(input)
 
     return atRule.replaceWith(output)
   }

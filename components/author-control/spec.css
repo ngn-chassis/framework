@@ -88,14 +88,17 @@ author-control {
 	}
 
 	@state invalid {
-		$(selector):invalid{}
+		$(selector):invalid,
+		$(selector)[invalid] {}
 	}
 
 	@state required {
-		$(selector):required {}
+		$(selector):required,
+		$(selector)[required] {}
 	}
 
 	@state valid {
-    $(selector):valid {}
+    $(selector):valid,
+		$(selector)[valid] {}
   }
 }

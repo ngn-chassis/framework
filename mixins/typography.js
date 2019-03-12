@@ -332,6 +332,10 @@ module.exports = class ChassisTypographyMixins {
     let decls = null
 
     switch (type) {
+      case 'pill':
+        decls = this.getPillVariationDecls(args, source)
+        break
+
       case 'inline-block':
         decls = this.getInlineBlockDecls(args, source)
         break
@@ -339,33 +343,8 @@ module.exports = class ChassisTypographyMixins {
       default: throw this.chassis.utils.error.create({
         line: source.line,
         mixin: 'apply',
-        message: `No box-model specified`
+        message: `No variation type or box-model specified. Accepted options: ${this.chassis.utils.string.listValues(['inline-block', 'pill'])}`
       })
-    }
-
-    if (!decls) {
-      return atRule.remove()
-    }
-
-    atRule.replaceWith(decls)
-  }
-
-  applyVariation () {
-    let { args, atRule, source } = arguments[0]
-
-    let type = args[0]
-    let decls = null
-
-    switch (type) {
-      case 'pill':
-        decls = this.getPillVariationDecls(args, source)
-        break
-
-      default: throw this.chassis.utils.error.create({
-  			line: source.line,
-        mixin: 'apply-variation',
-  			message: `No variation specified`
-  		})
     }
 
     if (!decls) {

@@ -58,10 +58,6 @@ author-select {
 		$(selector):focus-within {}
 	}
 
-  @state invalid {
-		$(selector):invalid {}
-	}
-
   @state multiple {
     $(selector)[multiple] {}
   }
@@ -71,16 +67,24 @@ author-select {
   }
 
   @state optional {
-		$(selector):optional {}
+		$(selector):optional,
+    $(selector)[optional] {}
 	}
 
   @state required {
-		$(selector):required {}
+		$(selector):required,
+    $(selector)[required] {}
 	}
 
   @state valid {
-    $(selector):valid {}
+    $(selector):valid,
+    $(selector)[valid] {}
   }
+
+  @state invalid {
+		$(selector):invalid,
+    $(selector)[invalid] {}
+	}
 
   @variation multiple {
 

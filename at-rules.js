@@ -14,10 +14,6 @@ module.exports = class {
 				return this.typography.applyProps(...arguments)
 			}),
 
-			'apply-variation': NGN.privateconst(function () {
-				return this.typography.applyVariation(...arguments)
-			}),
-
 			'constrain-width': NGN.privateconst(function () {
 				return this.layout.constrainWidth(...arguments)
 			}),
