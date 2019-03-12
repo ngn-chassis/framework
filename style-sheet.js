@@ -260,13 +260,9 @@ module.exports = class extends NGN.EventEmitter {
 
 		tasks.add('Processing CSS4 Syntax', next => {
 			env.process(this.tree, {from: filepath}, settings.envCfg).then(processed => {
-				// console.log(processed.messages);
-				// TODO: Check processed for errors here
 				this.tree = processed.root
 				next()
-			}, () => {
-				this.emit('processing.error', new Error('Error Processing CSS4 Syntax'))
-			})
+			}, err => console.error(err))
 		})
 
 		// tasks.add('Merging matching adjacent rules...', next => {
