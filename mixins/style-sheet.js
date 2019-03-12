@@ -32,13 +32,13 @@ module.exports = class {
         }
       }),
 
-      getImport: NGN.privateconst(input => {
+      getImport: NGN.privateconst((input, source) => {
         let { chassis, getDirectory, getFileContents } = this
         let { settings, utils } = chassis
 
         let parsed = parseValue(input)
 
-        if (!parsed.hasOwnProperty('nodes')) {
+        if (!parsed.hasOwnProperty('nodes') || parsed.nodes.length === 0) {
           throw utils.error.create({
       			line: source.line,
             mixin: 'import',
@@ -53,7 +53,7 @@ module.exports = class {
         parsed = parsed.nodes[0]
 
         return parsed.type === 'function' && parsed.value === 'dir'
-          ? getDirectory(path.join(settings.importBasePath, parsed.nodes[0].value))
+          ? getDirectory(path.join(settings.importBasePath, parsed.nodes.map(node => node.value).join('')))
           : getFileContents(parsed.value)
       })
     })
@@ -68,7 +68,7 @@ module.exports = class {
     let { args, atRule, nodes, source } = arguments[0]
 
     let input = args[0]
-    let output = getImport(input)
+    let output = getImport(input, source)
 
     return atRule.replaceWith(output)
   }
