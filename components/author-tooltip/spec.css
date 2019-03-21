@@ -1,0 +1,27 @@
+author-tooltip {
+  @state initial {
+    $(selector) {
+      display: inline-flex;
+      @chassis apply inline-block padding;
+    }
+  }
+
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+
+  @state disabled {
+    $(selector):disabled {
+      pointer-events: none;
+    }
+  }
+
+  @state focus {
+    $(selector):focus {}
+  }
+
+  @state focus-within {
+		$(selector):focus-within {}
+	}
+}

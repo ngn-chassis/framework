@@ -6,8 +6,4 @@ module.exports = class {
 
 		this.resetType = 'block'
 	}
-
-	get variables () {
-		return {}
-	}
 }

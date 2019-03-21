@@ -1,4 +1,4 @@
-author-layout {
+author-pane {
 	@state initial {
 		$(selector) {}
 	}

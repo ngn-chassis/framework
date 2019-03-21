@@ -1,4 +1,4 @@
-author-layout-cell {
+author-pane-resize-handle {
 	@state initial {
 		$(selector) {}
 	}

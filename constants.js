@@ -81,15 +81,19 @@ module.exports = class ChassisConstants {
 				component: require('./components/author-control/component.js'),
 				dependencies: []
 			}],
-			['author-layout-cell', {
-				component: require('./components/author-layout-cell/component.js'),
+			['author-pane-resize-handle', {
+				component: require('./components/author-pane/component.js'),
 				dependencies: []
 			}],
-			['author-layout', {
-				component: require('./components/author-layout/component.js'),
-				dependencies: ['author-layout-cell']
+			['author-pane', {
+				component: require('./components/author-pane/component.js'),
+				dependencies: ['author-pane-resize-handle']
 			}],
-			['form-controls', ['input', 'textarea', 'author-select', 'author-datalist', 'author-control']]
+			['form-controls', ['input', 'textarea', 'author-select', 'author-datalist', 'author-control']],
+			['author-tooltip', {
+				component: require('./components/author-tooltip/component.js'),
+				dependencies: []
+			}],
 		])
 	}
 
