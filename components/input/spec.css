@@ -14,7 +14,7 @@ input[type="url"],
 input[type="week"] {
 	@state initial {
 		$(selector) {
-			@chassis apply inline-block;
+			@chassis apply inline-block padding;
 
 			/* Reset */
 			background: transparent;
