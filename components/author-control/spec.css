@@ -1,53 +1,60 @@
 author-control {
 	@state initial {
-		$(selector)[type="field"],
-		$(selector)[type="select"] {
-			margin-bottom: $(margin-bottom);
+		$(selector) input,
+		$(selector) textarea,
+		$(selector) select,
+		$(selector) datalist,
+		$(selector) author-select,
+		$(selector) author-datalist {
+			width: 100%;
+			max-width: 100%;
+			margin: 0;
+			vertical-align: top;
 		}
 
-		$(selector)[type="field"] label {
+		/* $(selector)[type="field"] label {
 			display: inline-block;
-		}
+		} */
 
-		$(selector)[type="field"] input {
+		/* $(selector)[type="field"] input {
 			flex: 1 1 auto;
 			width: 100%;
 			max-width: 100%;
 			margin: 0;
-		}
+		} */
 
-		$(selector)[type="field"] label + input {
+		/* $(selector)[type="field"] label + input {
 			margin-top: $(input-margin-top);
-		}
+		} */
 
-		$(selector)[type="field"] textarea {
+		/* $(selector)[type="field"] textarea {
 			flex: 1 1 auto;
 			width: 100%;
 			max-width: 100%;
 			margin: 0;
-		}
+		} */
 
-		$(selector)[type="toggle"] {
+		/* $(selector)[type="toggle"] {
 			display: flex;
 			align-items: baseline;
-		}
+		} */
 
-    $(selector)[type="toggle"] input {
+    /* $(selector)[type="toggle"] input {
 			display: inline-block;
 			margin: 0 $(toggle-margin-right) 0 0;
-		}
+		} */
 
 
-		$(selector)[type="field"] textarea,
+		/* $(selector)[type="field"] textarea,
 		$(selector)[type="select"] author-select {
 			margin: $(input-margin-top) 0 0;
-		}
+		} */
 
-		$(selector)[type="field"] textarea,
+		/* $(selector)[type="field"] textarea,
 		$(selector)[type="select"] select,
 		$(selector)[type="select"] select[multiple] {
 			vertical-align: top;
-    }
+    } */
 
 		/* TODO: Add validation states, sub-label */
 	}
