@@ -1,5 +1,7 @@
 author-control {
 	@state initial {
+		$(selector) {}
+
 		$(selector) input,
 		$(selector) textarea,
 		$(selector) select,
