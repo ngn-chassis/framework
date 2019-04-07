@@ -1,4 +1,4 @@
-author-pane-resize-handle {
+author-pane-handle {
 	@state initial {
 		$(selector) {}
 	}

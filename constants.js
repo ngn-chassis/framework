@@ -81,13 +81,13 @@ module.exports = class ChassisConstants {
 				component: require('./components/author-control/component.js'),
 				dependencies: []
 			}],
-			['author-pane-resize-handle', {
-				component: require('./components/author-pane/component.js'),
+			['author-pane-handle', {
+				component: require('./components/author-pane-handle/component.js'),
 				dependencies: []
 			}],
 			['author-pane', {
 				component: require('./components/author-pane/component.js'),
-				dependencies: ['author-pane-resize-handle']
+				dependencies: ['author-pane-handle']
 			}],
 			['form-controls', ['input', 'textarea', 'author-select', 'author-datalist', 'author-control']],
 			['author-tooltip', {

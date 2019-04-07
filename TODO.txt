@@ -1,3 +1,7 @@
+theme files still don't fully support nesting-- you can target
+nested children, but you can't target in different contexts.
+
+
 NOTE TO SELF: Use viewport units for HORIZONTAL padding on the outside of a UI,
 like for gutters, but use percentages on interior elements. This way, the
 padding remains in proportion to the container if the font size or container
