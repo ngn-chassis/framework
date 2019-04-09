@@ -29,8 +29,8 @@ module.exports = class ChassisConstants {
 				component: require('./components/table/component.js'),
 				dependencies: []
 			}],
-			['author-data-table', {
-				component: require('./components/author-data-table/component.js'),
+			['author-table', {
+				component: require('./components/author-table/component.js'),
 				dependencies: []
 			}],
 			['author-overlay', {

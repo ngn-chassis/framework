@@ -1,6 +1,8 @@
 theme files still don't fully support nesting-- you can target
 nested children, but you can't target in different contexts.
 
+Add support for inputs without type attribute
+
 
 NOTE TO SELF: Use viewport units for HORIZONTAL padding on the outside of a UI,
 like for gutters, but use percentages on interior elements. This way, the
