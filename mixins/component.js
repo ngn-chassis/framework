@@ -85,7 +85,7 @@ module.exports = class {
 		let css = NGN.dedupe(sorted).map(type => {
 			let component = new ChassisComponent(this.chassis, type)
 			let { themedCss } = component
-			console.log(themedCss.toString());
+
 			// Prepend :root with custom properties for each of the component's variables
 			if (component.variables) {
 				let rootRule = utils.css.createRule(':root', [])
