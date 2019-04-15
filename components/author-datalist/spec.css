@@ -11,23 +11,6 @@ author-datalist {
     $(selector) author-option {
       @chassis apply inline-block padding;
     }
-
-    $(selector) author-option svg.icon {
-      transform: $(icon-offset);
-    }
-
-    $(selector).pill {
-      border-radius: $(pill-border-radius);
-    }
-
-    $(selector).pill author-options {
-      border-radius: 0 0 $(pill-border-radius) $(pill-border-radius);
-    }
-
-    $(selector).pill author-option {
-      padding-right: $(pill-padding-x);
-      padding-left: $(pill-padding-x);
-    }
   }
 
   @state hover {
@@ -67,10 +50,6 @@ author-datalist {
 
   @state open {
     $(selector)[open] {}
-
-    $(selector)[open].pill {
-      border-radius: $(pill-border-radius) $(pill-border-radius) 0 0;
-    }
   }
 
   @state valid {

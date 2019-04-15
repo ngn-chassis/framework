@@ -26,7 +26,6 @@ module.exports = class Chassis extends NGN.EventEmitter {
     this.atRules = new (require('./at-rules.js'))(this)
     this.functions = new (require('./functions.js'))(this)
     this.post = new (require('./post.js'))(this)
-    this.core = new (require('./core.js'))(this)
 
     this.componentExtensions = new (require('./data/stores/component-extensions.js'))
     this.componentOverrides = new (require('./data/stores/component-overrides.js'))

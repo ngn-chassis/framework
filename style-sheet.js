@@ -19,6 +19,8 @@ module.exports = class extends NGN.EventEmitter {
 			throw e
 		}
 
+		this.core = new (require('./core.js'))(chassis)
+
 		Object.defineProperties(this, {
 			chassis: NGN.privateconst(chassis),
 			atRules: NGN.private({}),
@@ -198,7 +200,6 @@ module.exports = class extends NGN.EventEmitter {
 
 		let {
 			atRules,
-			core,
 			post,
 			settings,
 			utils
@@ -240,7 +241,7 @@ module.exports = class extends NGN.EventEmitter {
 
 		if (typographyEngineIsInitialized) {
 			tasks.add('Initializing Typography Engine', next => {
-				this.tree = core.css.append(this.tree)
+				this.tree = this.core.css.append(this.tree)
 				next()
 			})
 		}

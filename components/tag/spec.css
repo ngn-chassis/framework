@@ -10,29 +10,6 @@
 			line-height: $(line-height);
 			vertical-align: baseline;
 		}
-
-		$(selector) .icon {
-			flex: 0 0 auto;
-			display: inline;
-			width: $(icon-width);
-			height: $(icon-height);
-		}
-
-		$(selector) .left.icon {
-			order: -1;
-			transform: $(left-icon-offset);
-		}
-
-		$(selector) .right.icon {
-			order: 99;
-			transform: $(right-icon-offset);
-		}
-
-		$(selector).pill {
-			padding-right: $(pill-padding-x);
-			padding-left: $(pill-padding-x);
-			border-radius: $(pill-border-radius);
-		}
 	}
 
 	@state empty {
