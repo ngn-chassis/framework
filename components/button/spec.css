@@ -27,28 +27,7 @@ button {
    */
   @state initial {
     $(selector) {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      @chassis apply inline-block padding;
-      vertical-align: middle;
-      text-align: center;
-      cursor: pointer;
       user-select: none;
-    }
-
-    $(selector) .icon {
-      height: $(icon-height);
-    }
-
-    $(selector) .left.icon {
-      order: -1;
-      transform: $(left-icon-offset);
-    }
-
-    $(selector) .right.icon {
-      order: 99;
-      transform: $(right-icon-offset);
     }
   }
 

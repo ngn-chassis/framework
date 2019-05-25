@@ -1,6 +1,6 @@
 {
   "name": "@chassis/core",
-  "version": "2.3.9",
+  "version": "2.4.0",
   "description": "CSS4 pre-processor and responsive framework for modern UI development",
   "main": "index.js",
   "scripts": {
@@ -43,6 +43,6 @@
     "postcss-nesting": "^4.2.1",
     "postcss-preset-env": "^5.2.3",
     "postcss-selector-not": "^3.0.1",
-    "postcss-value-parser": "^3.3.0"
+    "postcss-value-parser": "^3.3.1"
   }
 }

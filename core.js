@@ -159,7 +159,7 @@ module.exports = class {
 	}
 
 	get customProperties () {
-		let { settings, theme, typography, utils } = this.chassis
+		let { layout, settings, theme, typography, utils } = this.chassis
 		let { root, small, large, larger, largest } = settings.typography.ranges.first.typography
 		let headingSizeAliases = settings.typography.fontSizes.headings
 
@@ -169,12 +169,19 @@ module.exports = class {
 			'layout-min-width': `${settings.layout.minWidth}px`,
 			'layout-max-width': `${settings.layout.maxWidth}px`,
 			'layout-gutter': settings.layout.gutter,
+			'layout-min-gutter': layout.minGutterWidth,
+			'layout-max-gutter': layout.maxGutterWidth,
 
 			// TODO: add breakpoint vars
 
 			'typography-scale-ratio': settings.typography.scaleRatio,
 			'root-font-size': `${root.fontSize}px`,
 			'root-line-height': rootLineHeightMult,
+
+			// 'block-margin-x': ,
+			// 'block-margin-y': `${layout.calculateMarginBottom(rootLineHeightMult, 'outer')}em`,
+			// 'block-padding-x': ,
+			// 'block-padding-y': ,
 
 			'inline-block-margin-x': `${typography.calculateInlineMarginX(rootLineHeightMult)}em`,
 			'inline-block-margin-y': `${typography.calculateInlineMarginY(rootLineHeightMult)}em`,

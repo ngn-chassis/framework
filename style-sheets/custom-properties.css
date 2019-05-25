@@ -2,10 +2,14 @@
 	--layout-min-width: $(layout-min-width);
 	--layout-max-width: $(layout-max-width);
 	--layout-gutter: $(layout-gutter);
+	--layout-min-gutter: $(layout-min-gutter);
+	--layout-max-gutter: $(layout-max-gutter);
 
 	--typography-scale-ratio: $(typography-scale-ratio);
 	--root-font-size: $(root-font-size);
 	--root-line-height: $(root-line-height);
+
+	/* --block-margin-y: $(block-margin-y); */
 
 	--inline-block-margin-x: $(inline-block-margin-x);
 	--inline-block-margin-y: $(inline-block-margin-y);
