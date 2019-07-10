@@ -38,7 +38,7 @@ module.exports = class Chassis extends NGN.EventEmitter {
 
   process (filepath = void 0, cb) {
     if (path.basename(filepath).startsWith('_')) {
-      return
+      return cb(null, null)
     }
 
     if (!this.settings.importBasePath) {
