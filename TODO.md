@@ -4,6 +4,20 @@
 - Tags need help at scale ratios other than default
 - Errors are thrown if you set default vwrs to a wider range than your min/max layout width.
 
+- Nesting in theme does not behave correctly when using comma-separated selectors:
+
+```
+& .element-1,
+& .element-2 {...}
+```
+
+The above does not work, while the following does:
+
+```
+& .element-1,
+.element-2 {...}
+```
+
 ## Configuration
 - Add ability to specify left and right gutter separately in build config
 
@@ -50,6 +64,11 @@ unsupported component state
 - Image replacement mixin
 - Some flexbox mixins if they can be done elegantly
 - Some helper mixins for responsive embeds
+
+- Add `@chassis new component {}` feature for custom components
+  Custom components would be extendable, like chassis built-in components
+
+- Add `@custom-state` to components
 
 ## Components
 

@@ -1,6 +1,6 @@
 {
   "name": "@chassis/core",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "CSS4 pre-processor and responsive framework for modern UI development",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "ngn": "^0.3.31",
     "ngn-data": "^0.1.11",
     "perfectionist": "^2.4.0",
-    "postcss": "^6.0.23",
+    "postcss": "^7.0.17",
     "postcss-discard-comments": "^2.0.4",
     "postcss-merge-rules": "^2.1.2",
     "postcss-nesting": "^4.2.1",
