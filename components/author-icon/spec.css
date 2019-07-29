@@ -1,0 +1,15 @@
+author-icon {
+  @state initial {
+		$(selector) {
+			width: $(width);
+			height: $(height);
+			vertical-align: middle;
+			pointer-events: none;
+		}
+	}
+
+  @state hover {
+    $(selector):hover,
+    $(selector).hover {}
+  }
+}
