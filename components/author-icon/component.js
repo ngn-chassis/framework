@@ -14,8 +14,7 @@ module.exports = class {
 		let lineHeightInEms = utils.unit.pxToEm(lineHeight, fontSize)
 
 		return {
-			'width': 'auto',
-			'height': `${lineHeightInEms}em`
+			'dimension': `${lineHeightInEms}em`
 		}
 	}
 }

@@ -12,6 +12,10 @@ module.exports = class ChassisConstants {
 				component: require('./components/svg-icon/component.js'),
 				dependencies: []
 			}],
+			['author-icon', {
+				component: require('./components/author-icon/component.js'),
+				dependencies: []
+			}],
 			['button', {
 				component: require('./components/button/component.js'),
 				dependencies: []
