@@ -3,6 +3,9 @@ const ChassisLayoutModel = require('./data/models/layout.js')
 const ChassisTypographyModel = require('./data/models/typography.js')
 
 module.exports = class extends NGN.EventEmitter {
+	#chassis = null
+	#model = null
+
 	constructor (chassis) {
 		super()
 
@@ -111,11 +114,10 @@ module.exports = class extends NGN.EventEmitter {
 			}
 		})
 
+		this.#chassis = chassis
+		this.#model = new Model()
+
 		Object.defineProperties(this, {
-			chassis: NGN.privateconst(chassis),
-
-			model: NGN.privateconst(new Model()),
-
 			cleanseCfg: NGN.privateconst(cfg => {
 				let { scale } = chassis.constants.typography
 
@@ -174,76 +176,71 @@ module.exports = class extends NGN.EventEmitter {
 			})
 		})
 
-		this.model.on('load', evt => this.emit('load'))
+		this.#model.on('load', evt => this.emit('load'))
 	}
 
 	get componentResetSelectors () {
-		return this.model.componentResetSelectors
+		return this.#model.componentResetSelectors
 	}
 
 	get componentResetSelectorLists () {
-		return this.model.componentResetSelectorLists
+		return this.#model.componentResetSelectorLists
 	}
 
 	get data () {
-		return this.model.data
+		return this.#model.data
 	}
 
 	get importBasePath () {
-		return this.model.importBasePath
+		return this.#model.importBasePath
 	}
 
 	set importBasePath (path) {
-		this.model.importBasePath = path
+		this.#model.importBasePath = path
 	}
 
 	get isValid () {
-		return this.model.valid
+		return this.#model.valid
 	}
 
 	get invalidAttributes () {
-		return this.model.invalidDataAttributes
+		return this.#model.invalidDataAttributes
 	}
 
 	get layout () {
-		return this.model.layout
+		return this.#model.layout
 	}
 
 	get minify () {
-		return this.model.minify
+		return this.#model.minify
 	}
 
 	get sourceMap () {
-		return this.model.sourceMap
+		return this.#model.sourceMap
 	}
 
 	get sourceMapPath () {
-		return this.model.sourceMapPath
+		return this.#model.sourceMapPath
 	}
 
 	get theme () {
-		return this.model.theme
+		return this.#model.theme
 	}
 
 	set theme (theme) {
-		this.model.theme = theme
+		this.#model.theme = theme
 	}
 
 	get typography () {
-		return this.model.typography
+		return this.#model.typography
 	}
 
 	get viewportWidthRanges () {
-		return this.model.viewportWidthRanges
+		return this.#model.viewportWidthRanges
 	}
 
 	load (cfg) {
-		let {
-			cleanseCfg,
-			model
-		} = this
-
-		model.load(cleanseCfg(cfg))
+		this.#model.load(this.cleanseCfg(cfg))
 	}
 
 	validate () {

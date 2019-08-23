@@ -37,6 +37,8 @@ unsupported component state
 
 - Elements in reset need to be themeable, ie ol and ul, blockquote, etc.
 
+- Themes need to support @-rules
+
 - Add the following objects:
 
 ```

@@ -5,11 +5,11 @@ const fs = require('fs')
 const path = require('path')
 
 module.exports = class Chassis extends NGN.EventEmitter {
+  utils = require('./utilities.js')
+  constants = require('./constants.js')
+
   constructor (cfg = null) {
     super()
-
-    this.utils = require('./utilities.js')
-    this.constants = require('./constants.js')
 
     this.settings = new (require('./settings.js'))(this)
     this.settings.load(NGN.coalesce(cfg, {}))
