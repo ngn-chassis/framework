@@ -56,7 +56,7 @@ module.exports = class {
 			fields: {
 				baseFontSize: {
 					type: Number,
-					default: 16,
+					default: 12,
 					min: 1
 				},
 				scaleRatio: {

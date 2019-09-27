@@ -303,11 +303,13 @@ module.exports = class {
 	}
 
 	get html () {
-		let { constants, settings, theme, utils } = this.chassis
+		let { constants, layout, settings, theme, typography, utils } = this.chassis
 		let { fontSize, lineHeight } = this.baseTypography.root
 
 		let root = this.applyTheme('html', utils.css.createRule('html.chassis', [
 			utils.css.createDeclObj('font-size', `${fontSize}px`)
+			// Support 'minFontSize' value
+			// utils.css.createDeclObj('font-size', `${Math.max(fontSize, minFontSize)}px`)
 		]))
 
 		return root
@@ -395,9 +397,22 @@ module.exports = class {
 
 			let htmlRule = utils.css.createRule('html.chassis', [])
 
-			if (fontSize !== this.baseTypography.root.fontSize) {
-				htmlRule.append(utils.css.createDecl('font-size', `${fontSize}px`))
+			if (i === 1) {
+				let vw = fontSize / ((1000 - ((typography.scale.ratio * 1000) - 1000)) / fontSize)
+				console.log(`calc(${vw}vw + ${fontSize - vw}px)`);
+				htmlRule.append(utils.css.createDecl('font-size', `calc(${vw}vw + ${fontSize - vw}px)`))
 			}
+
+			// if (fontSize !== this.baseTypography.root.fontSize) {
+			// 	// fontSize / (1000 - ((typography.scale.ratio * 1000) - 1000) / fontSize)
+			// 	let vw = fontSize / ((1000 - ((typography.scale.ratio * 1000) - 1000)) / fontSize)
+			//
+			// 	console.log(`calc(${vw}vw + ${fontSize - vw}px)`);
+			//
+			// 	// let calc = `calc(${fontSize / (range.bounds.lower / fontSize)}vw + ${fontSize}px)`
+			// 	// console.log(calc);
+			// 	htmlRule.append(utils.css.createDecl('font-size', `calc(${vw}vw + ${fontSize - vw}px)`))
+			// }
 
 			htmlRule.append(utils.css.createDecl('line-height', `${utils.unit.pxToEm(lineHeight, fontSize)}`))
 

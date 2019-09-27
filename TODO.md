@@ -1,8 +1,13 @@
 # Chassis TODO
 
 ## BUGS
+- @chassis font-size root mult(...) doesn't work on "root" size; other sizes work fine
+
 - Tags need help at scale ratios other than default
+
 - Errors are thrown if you set default vwrs to a wider range than your min/max layout width.
+
+- Nesting does not produce the correct selector lists inside @chassis new mixin.
 
 - Nesting in theme does not behave correctly when using comma-separated selectors:
 
