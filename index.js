@@ -27,11 +27,10 @@ module.exports = class Chassis {
 
     queue.on('complete', () => {
       if (!FileUtils.fileExists(filepath, false)) {
-        return cb(ErrorUtils.createError({ message: `${filepath} does not exist` }))
+        return cb(ErrorUtils.createError({ message: `${filepath} not found` }))
       }
 
       let styleSheet = new StyleSheet(filepath)
-
       styleSheet.process(cb)
     })
 
