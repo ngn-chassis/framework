@@ -4,72 +4,71 @@ require('ngn-data')
 const fs = require('fs-extra')
 const path = require('path')
 
+const ConsoleUtils = require('./lib/utilities/ConsoleUtils.js')
 const ErrorUtils = require('./lib/utilities/ErrorUtils.js')
 const FileUtils = require('./lib/utilities/FileUtils.js')
+const ViewportUtils = require('./lib/utilities/ViewportUtils.js')
 
 const Config = require('./lib/Config.js')
+const Defaults = require('./lib/data/Defaults.js')
+
 const StyleSheet = require('./lib/StyleSheet.js')
 
 module.exports = class Chassis {
   #cfg
+  #imports = []
 
   constructor (cfg) {
     this.#cfg = NGN.coalesce(cfg, {})
+    Config.load(this.#processConfig(this.#cfg))
+  }
+
+  get config () {
+    return Config.json
   }
 
   process (filepath = void 0, cb) {
-    // Skip filenames starting with underscores
+    if (!Config.isValid) {
+      let attrs = Config.invalidAttributes
+
+      return cb(ErrorUtils.createError({
+        message: `Chassis Configuration: Invalid attribute${attrs.length > 1 ? 's' : ''}: ${attrs.join(', ')}`
+      }))
+    }
+
+    // Skip imports
     if (path.basename(filepath).startsWith('_')) {
       return cb()
     }
 
-    let queue = new NGN.Tasks()
-
-    queue.on('complete', () => {
-      if (!FileUtils.fileExists(filepath, false)) {
-        return cb(ErrorUtils.createError({ message: `${filepath} not found` }))
-      }
-
-      let styleSheet = new StyleSheet(filepath)
-      styleSheet.process(cb)
-    })
-
-    queue.add('Loading Configuration', next => {
-      Config.load(this.#processConfig(this.#cfg, filepath), next)
-    })
-
-    queue.add('Validating Config', next => {
-      if (Config.isValid) {
-        return next()
-      }
-
-      let attrs = Config.invalidAttributes
-
-      cb(ErrorUtils.createError({
-        message: `Chassis Configuration: Invalid attribute${attrs.length > 1 ? 's' : ''}: ${attrs.join(', ')}`
-      }))
-    })
-
-    queue.run(true)
-  }
-
-  #processConfig = (cfg, filepath) => {
-    if (!cfg.hasOwnProperty('importBasePath')) {
-      cfg.importBasePath = path.dirname(filepath)
+    if (!FileUtils.fileExists(filepath, false)) {
+      return cb(ErrorUtils.createError({ message: `${filepath} not found` }))
     }
 
-    ;['minify', 'sourceMap'].forEach(attr => {
-      if (!cfg.hasOwnProperty(attr)) {
-        return
-      }
-
-      if (typeof cfg[attr] === 'string' && ['true', 'false'].some(value => cfg[attr] === value)) {
-        cfg[attr] = cfg[attr] === 'true'
-      }
-    })
-
-    return cfg
+    let styleSheet = new StyleSheet(filepath)
+    styleSheet.process(cb)
   }
+
+  #getBooleanConfigValue = (prop, value) => {
+    switch (typeof value) {
+      case 'boolean': return value
+      case 'string':
+        if (['true', 'false'].some(string => value === string)) {
+          return value === 'true'
+        }
+
+        console.warn(`Config property "${prop}" expects a boolean value but received string "${value}". Defaulting to false...`)
+        return false
+
+      default: return false
+    }
+  }
+
+  #processConfig = cfg => Object.assign({}, Defaults, Object.assign({}, cfg, {
+    // importBasePath: NGN.coalesce(cfg.importBasePath, path.dirname(filepath)),
+    minify: this.#getBooleanConfigValue('minify', cfg.minify),
+    sourceMap: this.#getBooleanConfigValue('sourceMap', cfg.sourceMap)
+  }))
 }
 
 // module.exports = class Chassis extends NGN.EventEmitter {
