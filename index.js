@@ -16,7 +16,6 @@ const StyleSheet = require('./lib/StyleSheet.js')
 
 module.exports = class Chassis {
   #cfg
-  #imports = []
 
   constructor (cfg) {
     this.#cfg = NGN.coalesce(cfg, {})
@@ -64,11 +63,27 @@ module.exports = class Chassis {
     }
   }
 
-  #processConfig = cfg => Object.assign({}, Defaults, Object.assign({}, cfg, {
-    // importBasePath: NGN.coalesce(cfg.importBasePath, path.dirname(filepath)),
-    minify: this.#getBooleanConfigValue('minify', cfg.minify),
-    sourceMap: this.#getBooleanConfigValue('sourceMap', cfg.sourceMap)
-  }))
+  #processConfig = cfg => {
+    if (cfg.hasOwnProperty('layout') && typeof cfg.layout !== 'object' && !this.#getBooleanConfigValue('layout', cfg.layout)) {
+      cfg.layout = {
+        disabled: true
+      }
+    }
+
+    if (cfg.hasOwnProperty('typography') && typeof cfg.typography !== 'object' && !this.#getBooleanConfigValue('typography', cfg.typography)) {
+      cfg.typography = {
+        disabled: true
+      }
+    }
+
+    console.log(cfg);
+
+    return Object.assign({}, Defaults, Object.assign({}, cfg, {
+      // importBasePath: NGN.coalesce(cfg.importBasePath, path.dirname(filepath)),
+      minify: this.#getBooleanConfigValue('minify', cfg.minify),
+      sourceMap: this.#getBooleanConfigValue('sourceMap', cfg.sourceMap)
+    }))
+  }
 }
 
 // module.exports = class Chassis extends NGN.EventEmitter {
