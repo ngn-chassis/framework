@@ -76,7 +76,10 @@ module.exports = class Chassis {
       }
     }
 
-    console.log(cfg);
+    if (cfg.hasOwnProperty('viewport')) {
+      console.log('TODO: Process Viewport Width Ranges')
+      console.log(cfg.viewport)
+    }
 
     return Object.assign({}, Defaults, Object.assign({}, cfg, {
       // importBasePath: NGN.coalesce(cfg.importBasePath, path.dirname(filepath)),
