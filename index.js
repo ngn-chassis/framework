@@ -1,17 +1,10 @@
+const fs = require('fs-extra')
+
 require('ngn')
 require('ngn-data')
 
-const fs = require('fs-extra')
-const path = require('path')
 
-const ConsoleUtils = require('./lib/utilities/ConsoleUtils.js')
-const ErrorUtils = require('./lib/utilities/ErrorUtils.js')
-const FileUtils = require('./lib/utilities/FileUtils.js')
-const ViewportUtils = require('./lib/utilities/ViewportUtils.js')
-
-const Config = require('./lib/Config.js')
-const Defaults = require('./lib/data/Defaults.js')
-
+const Config = require('./lib/data/Config.js')
 const StyleSheet = require('./lib/StyleSheet.js')
 
 module.exports = class Chassis {
@@ -19,73 +12,47 @@ module.exports = class Chassis {
 
   constructor (cfg) {
     this.#cfg = NGN.coalesce(cfg, {})
-    Config.load(this.#processConfig(this.#cfg))
+  }
+
+  get entry () {
+    return Config.entry
+  }
+
+  get output () {
+    return Config.output
   }
 
   get config () {
     return Config.json
   }
 
-  process (filepath = void 0, cb) {
-    if (!Config.isValid) {
-      let attrs = Config.invalidAttributes
+  process (cb) {
+    Config.load(this.#cfg, (err, cfg) => {
+      if (err) {
+        return cb(err)
+      }
 
-      return cb(ErrorUtils.createError({
-        message: `Chassis Configuration: Invalid attribute${attrs.length > 1 ? 's' : ''}: ${attrs.join(', ')}`
-      }))
-    }
+      let styleSheet = new StyleSheet(cfg.entry)
 
-    // Skip imports
-    if (path.basename(filepath).startsWith('_')) {
-      return cb()
-    }
-
-    if (!FileUtils.fileExists(filepath, false)) {
-      return cb(ErrorUtils.createError({ message: `${filepath} not found` }))
-    }
-
-    let styleSheet = new StyleSheet(filepath)
-    styleSheet.process(cb)
-  }
-
-  #getBooleanConfigValue = (prop, value) => {
-    switch (typeof value) {
-      case 'boolean': return value
-      case 'string':
-        if (['true', 'false'].some(string => value === string)) {
-          return value === 'true'
+      styleSheet.process((err, files) => {
+        if (err) {
+          return cb(err)
         }
 
-        console.warn(`Config property "${prop}" expects a boolean value but received string "${value}". Defaulting to false...`)
-        return false
+        // console.log(files);
+        fs.ensureDirSync(cfg.output)
 
-      default: return false
-    }
-  }
+        files.forEach(file => {
+          if (file.map) {
+            fs.writeFileSync(`${file.path}.map`, file.map)
+          }
 
-  #processConfig = cfg => {
-    if (cfg.hasOwnProperty('layout') && typeof cfg.layout !== 'object' && !this.#getBooleanConfigValue('layout', cfg.layout)) {
-      cfg.layout = {
-        disabled: true
-      }
-    }
+          fs.writeFileSync(file.path, file.css)
+        })
 
-    if (cfg.hasOwnProperty('typography') && typeof cfg.typography !== 'object' && !this.#getBooleanConfigValue('typography', cfg.typography)) {
-      cfg.typography = {
-        disabled: true
-      }
-    }
-
-    if (cfg.hasOwnProperty('viewport')) {
-      console.log('TODO: Process Viewport Width Ranges')
-      console.log(cfg.viewport)
-    }
-
-    return Object.assign({}, Defaults, Object.assign({}, cfg, {
-      // importBasePath: NGN.coalesce(cfg.importBasePath, path.dirname(filepath)),
-      minify: this.#getBooleanConfigValue('minify', cfg.minify),
-      sourceMap: this.#getBooleanConfigValue('sourceMap', cfg.sourceMap)
-    }))
+        cb()
+      })
+    })
   }
 }
 

@@ -1,0 +1,90 @@
+const Mixin = require('./Mixin.js')
+const Func = require('./Func.js')
+
+const ConsoleUtils = require('./utilities/ConsoleUtils.js')
+const ErrorUtils = require('./utilities/ErrorUtils.js')
+
+ module.exports = class StyleSheet {
+  mixins = []
+  imports = []
+
+  // #boxModels = {
+  //   block: [],
+  //   inlineBlock: [],
+  //   inline: []
+  // }
+
+  constructor (root, cfg) {
+    this.cfg = cfg
+    this.root = root
+  }
+
+  constructOutput (cb) {
+
+  }
+
+  setCharset (cb) {
+    this.root.prepend(`@charset "${this.cfg.charset}"`)
+    cb()
+  }
+
+  // registerImports (cb) {
+  //   this.mixins = this.mixins.filter(mixin => {
+  //     if (mixin.name === 'import') {
+  //       this.imports.push(mixin)
+  //     }
+  //
+  //     return mixin.name !== 'import'
+  //   })
+  //
+  //   cb()
+  //
+  //   // let queue = new NGN.Tasks()
+  //   //
+  //   // queue.on('complete', cb)
+  //   //
+  //   // imports.forEach(mixin => {
+  //   //   let firstArg = mixin.args[0].value
+  //   //
+  //   //   console.log(typeof firstArg)
+  //   //
+  //   //   // TODO: Store references to all import paths
+  //   //   // Then, for any import that calls a whole file, simply import that whole
+  //   //   // file in place.
+  //   //   // If it is a component or other entity import, find the associated export
+  //   //   // within the file and import that only.
+  //   //
+  //   //   // If an import points to an external resource, attempt to retrieve it.
+  //   //   // If successful, import it, if not, retain the import statement
+  //   //
+  //   //   queue.add(`Importing ${firstArg}`, next => {
+  //   //     mixin.process((err, filepaths) => {
+  //   //       if (err) {
+  //   //         return cb(err)
+  //   //       }
+  //   //
+  //   //       console.log(filepaths)
+  //   //       next()
+  //   //     })
+  //   //   })
+  //   // })
+  //   //
+  //   // queue.run()
+  // }
+
+  registerMixins (cb) {
+    this.root.walkAtRules(node => {
+      let mixin = new Mixin(node)
+
+      if (!mixin.isValid) {
+        return cb(ErrorUtils.createError(Object.assign({}, mixin.source, {
+          message: `Invalid mixin "${mixin.name}"`
+        })))
+      }
+
+      this.mixins.push(mixin)
+    })
+
+    cb()
+  }
+}

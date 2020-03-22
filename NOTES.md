@@ -1,3 +1,63 @@
+## components
+
+```css
+button {
+  @initial {
+    ... Get rid of the "state" at-rule
+  }
+}
+```
+
+## @media
+
+```CSS
+@media large +-200 {
+  ... Chassis will intercept this and produce the proper media query ...
+}
+```
+
+## @apply mixin
+
+Add ability to specify which font-size by which padding and margin should be calculated
+
+```css
+button {
+  @apply inline-block margin(small) padding(large);
+}
+```
+
+## @reset mixin
+
+```css
+button {
+  @reset inline-block;
+}
+```
+
+Add an option to output a CSS3 or CSS4 compatible stylesheet without any chassis functionality
+
+## Concentrate mixins into the @apply rule
+
+```
+@apply font-size small;
+@apply block padding;
+@apply z-index front;
+@apply ellipsis;
+```
+
+```
+@constrain width;
+@constrain height;
+
+@constrain font-size min() max();
+or
+@constrain font-size from 10px to 20px;
+
+@constrain line-height min() max();
+or
+@constrain line-height from 1.2 to 1.6;
+```
+
 ## Additional Custom Properties
 
 ```css
@@ -8,10 +68,10 @@
 ## Syntax for theme import
 
 ```css
-@chassis make '../themes/{light|dark|neutral}';
-@chassis make '../themes/light';
-@chassis make '../themes/dark';
-@chassis make '../themes/*';
+@make '../themes/{light|dark|neutral}.css';
+@make '../themes/light.css';
+@make '../themes/dark.css';
+@make '../themes/*';
 ```
 
 Check into
@@ -20,10 +80,11 @@ node-glob and globby
 ## Syntax for custom components
 
 ```css
-@chassis component corey-button {
+@component corey-button {
   @selector .corey-button;
 
   @state initial {
+    @reset inline-block;
     background: orange;
   }
 
@@ -32,7 +93,7 @@ node-glob and globby
   }
 }
 
-@chassis component graham-button extends corey-button {
+@component graham-button extends corey-button {
   @selector .graham-button;
 
   @state active {
@@ -41,10 +102,69 @@ node-glob and globby
 }
 ```
 
-## `config` mixin
+## Module system
+
+main.css
+```css
+main {
+  @import '/components.css';
+}
+```
+
+components.css
+```css
+@export {
+  & .button {
+    background: green
+  }
+
+  & .tag {
+    background: blue
+  }
+}
+```
+
+The above would output the following:
 
 ```css
-@chassis config {
+main .button {
+  background: green;
+}
+
+main .tag {
+  background: blue;
+}
+```
+
+You can also export components and mixins:
+
+```css
+@export component fancy-button {
+  @selector button.fancy;
+
+  @state initial {
+    $(selector) {
+      background: blue;
+      color: white;
+    }
+  }
+
+  @state hover {
+    $(selector):hover {
+      background: lightblue;
+    }
+  }
+}
+```
+
+Then import it
+
+## `config` mixin
+
+Do all configuration in the CSS instead of in the build
+
+```css
+@config {
   constraints {
     width {
       min: 320px;
@@ -62,15 +182,19 @@ node-glob and globby
 ## `mixin` mixin
 
 ```css
-@chassis mixin mixin-name (args) {
+@mixin mixin-name (args) {
   --css--
+}
+
+.something {
+  @apply mixin-name(...);
 }
 ```
 
 ## `function` mixin
 
 ```css
-@chassis function functionName (args) {
+@function functionName (args) {
   --JavaScript--
 }
 ```

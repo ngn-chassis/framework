@@ -1,0 +1,67 @@
+/* If this file is specified as the entry for Chassis, no init is necessary */
+
+@include <component-names>;
+
+/*
+  Chassis will attempt to download and insert this file.
+  If unable to access it, it will leave the @import intact.
+*/
+@import "https://www.somewhere.com/some-resource/styles.css";
+
+main {
+  /* Import individual file */
+  @import "/local-file.css";
+
+  /* Import all CSS files from directory */
+  @import "/local-directory/**/*";
+
+  & .button {
+    @apply inline-block padding margin;
+  }
+}
+
+@mixin nice {
+  background: gold;
+  color: silver;
+}
+
+@interface button {
+  @state initial {
+    $selector {}
+  }
+
+  @state hover {
+    $selector:hover {}
+  }
+
+  @state active {
+    $selector:active {}
+  }
+
+  @state focus {
+    $selector:focus {}
+  }
+}
+
+@component fancy-button implements button {
+  @selector button.fancy;
+
+  @state initial {
+    @apply nice;
+  }
+
+  @state hover {
+    background: lightblue;
+  }
+}
+
+@component ugly-button extends fancy-button {
+  @selector button.ugly;
+
+  @state hover {
+    background: limegreen;
+    color: orange;
+  }
+}
+
+@export fancy-button ugly-button;
