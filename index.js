@@ -1,13 +1,12 @@
-const fs = require('fs-extra')
+import 'ngn'
+import 'ngn-data'
 
-require('ngn')
-require('ngn-data')
+import fs from 'fs-extra'
 
+import Config from './lib/data/Config.js'
+import StyleSheet from './lib/StyleSheet.js'
 
-const Config = require('./lib/data/Config.js')
-const StyleSheet = require('./lib/StyleSheet.js')
-
-module.exports = class Chassis {
+export default class Chassis {
   #cfg
 
   constructor (cfg) {
@@ -27,31 +26,39 @@ module.exports = class Chassis {
   }
 
   process (cb) {
+
     Config.load(this.#cfg, (err, cfg) => {
       if (err) {
         return cb(err)
       }
 
-      let styleSheet = new StyleSheet(cfg.entry)
+      let queue = new NGN.Tasks()
 
-      styleSheet.process((err, files) => {
-        if (err) {
-          return cb(err)
-        }
+      queue.on('complete', cb)
 
-        // console.log(files);
-        fs.ensureDirSync(cfg.output)
+      cfg.entry.forEach(file => {
+        queue.add(`Processing ${file}`, next => {
+          let styleSheet = new StyleSheet(file)
 
-        files.forEach(file => {
-          if (file.map) {
-            fs.writeFileSync(`${file.path}.map`, file.map)
-          }
+          styleSheet.process((err, files) => {
+            if (err) {
+              return cb(err)
+            }
 
-          fs.writeFileSync(file.path, file.css)
+            fs.ensureDirSync(cfg.output)
+
+            files.forEach(file => {
+              if (file.map) {
+                fs.writeFileSync(`${file.path}.map`, file.map)
+              }
+
+              fs.writeFileSync(file.path, file.css)
+            })
+          })
         })
-
-        cb()
       })
+
+      queue.run()
     })
   }
 }

@@ -1,5 +1,6 @@
 {
   "name": "@chassis/core",
+  "type": "module",
   "version": "2.4.4",
   "description": "CSS4 pre-processor and responsive framework for modern UI development",
   "main": "index.js",
