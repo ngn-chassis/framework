@@ -42,6 +42,7 @@ export default class Chassis {
 
           styleSheet.process((err, files) => {
             if (err) {
+              console.log(err);
               return cb(err)
             }
 
