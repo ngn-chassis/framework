@@ -26,7 +26,6 @@ export default class Chassis {
   }
 
   process (cb) {
-
     Config.load(this.#cfg, (err, cfg) => {
       if (err) {
         return cb(err)
@@ -42,7 +41,6 @@ export default class Chassis {
 
           styleSheet.process((err, files) => {
             if (err) {
-              console.log(err);
               return cb(err)
             }
 
