@@ -1,3 +1,13 @@
+Chassis should have an option to generate a report/dev guide.
+It will be an html file which contains information like available
+media queries, typography constraints, layout constraints,
+custom properties, etc.
+
+Later it could include info about the components as well.
+
+Chassis should also provide the option to save a theme as a json file.
+
+
 ```css
 @media (width < 768, height > 320) {}
 
@@ -141,12 +151,12 @@ node-glob and globby
 @component corey-button {
   @selector .corey-button;
 
-  @state initial {
+  @initial {
     @reset inline-block;
     background: orange;
   }
 
-  @state hover {
+  @hover {
     background: lightorange;
   }
 }
@@ -154,7 +164,7 @@ node-glob and globby
 @component graham-button extends corey-button {
   @selector .graham-button;
 
-  @state active {
+  @active {
     background: darkorange;
   }
 }
@@ -165,13 +175,13 @@ node-glob and globby
 main.css
 ```css
 main {
-  @import '/components.css';
+  @import bits from '/components.css';
 }
 ```
 
 components.css
 ```css
-@export {
+@export bits {
   & .button {
     background: green
   }
@@ -200,14 +210,14 @@ You can also export components and mixins:
 @export component fancy-button {
   @selector button.fancy;
 
-  @state initial {
+  @initial {
     $(selector) {
       background: blue;
       color: white;
     }
   }
 
-  @state hover {
+  @hover {
     $(selector):hover {
       background: lightblue;
     }
@@ -223,12 +233,14 @@ Do all configuration in the CSS instead of in the build
 
 ```css
 @config {
-  constraints {
+  layout {
     width {
       min: 320px;
       max: 1200px;
     }
+  }
 
+  typography {
     font-size {
       min: 14px;
       max: 22px;
@@ -249,13 +261,13 @@ Do all configuration in the CSS instead of in the build
 }
 ```
 
-## `function` mixin
+/* ## `function` mixin
 
 ```css
 @function functionName (args) {
   --JavaScript--
 }
-```
+``` */
 
 ^ Alternatively, both of these could just be done through the config file
 
