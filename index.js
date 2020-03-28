@@ -31,6 +31,8 @@ export default class Chassis {
         return cb(err)
       }
 
+      fs.ensureDirSync(cfg.output)
+
       let queue = new NGN.Tasks()
 
       queue.on('complete', cb)
@@ -44,8 +46,6 @@ export default class Chassis {
               return cb(err)
             }
 
-            fs.ensureDirSync(cfg.output)
-
             files.forEach(file => {
               if (file.map) {
                 fs.writeFileSync(`${file.path}.map`, file.map)
@@ -53,6 +53,8 @@ export default class Chassis {
 
               fs.writeFileSync(file.path, file.css)
             })
+
+            next()
           })
         })
       })
