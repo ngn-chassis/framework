@@ -39,9 +39,9 @@ export default class Chassis {
 
       cfg.entry.forEach(file => {
         queue.add(`Processing ${file}`, next => {
-          let styleSheet = new StyleSheet(file)
+          let stylesheet = new StyleSheet(file)
 
-          styleSheet.process((err, files) => {
+          stylesheet.process((err, files) => {
             if (err) {
               return cb(err)
             }
@@ -123,12 +123,12 @@ export default class Chassis {
 //           return cb(err, null)
 //         }
 //
-//         let styleSheet = new (require('./style-sheet.js'))(this, css.toString().trim())
+//         let stylesheet = new (require('./style-sheet.js'))(this, css.toString().trim())
 //
-//         styleSheet.on('processing.complete', output => cb(null, output))
+//         stylesheet.on('processing.complete', output => cb(null, output))
 //
 //         try {
-//           styleSheet.process(filepath)
+//           stylesheet.process(filepath)
 //         } catch (err) {
 //           cb(err, null)
 //         }

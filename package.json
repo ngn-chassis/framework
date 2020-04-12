@@ -47,6 +47,7 @@
     "postcss-functions": "^3.0.0",
     "postcss-merge-rules": "^2.1.2",
     "postcss-preset-env": "^5.2.3",
+    "postcss-simple-vars": "^5.0.2",
     "postcss-value-parser": "^3.3.1"
   }
 }

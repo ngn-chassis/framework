@@ -6,7 +6,7 @@ module.exports = class {
 			browser: NGN.privateconst(new (require('./mixins/browser.js'))(chassis)),
 			component: NGN.privateconst(new (require('./mixins/component.js'))(chassis)),
 			layout: NGN.privateconst(new (require('./mixins/layout.js'))(chassis)),
-			styleSheet: NGN.privateconst(new (require('./mixins/style-sheet.js'))(chassis)),
+			stylesheet: NGN.privateconst(new (require('./mixins/style-sheet.js'))(chassis)),
 			typography: NGN.privateconst(new (require('./mixins/typography.js'))(chassis)),
 			viewport: NGN.privateconst(new (require('./mixins/viewport.js'))(chassis)),
 
@@ -35,7 +35,7 @@ module.exports = class {
 			}),
 
 			import: NGN.privateconst(function () {
-				return this.styleSheet.import(...arguments)
+				return this.stylesheet.import(...arguments)
 			}),
 
 			include: NGN.privateconst(function () {

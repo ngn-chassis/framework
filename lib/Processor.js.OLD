@@ -2,10 +2,10 @@ const postcss = require('postcss')
 const StyleSheet = require('./StyleSheet.js')
 
 const Processor = postcss.plugin('chassis', cfg => root => new Promise((resolve, reject) => {
-  let styleSheet = new StyleSheet(root, cfg)
+  let stylesheet = new StyleSheet(root, cfg)
   let queue = new NGN.Tasks()
 
-  let process = (processor, cb) => styleSheet[processor](err => {
+  let process = (processor, cb) => stylesheet[processor](err => {
     if (err) {
       return reject(err)
     }
