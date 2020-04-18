@@ -1,10 +1,8 @@
 import 'ngn'
 import 'ngn-data'
-
 import fs from 'fs-extra'
-
 import Config from './lib/data/Config.js'
-import StyleSheet from './lib/StyleSheet.js'
+import Entry from './lib/Entry.js'
 
 export default class Chassis {
   #cfg
@@ -33,33 +31,29 @@ export default class Chassis {
 
       fs.ensureDirSync(cfg.output)
 
-      let queue = new NGN.Tasks()
+      let entry = new Entry(cfg.entry)
 
-      queue.on('complete', cb)
+      entry.process((err, files) => {
+        if (err) {
+          return cb(err)
+        }
 
-      cfg.entry.forEach(file => {
-        queue.add(`Processing ${file}`, next => {
-          let stylesheet = new StyleSheet(file)
+        let queue = new NGN.Tasks()
 
-          stylesheet.process((err, files) => {
-            if (err) {
-              return cb(err)
+        queue.on('complete', cb)
+
+        files.forEach(file => {
+          queue.add(`Writing ${file.path}`, next => {
+            if (file.map) {
+              fs.writeFileSync(`${file.path}.map`, file.map)
             }
 
-            files.forEach(file => {
-              if (file.map) {
-                fs.writeFileSync(`${file.path}.map`, file.map)
-              }
-
-              fs.writeFileSync(file.path, file.css)
-            })
-
-            next()
+            fs.writeFile(file.path, file.css, next)
           })
         })
-      })
 
-      queue.run()
+        queue.run()
+      })
     })
   }
 }

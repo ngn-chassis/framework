@@ -1,0 +1,124 @@
+import parseValue from 'postcss-value-parser'
+import AtRules from './AtRules.js'
+import ErrorUtils from './utilities/ErrorUtils.js'
+
+const ArgModel = new NGN.DATA.Model({
+  autoid: false,
+
+  fields: {
+    name: String,
+    types: Array,
+    value: String,
+    required: {
+      type: Boolean,
+      default: false
+    }
+  }
+})
+
+class Node {
+  constructor (cfg) {
+    this.type = cfg.type
+    this.value = cfg.value
+    this.index = cfg.sourceIndex
+  }
+
+  toString () {
+    switch (this.type) {
+      case 'word': return this.value
+      case 'string': return `"${this.value}"`
+      case 'function': return `(${this.nodes.map(node => {
+        return [',', ':'].some(char => node.value === char) ? `${node.value} ` : node.value
+      }).join('')})`
+    }
+  }
+}
+
+class Arg extends Node {
+  constructor (cfg) {
+    super(cfg)
+    this.nodes = NGN.coalesce(cfg.nodes, []).map(node => new Node(node))
+  }
+}
+
+export default class AtRule {
+  constructor (cfg) {
+    this.root = NGN.coalesce(cfg.root)
+
+    if (!this.root) {
+      throw new Error(`Invalid AtRule. No root node of type "atrule" specified.`)
+    }
+
+    this.name = this.root.name
+    this.parent = NGN.coalesce(cfg.parent)
+    this.nodes = NGN.coalesce(this.root.nodes, [])
+
+    this.source = {
+      line: this.root.source.start.line,
+      column: this.root.source.start.column,
+      file: this.root.source.input.file
+    }
+
+    if (!cfg.hasOwnProperty('args')) {
+      return
+    }
+
+    if (NGN.typeof(cfg.args) !== 'array') {
+      throw new Error(`DEVELOPER ERROR. Invalid ${this.name} argument configuration.`)
+    }
+
+    this.args = {}
+    let err = `Invalid ${this.name} definition.`
+    let cleaned = this.root.params.replace(/\s+/g,' ').trim()
+    let parsed = parseValue(cleaned).nodes
+
+    let required = cfg.args.filter(arg => arg.required)
+
+    if (required.length > 0 && parsed.length < required.length) {
+      throw new Error(`${err} Not enough arguments.`)
+    }
+
+    parsed.forEach((arg, index) => {
+      let spec = cfg.args[index]
+
+      if (!spec) {
+        throw new Error(`${err} Too many arguments.`)
+      }
+
+      spec = new ArgModel(spec)
+      let { name, types, value } = spec
+
+      if (!types.includes(arg.type)) {
+        throw new Error(`${err} Arg ${index + 1} must be of one of the following types: ${types.join(', ')}`)
+      }
+
+      if (value && arg.value !== value) {
+        throw new Error(`${err} Arg ${index + 1}: Expected "${value}" but received "${arg.value}"`)
+      }
+
+      if (['comment', 'space'].includes(arg.type)) {
+        return
+      }
+
+      this.args[name] = new Arg(arg)
+    })
+  }
+
+  resolve (cb) {
+    AtRules[this.name](this, (err, output) => {
+      if (err) {
+        return cb(ErrorUtils.createError(Object.assign({}, this.source, {
+          css: `@${this.name} ${this.params}`,
+          message: err
+        })))
+      }
+
+      if (!output) {
+        return cb()
+      }
+
+      this.root.replaceWith(output)
+      cb()
+    })
+  }
+}

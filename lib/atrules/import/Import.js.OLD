@@ -12,48 +12,58 @@ import ErrorUtils from './utilities/ErrorUtils.js'
 import FileUtils from './utilities/FileUtils.js'
 
 export default class Import extends AtRule {
-  from = 'chassis'
   modules = null
 
   constructor (parent, atRule) {
-    super(atRule)
+    super({
+      root: atRule,
+      parent,
 
-    this.parent = parent
+      args: [
+        {
+          name: 'resource',
+          required: true,
+          types: ['string', 'word', 'function']
+        },
 
-    let arg1 = this.args[0]
-    let err = new Error('Import does not specify any modules')
+        {
+          types: ['space']
+        },
 
-    if (!arg1) {
-      throw err
-    }
+        {
+          name: 'from',
+          types: ['word'],
+          value: 'from'
+        },
 
-    this.type = this.args[0].type === 'string' ? 'file' : 'module'
+        {
+          types: ['space']
+        },
+
+        {
+          name: 'source',
+          types: ['string', 'word']
+        }
+      ]
+    })
+
+    let { resource, source } = this.args
+
+    this.type = resource.type === 'string' ? 'file' : 'module'
 
     if (this.type === 'file') {
       return
     }
 
-    this.modules = arg1.type === 'word'
-      ? [arg1.value]
-      : arg1.type === 'function'
-        ? arg1.nodes.reduce((modules, node) => {
-          if (node.type !== 'word') {
-            return modules
-          }
+    this.modules = resource.type === 'word'
+      ? [resource.value]
+      : resource.nodes.reduce((modules, node) => {
+        if (node.type !== 'word') {
+          return modules
+        }
 
-          return [...modules, node.value]
-        }, [])
-        : null
-
-    if (!this.modules) {
-      throw err
-    }
-
-    let arg2 = this.args[1]
-
-    if (arg2) {
-      this.from = arg2.type === 'word' && arg2.value === 'from' ? this.args[2].value : null
-    }
+        return [...modules, node.value]
+      }, [])
   }
 
   resolve (cb) {
@@ -65,7 +75,7 @@ export default class Import extends AtRule {
 
   // TODO: Handle remote imports
   #resolveFileImport = cb => {
-    let filepath = path.join(path.dirname(this.source.file), this.args[0].value)
+    let filepath = path.join(path.dirname(this.source.file), this.args.resource.value)
 
     glob(filepath, {}, (err, files) => {
       if (err) {
@@ -108,7 +118,7 @@ export default class Import extends AtRule {
             if (err) {
               return cb(err)
             }
-            
+
             this.root.replaceWith(stylesheet.ast)
             next()
           })
@@ -130,7 +140,7 @@ export default class Import extends AtRule {
 
     this.modules.forEach(module => {
       queue.add(`Importing ${module}`, async (next) => {
-        let imported = await Imports[module](this.args.slice(1), err => {
+        let imported = await Imports[module](this.args, err => {
           if (err) {
             return cb(ErrorUtils.createError(Object.assign({}, this.source, {
               css: this.root.toString(),
