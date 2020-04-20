@@ -43,7 +43,7 @@ main {
   }
 }
 
-@component fancy-button implements button {
+@component fancy-button extends button {
   @selector button.fancy;
 
   @state initial {
@@ -51,7 +51,9 @@ main {
   }
 
   @state hover {
+    @selector &:hover, &.hover;
     background: lightblue;
+    text-decoration: underline;
   }
 }
 
