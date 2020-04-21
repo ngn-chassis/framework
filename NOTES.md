@@ -1,3 +1,39 @@
+Add ability to create and extend components from right in a theme.
+
+```css
+@theme {
+  components {
+    button {
+      ...
+    }
+
+    fancy-button extends button {
+      ...
+    }
+  }
+}
+```
+
+@config
+
+```css
+@config {
+  make {
+    default: "main.css";
+    dark: "main.dark.css";
+    light: "main.light.css";
+  }
+
+  minify: true;
+  sourcemaps: true;
+
+  /* cssnano */
+  /* autoprefixr */
+  /* perfectionist */
+
+}
+```
+
 Chassis should have an option to generate a report/dev guide.
 It will be an html file which contains information like available
 media queries, typography constraints, layout constraints,
