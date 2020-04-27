@@ -53,7 +53,7 @@ export default class Class extends AtRule {
       let { name, action, superclass } = this.args
 
       this.name = name.value
-      this.action = action
+      this.action = action.value
 
       if (superclass) {
         this.superclass = superclass.value

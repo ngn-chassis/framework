@@ -3,6 +3,7 @@ import 'ngn-data'
 import fs from 'fs-extra'
 import Config from './lib/data/Config.js'
 import Entry from './lib/Entry.js'
+import QueueUtils from './lib/utilities/QueueUtils.js'
 
 export default class Chassis {
   #cfg
@@ -31,29 +32,47 @@ export default class Chassis {
 
       fs.ensureDirSync(cfg.output)
 
-      let entry = new Entry(cfg.entry)
+      QueueUtils.queue({
+        tasks: Config.entries.map(entry => ({
+          name: `Processing ${entry}`,
 
-      entry.process((err, files) => {
-        if (err) {
-          return cb(err)
-        }
+          callback: next => {
+            try {
+              entry = new Entry(entry)
 
-        let queue = new NGN.Tasks()
+              entry.process((err, files) => {
+                if (err) {
+                  return cb(err)
+                }
 
-        queue.on('complete', cb)
+                QueueUtils.queue({
+                  tasks: files.reduce((tasks, file) => {
+                    tasks.push({
+                      name: `Writing ${file.path}`,
+                      callback: next => fs.writeFile(file.path, file.css, next)
+                    })
 
-        files.forEach(file => {
-          queue.add(`Writing ${file.path}`, next => {
-            if (file.map) {
-              fs.writeFileSync(`${file.path}.map`, file.map)
+                    if (file.map) {
+                      tasks.push({
+                        name: `Writing Sourcemap to ${file.path}.map`,
+                        callback: next => fs.writeFile(`${file.path}.map`, file.map, next)
+                      })
+                    }
+
+                    return tasks
+                  }, [])
+                })
+                .then(next)
+                .catch(cb)
+              })
+            } catch (err) {
+              cb(err)
             }
-
-            fs.writeFile(file.path, file.css, next)
-          })
-        })
-
-        queue.run()
+          }
+        }))
       })
+      .then(cb)
+      .catch(cb)
     })
   }
 }
