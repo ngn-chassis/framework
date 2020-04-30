@@ -1,6 +1,7 @@
 import 'ngn'
 import 'ngn-data'
 import fs from 'fs-extra'
+
 import Config from './lib/data/Config.js'
 import Entry from './lib/Entry.js'
 import QueueUtils from './lib/utilities/QueueUtils.js'
@@ -45,25 +46,7 @@ export default class Chassis {
                   return cb(err)
                 }
 
-                QueueUtils.queue({
-                  tasks: files.reduce((tasks, file) => {
-                    tasks.push({
-                      name: `Writing ${file.path}`,
-                      callback: next => fs.writeFile(file.path, file.css, next)
-                    })
-
-                    if (file.map) {
-                      tasks.push({
-                        name: `Writing Sourcemap to ${file.path}.map`,
-                        callback: next => fs.writeFile(`${file.path}.map`, file.map, next)
-                      })
-                    }
-
-                    return tasks
-                  }, [])
-                })
-                .then(next)
-                .catch(cb)
+                this.#writeFiles(files, next, cb)
               })
             } catch (err) {
               cb(err)
@@ -75,6 +58,30 @@ export default class Chassis {
       .catch(cb)
     })
   }
+
+  #writeFiles = (files, resolve, reject) => QueueUtils.queue({
+    pad: {
+      start: '  '
+    },
+
+    tasks: files.reduce((tasks, file) => {
+      tasks.push({
+        name: `Writing ${file.path}`,
+        callback: next => fs.writeFile(file.path, file.css, next)
+      })
+
+      if (file.map) {
+        tasks.push({
+          name: `Writing sourcemap to ${file.path}.map`,
+          callback: next => fs.writeFile(`${file.path}.map`, file.map, next)
+        })
+      }
+
+      return tasks
+    }, [])
+  })
+  .then(resolve)
+  .catch(reject)
 }
 
 // module.exports = class Chassis extends NGN.EventEmitter {
