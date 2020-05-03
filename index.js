@@ -33,7 +33,7 @@ export default class Chassis {
 
       fs.ensureDirSync(cfg.output)
 
-      QueueUtils.queue({
+      QueueUtils.run({
         tasks: Config.entries.map(entry => ({
           name: `Processing ${entry}`,
 
@@ -59,7 +59,7 @@ export default class Chassis {
     })
   }
 
-  #writeFiles = (files, resolve, reject) => QueueUtils.queue({
+  #writeFiles = (files, resolve, reject) => QueueUtils.run({
     pad: {
       start: '  '
     },
