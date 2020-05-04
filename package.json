@@ -48,6 +48,7 @@
     "postcss-merge-rules": "^2.1.2",
     "postcss-nesting": "^7.0.1",
     "postcss-preset-env": "^5.2.3",
+    "postcss-scss": "^2.0.0",
     "postcss-simple-vars": "^5.0.2",
     "postcss-value-parser": "^3.3.1"
   }
