@@ -4,6 +4,8 @@ import fs from 'fs-extra'
 
 import Config from './lib/data/Config.js'
 import Entry from './lib/Entry.js'
+
+import FileUtils from './lib/utilities/FileUtils.js'
 import QueueUtils from './lib/utilities/QueueUtils.js'
 
 export default class Chassis {
@@ -65,15 +67,20 @@ export default class Chassis {
     },
 
     tasks: files.reduce((tasks, file) => {
+      let write = (filepath, contents, cb) => {
+        fs.ensureDirSync(FileUtils.getFilePath(filepath))
+        fs.writeFile(filepath, contents, cb)
+      }
+
       tasks.push({
         name: `Writing ${file.path}`,
-        callback: next => fs.writeFile(file.path, file.css, next)
+        callback: next => write(file.path, file.css, next)
       })
 
       if (file.map) {
         tasks.push({
           name: `Writing sourcemap to ${file.path}.map`,
-          callback: next => fs.writeFile(`${file.path}.map`, file.map, next)
+          callback: next => write(`${file.path}.map`, file.map, next)
         })
       }
 
