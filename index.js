@@ -8,6 +8,8 @@ import Entry from './lib/Entry.js'
 import FileUtils from './lib/utilities/FileUtils.js'
 import QueueUtils from './lib/utilities/QueueUtils.js'
 
+const CONFIG = new Config()
+
 export default class Chassis {
   #cfg
 
@@ -16,34 +18,32 @@ export default class Chassis {
   }
 
   get entry () {
-    return Config.entry
+    return CONFIG.entry
   }
 
   get output () {
-    return Config.output
+    return CONFIG.output
   }
 
   get config () {
-    return Config.json
+    return CONFIG.json
   }
 
   process (cb) {
-    Config.load(this.#cfg, (err, cfg) => {
+    CONFIG.load(this.#cfg, err => {
       if (err) {
         return cb(err)
       }
 
-      fs.ensureDirSync(cfg.output)
+      fs.ensureDirSync(CONFIG.output)
 
       QueueUtils.run({
-        tasks: Config.entries.map(entry => ({
+        tasks: CONFIG.entries.map(entry => ({
           name: `Processing ${entry}`,
 
           callback: next => {
             try {
-              entry = new Entry(entry)
-
-              entry.process((err, files) => {
+              new Entry(entry).process((err, files) => {
                 if (err) {
                   return cb(err)
                 }
@@ -90,3 +90,5 @@ export default class Chassis {
   .then(resolve)
   .catch(reject)
 }
+
+export { CONFIG }
