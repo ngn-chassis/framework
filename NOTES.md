@@ -1,3 +1,21 @@
+@apply {
+  @typeset {
+    size: 3;
+    relative: false;
+  }
+
+  @font-size {}
+  @line-height {}
+
+  @margin {
+    display: inline-block;
+    x: true;
+    typeset: 2;
+  }
+
+  @padding {}
+}
+
 Add ability to create and extend components from right in a theme.
 
 ```css
