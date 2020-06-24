@@ -1,6 +1,12 @@
 *.md
 .*
 _*
+*.OLD
 *.log
 examples
 examples/**/*
+archive
+lib/plugins/template.js
+sample.css
+sample-theme.css
+sample-config.js

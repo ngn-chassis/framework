@@ -1,80 +1,94 @@
-require('ngn')
-require('ngn-data')
+import 'ngn'
+import 'ngn-data'
+import fs from 'fs-extra'
 
-const fs = require('fs')
-const path = require('path')
+import Config from './lib/data/Config.js'
+import Entry from './lib/Entry.js'
 
-module.exports = class Chassis extends NGN.EventEmitter {
-  constructor (cfg = null) {
-    super()
+import FileUtils from './lib/utilities/FileUtils.js'
+import QueueUtils from './lib/utilities/QueueUtils.js'
 
-    this.utils = require('./utilities.js')
-    this.constants = require('./constants.js')
+const CONFIG = new Config()
 
-    this.settings = new (require('./settings.js'))(this)
-    this.settings.load(NGN.coalesce(cfg, {}))
+export default class Chassis {
+  #cfg
 
-    this.typography = new (require('./typography.js'))(this)
-    this.settings.typography.ranges.load(this.typography.ranges)
-
-    this.viewport = new (require('./viewport.js'))(this)
-    this.settings.viewportWidthRanges.load(this.viewport.getWidthRanges(this.settings.layout.breakpoints))
-
-    this.imports = []
-    this.theme = new (require('./theme.js'))(this)
-    this.layout = new (require('./layout.js'))(this)
-    this.atRules = new (require('./at-rules.js'))(this)
-    this.functions = new (require('./functions.js'))(this)
-    this.post = new (require('./post.js'))(this)
-
-    this.componentExtensions = new (require('./data/stores/component-extensions.js'))
-    this.componentOverrides = new (require('./data/stores/component-overrides.js'))
+  constructor (cfg) {
+    this.#cfg = NGN.coalesce(cfg, {})
   }
 
-  // handleError (data) {
-  //   let error = this.utils.console.createError(data)
-  //   throw error
-  // }
+  get entry () {
+    return CONFIG.entry
+  }
 
-  process (filepath = void 0, cb) {
-    if (path.basename(filepath).startsWith('_')) {
-      return cb(null, null)
-    }
+  get output () {
+    return CONFIG.output
+  }
 
-    if (!this.settings.importBasePath) {
-      this.settings.importBasePath = path.dirname(filepath)
-    }
+  get config () {
+    return CONFIG.json
+  }
 
-    this.settings.on('validation.failed', invalidAttributes => {
-      if (this.invalidAttributes.includes('theme')) {
-        console.warn(`[WARNING] Chassis Theme: "${this.theme}" is not a valid theme file. Chassis themes must have a ".theme" extension. Reverting to default theme...`)
-        this.settings.theme = this.constants.theme.defaultFilePath
-        return this.settings.validate()
+  process (cb) {
+    CONFIG.load(this.#cfg, err => {
+      if (err) {
+        return cb(err)
       }
 
-      cb(this.utils.console.createError({
-        message: 'Chassis Configuration: Invalid fields:/n' + invalidAttributes.join(', ')
-      }))
-    })
+      fs.ensureDirSync(CONFIG.output)
 
-    this.settings.on('validation.succeeded', () => {
-      fs.readFile(filepath, (err, css) => {
-        if (err) {
-          return cb(err, null)
-        }
+      QueueUtils.run({
+        tasks: CONFIG.entries.map(entry => ({
+          name: `Processing ${entry}`,
 
-        let styleSheet = new (require('./style-sheet.js'))(this, css.toString().trim())
+          callback: next => {
+            try {
+              new Entry(entry).process((err, files) => {
+                if (err) {
+                  return cb(err)
+                }
 
-        styleSheet.on('processing.complete', output => cb(null, output))
-
-        try {
-          styleSheet.process(filepath)
-        } catch (err) {
-          cb(err, null)
-        }
+                this.#writeFiles(files, next, cb)
+              })
+            } catch (err) {
+              cb(err)
+            }
+          }
+        }))
       })
+      .then(cb)
+      .catch(cb)
     })
-
-    this.settings.validate()
   }
+
+  #writeFiles = (files, resolve, reject) => QueueUtils.run({
+    pad: {
+      start: '  '
+    },
+
+    tasks: files.reduce((tasks, file) => {
+      let write = (filepath, contents, cb) => {
+        fs.ensureDirSync(FileUtils.getFilePath(filepath))
+        fs.writeFile(filepath, contents, cb)
+      }
+
+      tasks.push({
+        name: `Writing ${file.path}`,
+        callback: next => write(file.path, file.css, next)
+      })
+
+      if (file.map) {
+        tasks.push({
+          name: `Writing sourcemap to ${file.path}.map`,
+          callback: next => write(`${file.path}.map`, file.map, next)
+        })
+      }
+
+      return tasks
+    }, [])
+  })
+  .then(resolve)
+  .catch(reject)
 }
+
+export { CONFIG }

@@ -1,0 +1,46 @@
+@theme sample {
+  custom-properties {
+    --red: red;
+    --white: white;
+    --blue: blue;
+    --default-radius: 3px;
+  }
+
+  headings {
+    h1, h2, h3, h4, h5, h6, legend {
+      font-weight: bold;
+    }
+  }
+
+  components {
+    button {
+      @state initial {
+        @apply inline-block padding;
+        background: var(--blue);
+        border-radius: var(--default-radius);
+      }
+
+      @state hover {
+        background: color-mod(var(--blue) l(60%));
+      }
+
+      @state active {
+        background: color-mod(var(--blue) l(40%));
+      }
+    }
+
+    tag {
+      @state initial {
+        padding: 0 2px;
+        background: var(--red);
+        border-radius: var(--default-radius);
+      }
+    }
+
+    custom-component {
+      @state initial {
+
+      }
+    }
+  }
+}
