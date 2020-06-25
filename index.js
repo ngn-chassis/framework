@@ -80,7 +80,7 @@ export default class Chassis {
       if (file.map) {
         tasks.push({
           name: `Writing sourcemap to ${file.path}.map`,
-          callback: next => write(`${file.path}.map`, file.map, next)
+          callback: next => write(`${file.path}.map`, file.map.toString(), next)
         })
       }
 
