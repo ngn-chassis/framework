@@ -8,10 +8,10 @@ import Entry from './lib/Entry.js'
 import FileUtils from './lib/utilities/FileUtils.js'
 import QueueUtils from './lib/utilities/QueueUtils.js'
 
-const CONFIG = new Config()
+let CONFIG
 
 export default class Chassis {
-  #cfg
+  #cfg = null
 
   constructor (cfg) {
     this.#cfg = NGN.coalesce(cfg, {})
@@ -30,6 +30,8 @@ export default class Chassis {
   }
 
   process (cb) {
+    CONFIG = new Config()
+
     CONFIG.load(this.#cfg, err => {
       if (err) {
         return cb(err)
