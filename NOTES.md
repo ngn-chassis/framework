@@ -13,7 +13,10 @@
     typeset: 2;
   }
 
-  @padding {}
+  @padding {
+    display: inline-block;
+    x: margin-x;
+  }
 }
 
 Add ability to create and extend components from right in a theme.
