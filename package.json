@@ -34,8 +34,8 @@
   "homepage": "https://github.com/ngn-chassis/framework#readme",
   "dependencies": {
     "cssnano": "^4.1.10",
+    "fast-glob": "^3.2.4",
     "fs-extra": "^8.1.0",
-    "glob": "^7.1.6",
     "ngn": "^0.3.31",
     "ngn-data": "^0.1.11",
     "perfectionist": "^2.4.0",

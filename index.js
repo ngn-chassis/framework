@@ -38,32 +38,57 @@ export default class Chassis {
       }
 
       fs.ensureDirSync(CONFIG.output)
+      let files = []
 
       QueueUtils.run({
-        tasks: CONFIG.entries.map(entry => ({
-          name: `Processing ${entry}`,
-
-          callback: next => {
-            try {
-              new Entry(entry).process((err, files) => {
-                if (err) {
-                  return cb(err)
-                }
-
-                this.#writeFiles(files, next, cb)
-              })
-            } catch (err) {
-              cb(err)
-            }
-          }
+        tasks: CONFIG.entries.map((filepath, i) => ({
+          name: `Processing Entry ${i + 1}: ${filepath}`,
+          callback: next => this.#processEntry(new Entry(filepath), results => {
+            files.push(...results)
+            next()
+          }, cb)
         }))
       })
-      .then(cb)
+      .then(() => this.#writeFiles(files, cb))
       .catch(cb)
     })
   }
 
-  #writeFiles = (files, resolve, reject) => QueueUtils.run({
+  #processEntry = (entry, resolve, reject) => {
+    let output
+
+    let callback = (err, next) => {
+      if (err) {
+        return reject(err)
+      }
+
+      next()
+    }
+
+    QueueUtils.run({
+      tasks: [{
+        name: `|-- Resolving Imports`,
+        callback: next => entry.resolveImports(err => callback(err, next))
+      }, {
+        name: `|-- Analyzing`,
+        callback: next => entry.analyze(err => callback(err, next))
+      }, {
+        name: `|-- Generating Output`,
+        callback: next => entry.render((err, result) => {
+          if (err) {
+            return reject(err)
+          }
+
+          output = result
+          next()
+        })
+      }]
+    })
+    .then(() => resolve(Array.isArray(output) ? output : [output]))
+    .catch(reject)
+  }
+
+  #writeFiles = (files, cb) => QueueUtils.run({
     pad: {
       start: '  '
     },
@@ -89,8 +114,8 @@ export default class Chassis {
       return tasks
     }, [])
   })
-  .then(resolve)
-  .catch(reject)
+  .then(cb)
+  .catch(cb)
 }
 
 export { CONFIG }
