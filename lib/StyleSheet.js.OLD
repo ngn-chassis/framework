@@ -186,7 +186,7 @@ export default class Stylesheet {
   //           stylesheet.themeRules.forEach(rule => this.#registerTheme(rule))
   //           // this.versions.push(...child.versions)
   //
-  //           // this.#registerApplyRules(stylesheet.applyRules)
+  //           // this.#registerApplyRules(stylesheet.setRules)
   //
   //           root.append(stylesheet.clone())
   //           next()
