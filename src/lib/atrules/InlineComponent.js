@@ -43,19 +43,19 @@ export default class InlineComponent extends Component {
     const rule = CSSUtils.createRule(this.#name)
 
     if (!this.isExtension) {
-      rule.append(this.parent.decls)
+      rule.append(this.parent.nodes)
     }
 
-    rule.append(this.decls)
+    rule.append(this.nodes)
 
     this.states.forEach(state => {
       const stateRule = CSSUtils.createRule(state.selector)
 
       if (!this.isExtension) {
-        stateRule.append(state.parent.decls)
+        stateRule.append(state.parent.nodes)
       }
 
-      stateRule.append(state.decls)
+      stateRule.append(state.nodes)
       rule.append(stateRule)
     })
 

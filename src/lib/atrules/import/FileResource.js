@@ -9,9 +9,11 @@ import FileUtils from '../../utilities/FileUtils.js'
 export default class FileResource extends Resource {
   #filepath
   #filepaths = []
+  #resource
 
   constructor (importRule) {
     super(importRule)
+    this.#resource = importRule.resource.value
     this.#filepath = path.join(path.dirname(importRule.root.source.input.file), importRule.resource.value)
   }
 
@@ -23,7 +25,7 @@ export default class FileResource extends Resource {
     const files = glob.sync(this.filepath)
 
     if (files.length === 0) {
-      return cb(this.error(`\nNo files found matching "${resource}"`, { word: resource }))
+      return cb(this.error(`\nNo files found matching "${this.#resource}"`, { word: this.#resource }))
     }
 
     files.forEach(file => {

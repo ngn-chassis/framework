@@ -28,24 +28,24 @@ export default postcss.plugin('chassis-components', (annotations, components, th
           name: `|  |  |-- Generating "${component.name}" component CSS`,
           callback: next => {
             const rule = CSSUtils.createRule(component.selectorWithExtensions)
-            rule.append(component.decls)
+            rule.append(component.nodes)
 
             const theme = themes[component.name]
 
             if (theme) {
-              rule.append(theme.decls)
+              rule.append(theme.nodes)
             }
 
             component.states.forEach(state => {
               const stateRule = CSSUtils.createRule(state.selector)
 
-              stateRule.append(state.decls)
+              stateRule.append(state.nodes)
 
               if (theme) {
                 const themeState = theme.states.find(themeState => themeState.name === state.name)
 
                 if (themeState) {
-                  stateRule.append(themeState.decls)
+                  stateRule.append(themeState.nodes)
                 }
               }
 

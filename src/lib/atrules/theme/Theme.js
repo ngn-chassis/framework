@@ -13,7 +13,7 @@ export default class Theme extends Class {
 
     this.#components = this.#source.components?.nodes.reduce((components, component) => {
       const states = []
-      const decls = component.nodes.filter(node => {
+      const nodes = component.nodes.filter(node => {
         if (node.type === 'atrule' && node.name === 'state') {
           states.push(new StateRule(node))
           return false
@@ -22,7 +22,7 @@ export default class Theme extends Class {
         return true
       })
 
-      components[component.selector.trim()] = { decls, states }
+      components[component.selector.trim()] = { nodes, states }
       return components
     }, {}) ?? {}
 

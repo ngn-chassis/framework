@@ -8,8 +8,8 @@ export default class Class {
     this.#parent = NGN.coalesce(parent)
   }
 
-  get decls () {
-    return this.#source.decls
+  get nodes () {
+    return this.#source.nodes
   }
 
   get extensions () {

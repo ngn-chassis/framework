@@ -294,12 +294,15 @@ export default class Entry extends Stylesheet {
         return reject(err)
       }
 
+      let root = CSSUtils.createRoot()
+
       filepaths.forEach(filepath => {
         const partial = new Partial(filepath, this)
         this.#manifest.addPartial(partial)
-        importRule.replaceWith(partial.clone())
+        root.append(partial.clone())
       })
 
+      importRule.replaceWith(root)
       resolve()
     })
   }

@@ -2,21 +2,22 @@ import AtRule from './AtRule.js'
 
 export default class ClassRule extends AtRule {
   #properties = []
-  #decls = []
+  #nodes = []
 
   constructor (atrule, properties = []) {
     super(atrule)
 
     atrule.nodes.forEach(node => {
       switch (node.type) {
-        case 'atrule': return properties.includes(node.name) ? this.#properties.push(node) : this.#decls.push(node)
-        case 'decl': return this.#decls.push(node)
+        case 'atrule': return properties.includes(node.name) ? this.#properties.push(node) : this.#nodes.push(node)
+        case 'comment': return
+        default: return this.#nodes.push(node)
       }
     })
   }
 
-  get decls () {
-    return this.#decls
+  get nodes () {
+    return this.#nodes
   }
 
   get name () {
