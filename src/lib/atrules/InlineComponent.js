@@ -40,7 +40,7 @@ export default class InlineComponent extends Component {
   }
 
   resolve () {
-    let rule = CSSUtils.createRule(this.#name)
+    const rule = CSSUtils.createRule(this.#name)
 
     if (!this.isExtension) {
       rule.append(this.parent.decls)
@@ -49,7 +49,7 @@ export default class InlineComponent extends Component {
     rule.append(this.decls)
 
     this.states.forEach(state => {
-      let stateRule = CSSUtils.createRule(state.selector)
+      const stateRule = CSSUtils.createRule(state.selector)
 
       if (!this.isExtension) {
         stateRule.append(state.parent.decls)

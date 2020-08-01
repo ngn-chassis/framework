@@ -6,11 +6,11 @@ import CSSUtils from '../utilities/CSSUtils.js'
 
 export default postcss.plugin('chassis-charset', annotations => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('charset')) {
+    if (!Reflect.has(annotations, 'charset')) {
       return resolve(root)
     }
 
-    let atrule = CSSUtils.createAtRule({
+    const atrule = CSSUtils.createAtRule({
       name: 'charset',
       params: `"${CONFIG.charset}"`
     })

@@ -14,13 +14,13 @@ function generateDecls (properties) {
 
 export default postcss.plugin('chassis-custom-properties', (annotations, properties, includeInternal = false) => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('customProperties')) {
+    if (!Reflect.has(annotations, 'customProperties')) {
       return resolve(root)
     }
 
-    let { width, gutter } = CONFIG.layout
-    let numProperties = Object.keys(properties).length
-    let rule = CSSUtils.createRule(':root')
+    const { width, gutter } = CONFIG.layout
+    const numProperties = Object.keys(properties).length
+    const rule = CSSUtils.createRule(':root')
 
     rule.append(generateDecls(properties))
 

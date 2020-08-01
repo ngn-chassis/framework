@@ -38,7 +38,7 @@ export default class Chassis {
       }
 
       fs.ensureDirSync(CONFIG.output)
-      let files = []
+      const files = []
 
       QueueUtils.run({
         tasks: CONFIG.entries.map((filepath, i) => ({
@@ -48,16 +48,16 @@ export default class Chassis {
             next()
           }, cb)
         }))
-      })
-      .then(() => this.#writeFiles(files, cb))
-      .catch(cb)
+      }).then(() => {
+        this.#writeFiles(files, cb)
+      }).catch(cb)
     })
   }
 
   #processEntry = (entry, resolve, reject) => {
     let output
 
-    let callback = (err, next) => {
+    const callback = (err, next) => {
       if (err) {
         return reject(err)
       }
@@ -67,13 +67,13 @@ export default class Chassis {
 
     QueueUtils.run({
       tasks: [{
-        name: `|-- Resolving Imports`,
+        name: '|-- Resolving Imports',
         callback: next => entry.resolveImports(err => callback(err, next))
       }, {
-        name: `|-- Analyzing`,
+        name: '|-- Analyzing',
         callback: next => entry.analyze(err => callback(err, next))
       }, {
-        name: `|-- Generating Output`,
+        name: '|-- Generating Output',
         callback: next => entry.render((err, result) => {
           if (err) {
             return reject(err)
@@ -83,9 +83,9 @@ export default class Chassis {
           next()
         })
       }]
-    })
-    .then(() => resolve(Array.isArray(output) ? output : [output]))
-    .catch(reject)
+    }).then(() => {
+      resolve(Array.isArray(output) ? output : [output])
+    }).catch(reject)
   }
 
   #writeFiles = (files, cb) => QueueUtils.run({
@@ -94,7 +94,7 @@ export default class Chassis {
     },
 
     tasks: files.reduce((tasks, file) => {
-      let write = (filepath, contents, cb) => {
+      const write = (filepath, contents, cb) => {
         fs.ensureDirSync(FileUtils.getFilePath(filepath))
         fs.writeFile(filepath, contents, cb)
       }
@@ -113,9 +113,7 @@ export default class Chassis {
 
       return tasks
     }, [])
-  })
-  .then(cb)
-  .catch(cb)
+  }).then(cb).catch(cb)
 }
 
 export { CONFIG }

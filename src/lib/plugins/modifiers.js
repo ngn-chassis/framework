@@ -3,7 +3,7 @@ import parser from 'postcss-scss'
 
 export default postcss.plugin('chassis-global-modifiers', (annotations, custom) => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('modifiers')) {
+    if (!Reflect.has(annotations, 'modifiers')) {
       return resolve(root)
     }
 

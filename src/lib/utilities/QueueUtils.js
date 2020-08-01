@@ -8,16 +8,16 @@ export default class QueueUtils {
     numbered = false,
     tasks = []
   }) {
-    if (!pad.hasOwnProperty('start')) {
+    if (!Reflect.has(pad, 'start')) {
       pad.start = ''
     }
 
-    if (!pad.hasOwnProperty('end')) {
+    if (!Reflect.has(pad, 'end')) {
       pad.end = '...'
     }
 
     return new Promise((resolve, reject) => {
-      let queue = new NGN.Tasks()
+      const queue = new NGN.Tasks()
 
       if (log) {
         queue.on('taskstart', task => console.log(`${NGN.coalesce(pad.start, '')}${task.name}${NGN.coalesce(pad.end, '')}`))
@@ -36,8 +36,7 @@ export default class QueueUtils {
       }
 
       tasks.forEach((task, index) => {
-        let name = task.name
-        let number = `${index + 1}. `
+        const number = `${index + 1}. `
 
         queue.add(`${numbered ? number : ''}${task.name}`, next => {
           task.callback(next, ' '.repeat(number.length + NGN.coalesce(pad.start, '').length))

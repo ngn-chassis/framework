@@ -20,7 +20,7 @@ export default class Module {
   }
 
   get resources () {
-    let { resource } = this.#imp
+    const { resource } = this.#imp
 
     if (!this.#internal) {
       return console.log('TODO: Support custom modules')
@@ -43,7 +43,7 @@ export default class Module {
   }
 
   #getSource = () => {
-    let { core, components } = CONFIG.modules.internal
+    const { core, components } = CONFIG.modules.internal
 
     switch (this.#imp.source.value) {
       case 'chassis.core': return core

@@ -6,10 +6,10 @@ import CSSUtils from '../../utilities/CSSUtils.js'
 export default postcss.plugin('chassis-atrules-media', () => {
   return (root, result) => new Promise((resolve, reject) => {
     root.walkAtRules('media', atrule => {
-      let query = new MediaQueryRule(atrule)
-      let { parent } = atrule
+      const query = new MediaQueryRule(atrule)
+      const { parent } = atrule
 
-      let replacement = CSSUtils.createAtRule({
+      const replacement = CSSUtils.createAtRule({
         name: 'media',
         params: query.params,
         nodes: atrule.nodes

@@ -28,7 +28,7 @@ export default class ClassRule extends AtRule {
   }
 
   getProperty (name) {
-    let properties = this.#properties.filter(property => property.name === name)
+    const properties = this.#properties.filter(property => property.name === name)
 
     switch (properties.length) {
       case 0: return null

@@ -1,5 +1,1 @@
-export default class Export {
-  constructor (atRule) {
-
-  }
-}
+export default class Export {}

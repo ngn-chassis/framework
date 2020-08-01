@@ -5,19 +5,19 @@ import CSSUtils from '../utilities/CSSUtils.js'
 export default postcss.plugin('chassis-annotate', (annotations, properties, manifest) => {
   return (root, result) => new Promise((resolve, reject) => {
     function annotate (label, id) {
-      let atrule = CSSUtils.createAtRule({ name: 'chassis', params: id })
-      let output = [atrule]
+      const atrule = CSSUtils.createAtRule({ name: 'chassis', params: id })
+      const output = [atrule]
 
       annotations[id] = atrule
 
-      if (!!label) {
+      if (label) {
         output.unshift(CSSUtils.createComment(`${label} ${'*'.repeat(73 - label.length)}`))
       }
 
       return output
     }
 
-    let placeholders = [
+    const placeholders = [
       ...annotate(null, 'charset'),
       ...annotate(null, 'hoist'),
       ...annotate(null, 'viewport')
@@ -42,7 +42,7 @@ export default postcss.plugin('chassis-annotate', (annotations, properties, mani
     }
 
     if (manifest.hasComponents) {
-      placeholders.push(...annotate('Element/Component Resets', 'component-resets'))
+      placeholders.push(...annotate('Element/Component Resets', 'componentResets'))
       placeholders.push(...annotate('Components', 'components'))
     }
 
@@ -52,7 +52,7 @@ export default postcss.plugin('chassis-annotate', (annotations, properties, mani
 
     root.prepend([
       ...placeholders,
-      CSSUtils.createComment(`Custom Styles ************************************************************`)
+      CSSUtils.createComment('Custom Styles ************************************************************')
     ])
 
     resolve(root)

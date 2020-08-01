@@ -64,7 +64,7 @@ export default class Manifest {
   addModule (module) {
     Object.keys(module.resources).forEach(resource => {
       if (module.isInternal) {
-        if (!this.#modules.internal.hasOwnProperty(module.name)) {
+        if (!Reflect.has(this.#modules.internal, module.name)) {
           this.#modules.internal[module.name] = {}
         }
 
@@ -72,7 +72,7 @@ export default class Manifest {
         return
       }
 
-      if (!this.#modules.custom.hasOwnProperty(module.name)) {
+      if (!Reflect.has(this.#modules.custom, module.name)) {
         this.#modules.custom[module.name] = {}
       }
 
@@ -81,11 +81,11 @@ export default class Manifest {
   }
 
   hasInternalModule (name) {
-    return this.#modules.internal.hasOwnProperty(name)
+    return Reflect.has(this.#modules.internal, name)
   }
 
   hasCoreModule (name) {
-    return this.#modules.internal.core.hasOwnProperty(name)
+    return Reflect.has(this.#modules.internal.core, name)
   }
 
   addComponent (component) {
@@ -97,7 +97,7 @@ export default class Manifest {
   }
 
   hasComponent (name) {
-    return this.#components.hasOwnProperty(name)
+    return Reflect.has(this.#components, name)
   }
 
   addPartial (partial) {
@@ -113,7 +113,7 @@ export default class Manifest {
   }
 
   hasTheme (name) {
-    return this.#themes.hasOwnProperty(name)
+    return Reflect.has(this.#themes, name)
   }
 
   addVersion (version) {

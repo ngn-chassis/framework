@@ -20,14 +20,14 @@ export default class FileResource extends Resource {
   }
 
   resolve (cb) {
-    let files = glob.sync(this.filepath)
+    const files = glob.sync(this.filepath)
 
     if (files.length === 0) {
       return cb(this.error(`\nNo files found matching "${resource}"`, { word: resource }))
     }
 
     files.forEach(file => {
-      let extension = FileUtils.getFileExtension(file)
+      const extension = FileUtils.getFileExtension(file)
 
       if (!this.#extensionIsValid(extension)) {
         return cb(this.error(`\nInvalid file extension "${extension}"`, { word: extension }))

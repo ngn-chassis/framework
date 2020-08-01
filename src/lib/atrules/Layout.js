@@ -89,10 +89,11 @@ export default class Layout {
   }
 
   #processShorthand = (...args) => args.forEach(arg => {
-    let int = parseFloat(arg)
+    const int = parseFloat(arg)
 
     if (!isNaN(int)) {
-      return this.#properties.typeset = int
+      this.#properties.typeset = int
+      return
     }
 
     switch (arg) {

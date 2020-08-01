@@ -1,5 +1,4 @@
 import Constants from './Constants.js'
-import TypographyUtils from '../utilities/TypographyUtils.js'
 
 export default {
   scope: '.chassis',
@@ -13,7 +12,7 @@ export default {
   layout: {
     width: {
       min: 320,
-      max: 2560,
+      max: 2560
     },
 
     height: {
@@ -42,7 +41,7 @@ export default {
       legend: +1
     },
 
-    scaleRatio: Constants.typography.scaleRatios['golden ratio'],
+    scaleRatio: Constants.typography.scaleRatios['golden ratio']
   },
 
   breakpoints: [

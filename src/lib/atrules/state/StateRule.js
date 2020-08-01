@@ -2,7 +2,7 @@ import ClassRule from '../ClassRule.js'
 
 export default class StateRule extends ClassRule {
   constructor (atrule, properties) {
-    super(atrule, properties || [ 'selector', 'state' ])
+    super(atrule, properties || ['selector', 'state'])
   }
 
   get selector () {

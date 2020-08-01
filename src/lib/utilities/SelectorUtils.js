@@ -5,10 +5,10 @@ import CSSUtils from './CSSUtils.js'
 
 export default class SelectorUtils {
   static clean (selector, array = false) {
-    let list = this.getArray(selector)
+    const list = this.getArray(selector)
 
-    let output = list.map(selector => {
-      let isNested = selector.startsWith('&')
+    const output = list.map(selector => {
+      const isNested = selector.startsWith('&')
       selector = selector.replace(/&/g, '')
       return isNested ? `&${selector}` : selector
     })
@@ -21,7 +21,7 @@ export default class SelectorUtils {
   }
 
   static getLineage (node) {
-    let chain = []
+    const chain = []
 
     if (node.type !== 'root') {
       chain.unshift(node)
@@ -35,7 +35,7 @@ export default class SelectorUtils {
   }
 
   static getNestedSelectorList (root, cb) {
-    nesting.process(root, { from: void 0 }).then(result => {
+    nesting.process(root, { from: undefined }).then(result => {
       cb(null, result.root.nodes.map(node => node.selector).join(', '))
     }).catch(cb)
   }
@@ -56,8 +56,8 @@ export default class SelectorUtils {
   }
 
   static resolve (chain, cb) {
+    const root = CSSUtils.createRoot()
     let mediaQuery = null
-    let root = CSSUtils.createRoot()
     let previous = root
 
     chain.forEach(node => {
@@ -71,7 +71,7 @@ export default class SelectorUtils {
       }
 
       if (node.type === 'rule') {
-        let rule = CSSUtils.createRule(node.selector)
+        const rule = CSSUtils.createRule(node.selector)
         previous.append(rule)
         previous = rule
         return

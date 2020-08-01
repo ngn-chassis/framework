@@ -4,8 +4,8 @@ import CSSUtils from './CSSUtils.js'
 export default class ViewportUtils {
   static #validOperators = ['<', '<=', '=', '>=', '>', 'from', 'to']
 
-  static #generateQueries = (width = {}/*, height = {}*/) => {
-    let queries = []
+  static #generateQueries = (width = {}) => {
+    const queries = []
 
     if (width.min) {
       queries.push(`(min-width: ${width.min}px)`)
@@ -15,19 +15,11 @@ export default class ViewportUtils {
       queries.push(`(max-width: ${width.max - 1}px)`)
     }
 
-    // if (height.min) {
-    //   queries.push(`(min-height: ${height.min}px)`)
-    // }
-    //
-    // if (height.max) {
-    //   queries.push(`(max-height: ${height.max - 1}px)`)
-    // }
-
     return queries
   }
 
   static generateCustomMedia (viewport) {
-    let { name, bounds, height } = viewport
+    const { name, bounds } = viewport
 
     return CSSUtils.createAtRule({
       name: 'custom-media',
@@ -43,12 +35,8 @@ export default class ViewportUtils {
     return CONFIG.viewports.find(viewport => viewport.name === name)
   }
 
-  static getBound (viewport, name) {
-    return viewport ? viewport.bounds[name] : null
-  }
-
   static getIndex (viewport) {
-    let name = typeof viewport === 'string' ? viewport : viewport.name
+    const name = typeof viewport === 'string' ? viewport : viewport.name
     return CONFIG.viewports.findIndex(viewport => viewport.name === name)
   }
 
@@ -57,13 +45,13 @@ export default class ViewportUtils {
   }
 
   static getPreviousBound (viewport, name, checkFontSize = true) {
-    let previous = this.getPrevious(viewport)
+    const previous = this.getPrevious(viewport)
 
     if (!previous) {
       return null
     }
 
-    let bound = this.getBound(previous, name)
+    const bound = this.getBound(previous, name)
 
     if ((checkFontSize && !previous.fontSize) || !bound) {
       return this.getPreviousBound(previous, name, checkFontSize)
@@ -77,13 +65,13 @@ export default class ViewportUtils {
   }
 
   static getNextBound (viewport, name, checkFontSize = true) {
-    let next = this.getNext(viewport)
+    const next = this.getNext(viewport)
 
     if (!next) {
       return null
     }
 
-    let bound = this.getBound(next, name)
+    const bound = this.getBound(next, name)
 
     if ((checkFontSize && !next.fontSize) || !bound) {
       return this.getNextBound(next, name, checkFontSize)
@@ -103,36 +91,4 @@ export default class ViewportUtils {
 
     return viewport.bounds[name]
   }
-
-  // static generateBreakpointCustomMedia (bp) {
-  //   let { name, width, height } = bp
-  //
-  //   let root = CSSUtils.createRoot([])
-  //   let dimension = width ? width : height
-  //
-  //   root.append(this.#generateBreakpoint(bp, dimension))
-  //   root.append(this.#generateBreakpoint(bp, dimension, 'min'))
-  //   root.append(this.#generateBreakpoint(bp, dimension, 'max'))
-  //
-  //   return root
-  // }
-  //
-  // static #generateBreakpoint = (bp, dimension, type) => {
-  //   let params = `--${name} screen`
-  //
-  //   switch (type) {
-  //     case 'max':
-  //       params += ` and ${width ? `(width: ${width}px)` : ''}${height ? `(height: ${height}px)` : ''}`
-  //       break
-  //
-  //     default:
-  //       params += ` and ${width ? `(width: ${width}px)` : ''}${height ? `(height: ${height}px)` : ''}`
-  //       break
-  //   }
-  //
-  //   return CSSUtils.createAtRule({
-  //     name: 'custom-media',
-  //     params
-  //   })
-  // }
 }

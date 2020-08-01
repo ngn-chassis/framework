@@ -1,13 +1,11 @@
-export default `
-  @component table {
-    @selector table;
+export default `@component table {
+  @selector table;
 
-  	@state empty {
-  		@selector &:empty;
-  	}
-
-  	@state focus-within {
-  		@selector &:focus-within;
-  	}
+  @state empty {
+    @selector &:empty;
   }
-`
+
+  @state focus-within {
+    @selector &:focus-within;
+  }
+}`

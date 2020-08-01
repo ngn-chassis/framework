@@ -3,7 +3,7 @@ import parser from 'postcss-scss'
 
 export default postcss.plugin('viewport', annotations => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('viewport')) {
+    if (!Reflect.has(annotations, 'viewport')) {
       return resolve(root)
     }
 

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path'
 
 import postcss from 'postcss'
 import cssnano from 'cssnano'
@@ -71,31 +71,29 @@ export default class Entry extends Stylesheet {
         name: '|  |-- Registering Inline Components',
         callback: next => this.#registerInlineComponents(next, cb)
       }]
-    })
-    .then(cb)
-    .catch(cb)
+    }).then(cb).catch(cb)
   }
 
   render (cb) {
-    let results = []
+    const results = []
 
     QueueUtils.run({
       tasks: this.#manifest.versions.map(version => ({
         name: `|  |-- Generating "${version.theme}" theme stylesheet`,
         callback: next => {
-          let theme = this.#manifest.getTheme(version.theme)
+          const theme = this.#manifest.getTheme(version.theme)
 
           if (!theme) {
             return cb(version.error(`Theme "${version.theme}" not found`, { word: version.theme }))
           }
 
-          let post = CONFIG.minify ? [cssnano] : [
+          const post = CONFIG.minify ? [cssnano] : [
             perfectionist(CONFIG.beautify),
             cleanup
           ]
 
-          let annotations = []
-          let { reset, customProperties, modifiers, constraints } = CONFIG.modules.internal.core.resources
+          const annotations = []
+          const { reset, customProperties, modifiers, constraints } = CONFIG.modules.internal.core.resources
 
           postcss([
             annotate(annotations, theme.properties, this.#manifest),
@@ -138,20 +136,18 @@ export default class Entry extends Stylesheet {
           })
         }
       }))
-    })
-    .then(() => cb(null, results))
-    .catch(cb)
+    }).then(() => cb(null, results)).catch(cb)
   }
 
   // Recursive
   resolveImports (cb) {
-    let tasks = []
+    const tasks = []
 
     this.walkAtRules('import', atrule => {
       tasks.push({
         name: `Resolving @import ${atrule.params}`,
         callback: next => {
-          let importRule = new ImportRule(atrule)
+          const importRule = new ImportRule(atrule)
 
           switch (importRule.type) {
             case 'file': return this.#resolveFileImport(importRule, next, cb)
@@ -180,11 +176,11 @@ export default class Entry extends Stylesheet {
   ].includes(filepath)
 
   #registerComponents = cb => {
-    let components = Object.values(this.#manifest.componentModules)
-    let extensions = []
+    const components = Object.values(this.#manifest.componentModules)
+    const extensions = []
 
     this.walkAtRules('component', atrule => {
-      let componentRule = new ComponentRule(atrule)
+      const componentRule = new ComponentRule(atrule)
 
       if (componentRule.superclass) {
         extensions.push(componentRule)
@@ -200,14 +196,14 @@ export default class Entry extends Stylesheet {
     extensions.sort((a, b) => {
       return extensions.some(extension => extension.name === a.superclass) ? 1 : 0
     }).forEach(extension => {
-      let { superclass } = extension
-      let parent = this.#manifest.getComponent(superclass)
+      const { superclass } = extension
+      const parent = this.#manifest.getComponent(superclass)
 
       if (!parent) {
         return cb(extension.error(`\nCannot extend non-existent component "${superclass}"`, { word: superclass }))
       }
 
-      let component = new Component(extension, parent)
+      const component = new Component(extension, parent)
       parent.addExtension(component)
       this.#manifest.addComponent(component)
     })
@@ -216,7 +212,7 @@ export default class Entry extends Stylesheet {
   }
 
   #registerInlineComponents = (resolve, reject) => {
-    let atrules = []
+    const atrules = []
 
     this.walkAtRules('new', atrule => atrules.push(atrule))
     this.walkAtRules('extend', atrule => atrules.push(atrule))
@@ -225,17 +221,17 @@ export default class Entry extends Stylesheet {
       log: false,
 
       tasks: atrules.map(atrule => ({
-        name: `Resolving Inline Component`,
+        name: 'Resolving Inline Component',
         callback: next => {
-          let componentRule = new InlineComponentRule(atrule)
+          const componentRule = new InlineComponentRule(atrule)
 
           componentRule.resolveSelector((err, selector, query) => {
             if (err) {
               return reject(err)
             }
 
-            let parent = this.#manifest.getComponent(componentRule.superclass)
-            let component = new InlineComponent(componentRule, parent)
+            const parent = this.#manifest.getComponent(componentRule.superclass)
+            const component = new InlineComponent(componentRule, parent)
 
             if (!query) {
               if (component.isExtension) {
@@ -250,14 +246,12 @@ export default class Entry extends Stylesheet {
           })
         }
       }))
-    })
-    .then(resolve)
-    .catch(reject)
+    }).then(resolve).catch(reject)
   }
 
   #registerThemes = cb => {
     this.walkAtRules('theme', atrule => {
-      let themeRule = new ThemeRule(atrule)
+      const themeRule = new ThemeRule(atrule)
       this.#manifest.addTheme(new Theme(themeRule))
       themeRule.remove()
     })
@@ -271,13 +265,13 @@ export default class Entry extends Stylesheet {
 
   #registerVersions = cb => {
     this.walkAtRules('make', atrule => {
-      let makeRule = new MakeRule(atrule)
+      const makeRule = new MakeRule(atrule)
       this.#manifest.addVersion(new Version(makeRule, this.filepath))
       atrule.remove()
     })
 
     if (!this.#manifest.hasVersion('default')) {
-      let defaultMakeRule = new MakeRule(CSSUtils.createAtRule({
+      const defaultMakeRule = new MakeRule(CSSUtils.createAtRule({
         name: 'make',
         params: `default "${path.basename(this.filepath)}"`
       }))
@@ -289,10 +283,10 @@ export default class Entry extends Stylesheet {
   }
 
   #resolveFileImport = (importRule, resolve, reject) => {
-    let imp = new FileResource(importRule)
+    const imp = new FileResource(importRule)
 
     if (!this.#canImport(imp.filepath)) {
-      return reject(imp.error(`\nCircular Dependency`, { word: importRule.resource }))
+      return reject(imp.error('\nCircular Dependency', { word: importRule.resource }))
     }
 
     imp.resolve((err, filepaths) => {
@@ -301,7 +295,7 @@ export default class Entry extends Stylesheet {
       }
 
       filepaths.forEach(filepath => {
-        let partial = new Partial(filepath, this)
+        const partial = new Partial(filepath, this)
         this.#manifest.addPartial(partial)
         importRule.replaceWith(partial.clone())
       })
@@ -315,7 +309,6 @@ export default class Entry extends Stylesheet {
       this.#manifest.addModule(new Module(new ModuleResource(importRule)))
       importRule.remove()
       resolve()
-
     } catch (err) {
       reject(err)
     }

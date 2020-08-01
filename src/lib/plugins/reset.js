@@ -1,11 +1,10 @@
 import postcss from 'postcss'
 import parser from 'postcss-scss'
 import Constants from '../data/Constants.js'
-import CSSUtils from '../utilities/CSSUtils.js'
 
 export default postcss.plugin('chassis-reset', annotations => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('reset')) {
+    if (!Reflect.has(annotations, 'reset')) {
       return resolve(root)
     }
 

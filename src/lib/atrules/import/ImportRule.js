@@ -13,7 +13,7 @@ export default class ImportRule extends AtRule {
     switch (this.resource.type) {
       case 'string': return 'file'
       case 'function': return 'function'
-      default: return !!this.source ? 'module' : 'file'
+      default: return this.source ? 'module' : 'file'
     }
   }
 }

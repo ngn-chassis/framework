@@ -31,8 +31,8 @@ export default class MathFunctions {
    * @return number
    */
   static evaluate () {
-    let node = arguments[0]
-    let string = parseValue.stringify(node)
+    const node = arguments[0]
+    const string = parseValue.stringify(node)
     let expression = string.replace(node.value, '').replace(/\(|\)/g, '')
 
     if (node.nodes[0].type === 'string') {
@@ -55,9 +55,9 @@ export default class MathFunctions {
    * @return number
    */
   static exponentPower () {
-    let node = arguments[0]
-    let base = node.nodes[0].value
-    let exponent = node.nodes.length === 3 ? node.nodes[2].value : 1
+    const node = arguments[0]
+    const base = node.nodes[0].value
+    const exponent = node.nodes.length === 3 ? node.nodes[2].value : 1
 
     return Math.pow(base, exponent)
   }
@@ -91,10 +91,10 @@ export default class MathFunctions {
    * @return number
    */
   static round () {
-    let node = arguments[0]
-    let { utils } = this.chassis
-    let number = node.nodes[0].value
-    let decimalPlaces = node.nodes.length === 3 ? node.nodes[2].value : 0
+    const node = arguments[0]
+    const { utils } = this.chassis
+    const number = node.nodes[0].value
+    const decimalPlaces = node.nodes.length === 3 ? node.nodes[2].value : 0
 
     return utils.math.precisionRound(number, decimalPlaces)
   }

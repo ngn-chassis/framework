@@ -28,7 +28,7 @@ export default class ComponentsModule {
     radio,
     table,
     tag,
-    textarea,
+    textarea
   }
 
   get name () {

@@ -34,7 +34,7 @@ export default class MediaQueryRule extends AtRule {
       ;['min', 'max'].forEach(bound => {
         if (feature.width[bound]) {
           if (width[bound]) {
-            throw this.error(`\nInvalid media query\nMultiple min-widths`)
+            throw this.error('\nInvalid media query\nMultiple min-widths')
           }
 
           width[bound] = feature.width[bound]
@@ -53,14 +53,14 @@ export default class MediaQueryRule extends AtRule {
       return this.#registerStandardSyntax(expression.nodes)
     }
 
-    let features = expression.nodes.filter(node => node.type === 'media-feature')
+    const features = expression.nodes.filter(node => node.type === 'media-feature')
 
     if (features.length === 0) {
-      throw this.error(`\nInvalid media query`)
+      throw this.error('\nInvalid media query')
     }
 
     features.forEach(node => {
-      let feature = new Feature(this, node)
+      const feature = new Feature(this, node)
       this.#params = this.#params.replace(`(${node.value})`, feature.toString())
       this.#features.push(feature)
     })
@@ -74,7 +74,7 @@ export default class MediaQueryRule extends AtRule {
       return
     }
 
-    let result = {
+    const result = {
       width: {
         min: null,
         max: null

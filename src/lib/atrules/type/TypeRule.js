@@ -17,7 +17,7 @@ export default class TypeRule extends AtRule {
           this.#relative = value
           break
 
-        default: return // TODO: Throw Error
+        // default: // TODO: Throw Error
       }
     })
   }

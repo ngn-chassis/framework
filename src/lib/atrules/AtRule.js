@@ -12,7 +12,7 @@ export default class AtRule {
   }
 
   get params () {
-    return parseValue(this.#params.replace(/\s+/g,' ').trim()).nodes.filter(arg => {
+    return parseValue(this.#params.replace(/\s+/g, ' ').trim()).nodes.filter(arg => {
       return ['string', 'word', 'function'].includes(arg.type)
     })
   }

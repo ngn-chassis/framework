@@ -2,7 +2,7 @@ import Resource from './Resource.js'
 
 export default class ModuleResource extends Resource {
   get resource () {
-    let { resource } = super.source
+    const { resource } = super.source
 
     return resource.type === 'function'
       ? resource.nodes.reduce((output, node) => {

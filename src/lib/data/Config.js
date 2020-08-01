@@ -64,7 +64,7 @@ export default class Config {
 
   // TODO: Strip null values
   get json () {
-    let json = Object.assign({}, this.#model.representation, {
+    const json = Object.assign({}, this.#model.representation, {
       functions: this.#functions
     })
 
@@ -115,7 +115,7 @@ export default class Config {
 
   load (cfg, cb) {
     if (!cfg.entry) {
-      return cb(ErrorUtils.createError({ message: `No entries provided` }))
+      return cb(ErrorUtils.createError({ message: 'No entries provided' }))
     }
 
     if (!Array.isArray(cfg.entry)) {
@@ -123,7 +123,7 @@ export default class Config {
     }
 
     cfg.entry.forEach(file => {
-      let type = NGN.typeof(file)
+      const type = NGN.typeof(file)
 
       if (typeof file !== 'string') {
         return cb(ErrorUtils.createError({ message: `Invalid entry configuration. Expected a filepath string but received ${type}.` }))
@@ -134,25 +134,25 @@ export default class Config {
       }
     })
 
-    if (cfg.hasOwnProperty('functions')) {
+    if (Reflect.has(cfg, 'functions')) {
       // TODO: Validate
       this.functions = Object.assign({}, this.#functions, cfg.functions)
       delete cfg.functions
     }
 
-    if (cfg.hasOwnProperty('modules')) {
+    if (Reflect.has(cfg, 'modules')) {
       // TODO: Validate
       this.#modules.custom = cfg.modules
       delete cfg.modules
     }
 
-    let defaults = Object.assign({}, Defaults)
+    const defaults = Object.assign({}, Defaults)
     delete defaults.breakpoints
 
     this.#model.once('load', () => {
       this.#model.once('load', () => {
         if (!this.#model.valid) {
-          let attrs = this.#model.invalidDataAttributes
+          const attrs = this.#model.invalidDataAttributes
 
           return cb(ErrorUtils.createError({
             message: `Invalid configuration attribute${attrs.length > 1 ? 's' : ''}: ${attrs.join(', ')}`
@@ -188,7 +188,7 @@ export default class Config {
 
   #processObjects = (cfg, cb, ...keys) => {
     keys.forEach(key => {
-      if (!cfg.hasOwnProperty(key)) {
+      if (!Reflect.has(cfg, key)) {
         return
       }
 
@@ -211,7 +211,7 @@ export default class Config {
   #process = (cfg, cb) => {
     this.#processObjects(cfg, cb, 'layout', 'typography')
 
-    cfg.viewports = this.#generateViewports(cfg.hasOwnProperty('breakpoints') ? cfg.breakpoints : Defaults.breakpoints, 0, cb)
+    cfg.viewports = this.#generateViewports(Reflect.has(cfg, 'breakpoints') ? cfg.breakpoints : Defaults.breakpoints, 0, cb)
     delete cfg.breakpoints
 
     return Object.assign({}, cfg, {
@@ -225,15 +225,15 @@ export default class Config {
       cfg.unshift(min)
     }
 
-    let breakpoints = []
-    let viewports = []
+    const breakpoints = []
+    const viewports = []
 
     cfg.forEach((entry, index) => {
-      let type = NGN.typeof(entry)
+      const type = NGN.typeof(entry)
 
       if (index > 0 && NGN.typeof(cfg[index - 1]) === type) {
         return reject(ErrorUtils.createError({
-          message: `Invalid breakpoint configuration. Entries must alternate between type number and type object`
+          message: 'Invalid breakpoint configuration. Entries must alternate between type number and type object'
         }))
       }
 
@@ -246,14 +246,14 @@ export default class Config {
       }
     })
 
-    let final = []
+    const final = []
 
     breakpoints.forEach((breakpoint, index) => {
-      let set = []
-      let viewport = Object.assign({}, viewports[index])
-      let next = viewports[index + 1]
+      const set = []
+      const viewport = Object.assign({}, viewports[index])
+      const next = viewports[index + 1]
 
-      if (!viewport.hasOwnProperty('bounds')) {
+      if (!Reflect.has(viewport, 'bounds')) {
         viewport.bounds = {}
       }
 
@@ -263,10 +263,10 @@ export default class Config {
         viewport.bounds.max = breakpoints[index + 1] - 1
       }
 
-      if (viewport.hasOwnProperty('breakpoints')) {
+      if (Reflect.has(viewport, 'breakpoints')) {
         viewport.type = 'group'
 
-        set.push(...this.#generateViewports(viewport.breakpoints, min, reject).map(viewport => {viewports[index + 1]
+        set.push(...this.#generateViewports(viewport.breakpoints, min, reject).map(viewport => {
           if (viewport.bounds.min === 0) {
             viewport.bounds.min = breakpoint
           }

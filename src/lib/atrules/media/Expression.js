@@ -44,14 +44,14 @@ export default class Expression {
     switch (this.#nodes.length) {
       case 3: return this.#processSingleComparison()
       case 5: return this.#processDoubleComparison()
-      default: throw this.error(`\nInvalid expression`, { index: 1 })
+      default: throw this.error('\nInvalid expression', { index: 1 })
     }
   }
 
   #processSingleComparison = () => {
     let first = 'dimension'
 
-    let props = this.#nodes.reduce((props, node, index) => {
+    const props = this.#nodes.reduce((props, node, index) => {
       if (['height', 'width'].includes(node)) {
         if (props.value) {
           first = 'value'
@@ -68,7 +68,7 @@ export default class Expression {
     }, {})
 
     if (!this.#dimension) {
-      throw this.error(`\nInvalid media dimension\nExpected "width" or "height"`, {
+      throw this.error('\nInvalid media dimension\nExpected "width" or "height"', {
         word: this.#nodes[first === 'dimension' ? 0 : 2]
       })
     }
@@ -78,21 +78,21 @@ export default class Expression {
     }
 
     if (!props.value) {
-      throw this.error(`\nInvalid media value\nExpected pixel (px) value or viewport name prefixed with "--"`, {
+      throw this.error('\nInvalid media value\nExpected pixel (px) value or viewport name prefixed with "--"', {
         word: this.#nodes[first === 'value' ? 0 : 2]
       })
     }
 
-    let numeric = parseInt(props.value)
+    const numeric = parseInt(props.value)
 
     if (isNaN(numeric)) {
       return this.#processSingleViewportComparison(props, first)
     }
 
-    let units = StringUtils.getUnits(props.value)
+    const units = StringUtils.getUnits(props.value)
 
     if (units !== 'px') {
-      throw this.error(`\nMedia query constraints must be specified in px`, { word: units })
+      throw this.error('\nMedia query constraints must be specified in px', { word: units })
     }
 
     if (props.operator === '=') {
@@ -156,14 +156,14 @@ export default class Expression {
   }
 
   #processSingleViewportComparison = (props, first) => {
-    let name = props.value.replace('--', '')
-    let viewport = ViewportUtils.get(name)
+    const name = props.value.replace('--', '')
+    const viewport = ViewportUtils.get(name)
 
     if (!viewport) {
       throw this.error(`\nViewport "${name}" not found`, { word: name })
     }
 
-    let dimensions = {
+    const dimensions = {
       min: NGN.coalesce(viewport.bounds.min, ViewportUtils.getPreviousBound(viewport, 'max')),
       max: NGN.coalesce(viewport.bounds.max, ViewportUtils.getNextBound(viewport, 'min'))
     }

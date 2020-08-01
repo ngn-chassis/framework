@@ -13,12 +13,12 @@ import UnitUtils from '../utilities/UnitUtils.js'
 
 export default postcss.plugin('chassis-typography', (annotations, theme) => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('typography')) {
+    if (!Reflect.has(annotations, 'typography')) {
       return resolve(root)
     }
 
-    let typography = new TypographyEngine(theme, CONFIG.viewports)
-    let rules = CSSUtils.createRoot()
+    const typography = new TypographyEngine(theme, CONFIG.viewports)
+    const rules = CSSUtils.createRoot()
 
     rules.append(typography.renderInitialHeadings(true))
 
@@ -59,19 +59,19 @@ class TypographyEngine {
   }
 
   addSetting (setRule) {
-    let setting = new Setting(setRule)
+    const setting = new Setting(setRule)
     setRule.remove()
 
     if (!setting.bounds) {
       return this.#settings.push(setting)
     }
 
-    let viewports = {
+    const viewports = {
       min: setting.bounds.min ? CONFIG.viewports.find(viewport => viewport.bounds.min >= setting.bounds.min) : null,
       max: setting.bounds.max ? CONFIG.viewports.find(viewport => viewport.bounds.max >= setting.bounds.max) : null
     }
 
-    let buffer = [0,0]
+    const buffer = [0, 0]
 
     if (viewports.min && viewports.min.bounds.max < setting.bounds.min) {
       buffer[0] = setting.bounds.min - viewports.min.bounds.min
@@ -82,7 +82,7 @@ class TypographyEngine {
     }
 
     if (!viewports.min || !viewports.max) {
-      let viewport = viewports.min ?? viewports.max
+      const viewport = viewports.min ?? viewports.max
 
       switch (viewport) {
         case viewports.min: return this.#registerSetting(setting, viewports.min)
@@ -91,11 +91,11 @@ class TypographyEngine {
     }
 
     if (viewports.min.name === viewports.max.name) {
-      let viewport = this.#viewports.find(viewport => viewport.name === viewports.min.name)
+      const viewport = this.#viewports.find(viewport => viewport.name === viewports.min.name)
       return viewport.settings.push(setting)
     }
 
-    console.log(`IN BETWEEN - render at viewports falling completely within the bounds of the setting, and add additional queries for buffer`)
+    console.log('IN BETWEEN - render at viewports falling completely within the bounds of the setting, and add additional queries for buffer')
     this.#orphanSettings.push(setting)
   }
 
@@ -104,9 +104,9 @@ class TypographyEngine {
       fontSize = TypographyUtils.getFontSize(CONFIG.typography.baseFontSize, setting.typeset.size)
     }
 
-    let lineHeight = TypographyUtils.getOptimalLineHeight(fontSize, width, columns)
+    const lineHeight = TypographyUtils.getOptimalLineHeight(fontSize, width, columns)
 
-    let cfg = {
+    const cfg = {
       selector: setting.selector,
       decls: []
     }
@@ -128,7 +128,7 @@ class TypographyEngine {
       cfg.decls.push(...this.#getLayoutDecls('padding', setting.padding, fontSize, lineHeight, width, columns))
     }
 
-    let typeset = parser.parse(this.renderTypeset(cfg)).nodes[0]
+    const typeset = parser.parse(this.renderTypeset(cfg)).nodes[0]
     // typeset.source = setting.source
 
     // if (typeset.nodes.length === 0) {
@@ -144,7 +144,7 @@ class TypographyEngine {
       lineHeight = TypographyUtils.getOptimalLineHeight(fontSize, width, columns)
     }
 
-    let process = (...args) => {
+    const process = (...args) => {
       switch (type) {
         case 'margin': return LayoutUtils.getMargin(...args)
         case 'padding': return LayoutUtils.getPadding(...args)
@@ -152,15 +152,15 @@ class TypographyEngine {
       }
     }
 
-    let values = {
+    const values = {
       top: cfg.top ? process(cfg.display, 'top', lineHeight, cfg.top) : null,
       right: cfg.right ? process(cfg.display, 'right', lineHeight, cfg.right) : null,
       bottom: cfg.bottom ? process(cfg.display, 'bottom', lineHeight, cfg.bottom) : null,
       left: cfg.left ? process(cfg.display, 'left', lineHeight, cfg.left) : null
     }
 
-    let decls = []
-    let dimensions = ['top', 'right', 'bottom', 'left']
+    const decls = []
+    const dimensions = ['top', 'right', 'bottom', 'left']
 
     if (dimensions.every(dimension => !!values[dimension])) {
       return [CSSUtils.createDecl(type, `${values.top}em ${values.right}em ${values.bottom}em ${values.left}em`)]
@@ -186,8 +186,8 @@ class TypographyEngine {
   }
 
   renderInitialSettings () {
-    let root = CSSUtils.createRoot()
-    let { unbounded, initial } = this.settings
+    const root = CSSUtils.createRoot()
+    const { unbounded, initial } = this.settings
 
     ;[...unbounded, ...initial].forEach(setting => {
       root.append(this.renderSetting(setting))
@@ -197,7 +197,7 @@ class TypographyEngine {
   }
 
   renderInitialHeadings () {
-    let root = CSSUtils.createRoot()
+    const root = CSSUtils.createRoot()
 
     this.#headingSelectors.forEach(selector => {
       root.append(this.renderHeading(selector, true, true, CONFIG.layout.width.min, this.#theme.getHeading(selector)))
@@ -207,8 +207,8 @@ class TypographyEngine {
   }
 
   renderHeading (selector, includeFontSize, includeLineHeight, width, decls = []) {
-    let rule = CSSUtils.createRule(selector)
-    let fontSize = TypographyUtils.getFontSize(CONFIG.typography.baseFontSize, CONFIG.typography.headings[selector])
+    const rule = CSSUtils.createRule(selector)
+    const fontSize = TypographyUtils.getFontSize(CONFIG.typography.baseFontSize, CONFIG.typography.headings[selector])
 
     if (includeFontSize) {
       rule.append(CSSUtils.createDecl('font-size', `${UnitUtils.pxToRelative(fontSize)}rem`))
@@ -223,8 +223,7 @@ class TypographyEngine {
   }
 
   renderTypeset ({ selector, fontSize, lineHeight, decls }) {
-    // let adjustedFontSize = TypographyUtils.getFontSize(CONFIG.typography.baseFontSize, size)
-    let rule = CSSUtils.createRule(selector)
+    const rule = CSSUtils.createRule(selector)
 
     if (fontSize) {
       rule.append(`font-size: ${UnitUtils.pxToRelative(fontSize)}rem;`)
@@ -242,7 +241,7 @@ class TypographyEngine {
   }
 
   renderViewports () {
-    let root = CSSUtils.createRoot()
+    const root = CSSUtils.createRoot()
     let fontSize = CONFIG.typography.baseFontSize
 
     this.#viewports.forEach((viewport, i) => {
@@ -250,14 +249,14 @@ class TypographyEngine {
         return
       }
 
-      let query = CSSUtils.createAtRule({
+      const query = CSSUtils.createAtRule({
         name: 'media',
         params: `screen and (min-width: ${viewport.bounds.min}px)`
       })
 
       root.append(CSSUtils.createComment(`${viewport.name}`))
 
-      let columns = viewport.columns ?? 1
+      const columns = viewport.columns ?? 1
 
       if (viewport.type !== 'range') {
         if (viewport.bounds.max !== CONFIG.layout.width.max) {
@@ -269,9 +268,9 @@ class TypographyEngine {
         })
       }
 
-      let rule = CSSUtils.createRule(':root')
+      const rule = CSSUtils.createRule(':root')
 
-      if (!!viewport.fontSize) {
+      if (viewport.fontSize) {
         rule.append(CSSUtils.createDecl('font-size', `${fontSize}px`))
         fontSize = viewport.fontSize ?? fontSize
       }
@@ -294,7 +293,7 @@ class TypographyEngine {
   }
 
   #registerSetting = (setting, min = null, max = null) => {
-    let indexes = {
+    const indexes = {
       min: min ? this.#viewports.findIndex(viewport => viewport.name === min.name) : 0,
       max: max ? this.#viewports.findIndex(viewport => viewport.name === max.name) : this.#viewports.length - 1
     }

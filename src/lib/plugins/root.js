@@ -7,9 +7,9 @@ import TypographyUtils from '../utilities/TypographyUtils.js'
 
 export default postcss.plugin('chassis-root', annotations => {
   return (root, result) => new Promise((resolve, reject) => {
-    let rules = CSSUtils.createRoot()
-    let { baseFontSize } = CONFIG.typography
-    let { width } = CONFIG.layout
+    const rules = CSSUtils.createRoot()
+    const { baseFontSize } = CONFIG.typography
+    const { width } = CONFIG.layout
 
     rules.append(parser.parse(`:root {
   background: var(--root-bg-color, initial);

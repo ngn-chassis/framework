@@ -12,8 +12,8 @@ export default class Theme extends Class {
     this.#source = themeRule
 
     this.#components = this.#source.components?.nodes.reduce((components, component) => {
-      let states = []
-      let decls = component.nodes.filter(node => {
+      const states = []
+      const decls = component.nodes.filter(node => {
         if (node.type === 'atrule' && node.name === 'state') {
           states.push(new StateRule(node))
           return false
@@ -27,7 +27,7 @@ export default class Theme extends Class {
     }, {}) ?? {}
 
     this.#headings = this.#source.headings?.nodes.reduce((headings, heading) => {
-      let { selector, nodes } = heading
+      const { selector, nodes } = heading
 
       if (selector.includes(',')) {
         selector.split(',').forEach(part => this.#updateHeadingConfig(headings, part, nodes))
@@ -80,7 +80,7 @@ export default class Theme extends Class {
     selector = selector.trim()
     nodes = nodes.map(node => node.clone())
 
-    if (headings.hasOwnProperty(selector)) {
+    if (Reflect.has(headings, selector)) {
       return headings[selector].push(nodes)
     }
 

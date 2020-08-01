@@ -10,12 +10,12 @@ import inlineReset from './resets/inline.js'
 
 export default postcss.plugin('chassis-component-resets', (annotations, components) => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('component-resets')) {
+    if (!Reflect.has(annotations, 'componentResets')) {
       return resolve(root)
     }
 
-    let resets = CSSUtils.createRoot()
-    let selectors = {
+    const resets = CSSUtils.createRoot()
+    const selectors = {
       block: [],
       'inline-block': [],
       inline: []
@@ -59,7 +59,7 @@ export default postcss.plugin('chassis-component-resets', (annotations, componen
         )
       }
 
-      annotations['component-resets'].replaceWith(parser.parse(resets, { from: 'chassis-element-resets' }))
+      annotations.componentResets.replaceWith(parser.parse(resets, { from: 'chassis-element-resets' }))
       resolve(root)
     }).catch(reject)
   })

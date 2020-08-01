@@ -89,8 +89,8 @@ export default class SetRule extends AtRule {
     }
 
     if (parent.type === 'atrule' && parent.name === 'media') {
-      let query = new MediaQueryRule(parent)
-      let { min, max } = query.width
+      const query = new MediaQueryRule(parent)
+      const { min, max } = query.width
       return (!!min || !!max) ? query.width : null
     }
 

@@ -2,7 +2,7 @@ import postcss from 'postcss'
 import { CONFIG } from '../../index.js'
 
 export default postcss.plugin('chassis-namespace', cfg => root => new Promise((resolve, reject) => {
-  let namespaceSelector = selector => {
+  const namespaceSelector = selector => {
     if (selector.includes(',')) {
       return selector.split(',').map(chunk => namespaceSelector(chunk.trim())).join(', ')
     }

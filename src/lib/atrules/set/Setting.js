@@ -14,8 +14,8 @@ export default class Setting {
   }
 
   get margin () {
-    let { margin } = this.#source
-    return !!margin ? new Margin(margin) : null
+    const { margin } = this.#source
+    return margin ? new Margin(margin) : null
   }
 
   get selector () {
@@ -23,16 +23,12 @@ export default class Setting {
   }
 
   get padding () {
-    let { padding } = this.#source
-    return !!padding ? new Padding(padding) : null
-  }
-
-  get selector () {
-    return this.#source.selector
+    const { padding } = this.#source
+    return padding ? new Padding(padding) : null
   }
 
   get typeset () {
-    let { typeset } = this.#source
-    return !!typeset ? new Typeset(typeset) : null
+    const { typeset } = this.#source
+    return typeset ? new Typeset(typeset) : null
   }
 }

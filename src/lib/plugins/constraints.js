@@ -5,11 +5,11 @@ import LayoutUtils from '../utilities/LayoutUtils.js'
 
 export default postcss.plugin('chassis-constraints', annotations => {
   return (root, result) => new Promise((resolve, reject) => {
-    if (!annotations.hasOwnProperty('constraints')) {
+    if (!Reflect.has(annotations, 'constraints')) {
       return resolve(root)
     }
 
-    let { gutter, width, height, minGutterXWidth, maxGutterXWidth } = LayoutUtils
+    const { gutter, width, height, minGutterXWidth, maxGutterXWidth } = LayoutUtils
 
     let raw = `.height.constraint {
   min-height: ${height.min ?? 0}px;

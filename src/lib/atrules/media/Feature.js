@@ -17,13 +17,13 @@ export default class Feature {
 
   constructor (parent, feature) {
     this.#parent = parent
-    let { value } = feature
+    const { value } = feature
 
     if (!value.includes(' ')) {
       return this.#processViewport(value)
     }
 
-    let expression = new Expression(this, feature.value)
+    const expression = new Expression(this, feature.value)
 
     this[expression.dimension] = {
       min: expression.min,
@@ -36,8 +36,8 @@ export default class Feature {
   }
 
   toString () {
-    let dimension = this.#dimension
-    let { min, max } = this[dimension]
+    const dimension = this.#dimension
+    const { min, max } = this[dimension]
 
     if (min === max) {
       return `(${dimension}: ${min}px)`
@@ -47,8 +47,7 @@ export default class Feature {
   }
 
   #processViewport = name => {
-    let viewport = ViewportUtils.get(name.replace('--', ''))
+    const viewport = ViewportUtils.get(name.replace('--', ''))
     this.width = NGN.coalesce(viewport.bounds)
-    // this.height = NGN.coalesce(viewport.height)
   }
 }
