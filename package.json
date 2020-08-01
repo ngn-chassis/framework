@@ -3,13 +3,25 @@
   "type": "module",
   "version": "3.1.0-alpha.1",
   "description": "CSS4 pre-processor and responsive framework for modern UI development",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "report:size": "dev report size ./.dist/**/*.js ./.dist/**/*.js.map",
+    "build": "dev build",
+    "start": "dev workspace",
+    "update": "dev env -u",
+    "report:syntax": "dev report syntax --pretty"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngn-chassis/framework.git"
+  },
+  "standard": {
+    "globals": [
+      "globalThis",
+      "window",
+      "global"
+    ]
   },
   "keywords": [
     "css",
@@ -47,5 +59,8 @@
     "postcss-preset-env": "^5.2.3",
     "postcss-scss": "^2.0.0",
     "postcss-value-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@author.io/dev": "^1.0.24"
   }
 }
