@@ -36,6 +36,6 @@ export default class State extends Class {
   }
 
   getState (name) {
-    return this.states.find(state => state.name === name) ?? this.parent.getState(name)
+    return this.states.find(state => state.name === name) ?? (this.parent?.getState(name) ?? null)
   }
 }
