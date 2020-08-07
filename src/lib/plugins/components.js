@@ -18,48 +18,51 @@ export default postcss.plugin('chassis-components', (annotations, components, th
       return resolve(root)
     }
 
-    QueueUtils.run({
-      tasks: componentsArray.reduce((tasks, component) => {
-        if (component instanceof InlineComponent) {
-          return tasks
-        }
+    let inlineComponents = []
 
-        tasks.push({
-          name: `|  |  |-- Generating "${component.name}" component CSS`,
-          callback: next => {
-            const rule = CSSUtils.createRule(component.selectorWithExtensions)
-            rule.append(component.nodes)
+    let tasks = componentsArray.reduce((tasks, component) => {
+      if (component instanceof InlineComponent) {
+        inlineComponents.push(component)
+        return tasks
+      }
 
-            const theme = themes[component.name]
+      tasks.push({
+        name: `|  |  |-- Generating "${component.name}" component CSS`,
+        callback: next => {
+          const rule = CSSUtils.createRule(component.selectorWithExtensions)
+          rule.append(component.nodes)
+
+          const theme = themes[component.name]
+
+          if (theme) {
+            rule.append(theme.nodes)
+          }
+
+          component.states.forEach(state => {
+            const stateRule = CSSUtils.createRule(state.selector)
+
+            stateRule.append(state.nodes)
 
             if (theme) {
-              rule.append(theme.nodes)
+              const themeState = theme.states.find(themeState => themeState.name === state.name)
+
+              if (themeState) {
+                stateRule.append(themeState.nodes)
+              }
             }
 
-            component.states.forEach(state => {
-              const stateRule = CSSUtils.createRule(state.selector)
+            rule.append(stateRule)
+          })
 
-              stateRule.append(state.nodes)
+          rules.append(rule)
+          next()
+        }
+      })
 
-              if (theme) {
-                const themeState = theme.states.find(themeState => themeState.name === state.name)
+      return tasks
+    }, [])
 
-                if (themeState) {
-                  stateRule.append(themeState.nodes)
-                }
-              }
-
-              rule.append(stateRule)
-            })
-
-            rules.append(rule)
-            next()
-          }
-        })
-
-        return tasks
-      }, [])
-    }).then(() => {
+    QueueUtils.run({ tasks }).then(() => {
       annotations.components.replaceWith(parser.parse(rules, { from: 'chassis.components' }))
       resolve(root)
     }).catch(reject)

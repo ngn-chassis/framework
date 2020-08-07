@@ -50,18 +50,18 @@ export default class SetRule extends AtRule {
 
   get margin () {
     if (this.#isShorthand && this.params[0]?.value === 'margin') {
-      return this.params.slice(1).map(param => param.value)
+      return this.#getShorthandLayoutProperties()
     }
 
-    return this.#marginRule ?? null
+    return this.#marginRule?.properties ?? null
   }
 
   get padding () {
     if (this.#isShorthand && this.params[0]?.value === 'padding') {
-      return this.params.slice(1).map(param => param.value)
+      return this.#getShorthandLayoutProperties()
     }
 
-    return this.#paddingRule ?? null
+    return this.#paddingRule?.properties ?? null
   }
 
   get selector () {
@@ -99,5 +99,42 @@ export default class SetRule extends AtRule {
 
   #getParent = () => {
     return SelectorUtils.getLineage(this.#source.parent).filter(node => node.type === 'rule')[0]
+  }
+
+  #getShorthandLayoutProperties = () => {
+    let params = this.params.slice(1).map(param => param.value)
+    let dimensions = ['x', 'y', 'top', 'right', 'bottom', 'left']
+
+    let properties = params.reduce((params, param) => {
+      let int = parseInt(param)
+
+      if (!isNaN(int)) {
+        params.typeset = int
+      } else if (dimensions.includes(param) || param === 'relative') {
+        params[param] = true
+      } else if (['inline', 'block', 'inline-block'].includes(param)) {
+        params.display = param
+      }
+
+      return params
+    }, {
+      x: false,
+      y: false,
+      top: false,
+      right: false,
+      bottom: false,
+      left: false,
+      display: 'inline-block',
+      relative: false,
+      typeset: null
+    })
+
+    if (dimensions.every(dimension => !params.includes(dimension))) {
+      properties = Object.assign(properties, {
+        x: true, y: true, top: true, right: true, bottom: true, left: true
+      })
+    }
+
+    return properties
   }
 }

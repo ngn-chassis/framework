@@ -11,22 +11,30 @@ export default class Layout {
     relative: false
   }
 
-  constructor (atrule) {
-    Array.isArray(atrule) ? this.#processShorthand(...atrule) : this.#processLonghand(atrule)
+  constructor (properties) {
+    this.#properties = properties
+    let { x, y, top, right, bottom, left } = this.#properties
 
-    if (['x', 'y', 'top', 'right', 'bottom', 'left'].every(attr => !atrule[attr])) {
-      this.#properties.x = true
+    if (y) {
+      this.#properties = Object.assign(this.#properties, {
+        top: true,
+        bottom: true
+      })
+    }
+
+    if (x) {
+      this.#properties = Object.assign(this.#properties, {
+        right: true,
+        left: true
+      })
+    }
+
+    if (top && bottom && !y) {
       this.#properties.y = true
     }
 
-    if (this.#properties.y) {
-      this.#properties.top = true
-      this.#properties.bottom = true
-    }
-
-    if (this.#properties.x) {
-      this.#properties.right = true
-      this.#properties.left = true
+    if (left && right && !x) {
+      this.#properties.x = true
     }
   }
 
@@ -69,52 +77,4 @@ export default class Layout {
   get properties () {
     return this.#properties
   }
-
-  #processLonghand = atrule => {
-    Object.keys(this.#properties).forEach(property => {
-      switch (property) {
-        case 'display':
-          this.#properties.display = atrule.display
-          break
-
-        case 'type':
-          this.#properties.typeset = parseFloat(atrule.typeset ?? 0)
-          break
-
-        default:
-          this.#properties[property] = atrule[property] === 'true'
-          break
-      }
-    })
-  }
-
-  #processShorthand = (...args) => args.forEach(arg => {
-    const int = parseFloat(arg)
-
-    if (!isNaN(int)) {
-      this.#properties.typeset = int
-      return
-    }
-
-    switch (arg) {
-      case 'x':
-      case 'y':
-      case 'top':
-      case 'right':
-      case 'bottom':
-      case 'left':
-        this.#properties[arg] = true
-        break
-
-      case 'block':
-      case 'inline-block':
-      case 'inline':
-        this.#properties.display = arg
-        break
-
-      case 'relative':
-        this.#properties.relative = true
-        break
-    }
-  })
 }

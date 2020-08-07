@@ -4,6 +4,7 @@ import postcss from 'postcss'
 import cssnano from 'cssnano'
 import perfectionist from 'perfectionist'
 import env from 'postcss-preset-env'
+import nesting from 'postcss-nesting'
 
 import annotate from './plugins/annotate.js'
 import charset from './plugins/charset.js'
@@ -13,6 +14,7 @@ import components from './plugins/components.js'
 import constrainRules from './plugins/atrules/constrain.js'
 import functions from 'postcss-functions'
 import hoist from './plugins/hoist.js'
+import inlineComponents from './plugins/inlineComponents.js'
 import mediaRules from './plugins/atrules/media.js'
 import namespace from './plugins/namespace.js'
 import root from './plugins/root.js'
@@ -113,11 +115,13 @@ export default class Entry extends Stylesheet {
 
             componentResets(annotations, this.#manifest.components),
             components(annotations, this.#manifest.components, theme.components),
+            inlineComponents(theme),
 
             functions({ functions: CONFIG.functions }),
             env(CONFIG.env),
 
             typography(annotations, theme),
+            // nesting,
             namespace,
 
             ...post
@@ -133,7 +137,7 @@ export default class Entry extends Stylesheet {
             })
 
             next()
-          })
+          }).catch(cb)
         }
       }))
     }).then(() => cb(null, results)).catch(cb)
@@ -241,7 +245,7 @@ export default class Entry extends Stylesheet {
               this.#manifest.addComponent(component)
             }
 
-            atrule.replaceWith(component.resolve())
+            atrule.nodes = component.resolve()
             next()
           })
         }

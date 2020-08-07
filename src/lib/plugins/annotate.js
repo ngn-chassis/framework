@@ -43,11 +43,15 @@ export default postcss.plugin('chassis-annotate', (annotations, properties, mani
 
     if (manifest.hasComponents) {
       placeholders.push(...annotate('Element/Component Resets', 'componentResets'))
-      placeholders.push(...annotate('Components', 'components'))
+      // placeholders.push(...annotate('Components', 'components'))
     }
 
     if (!CONFIG.typography.disabled || !CONFIG.layout.disabled) {
       placeholders.push(...annotate(`${!CONFIG.typography.disabled ? 'Typography' : ''}${!CONFIG.typography.disabled && !CONFIG.layout.disabled ? ' / ' : ''}${!CONFIG.layout.disabled ? 'Layout' : ''}`, 'typography'))
+    }
+
+    if (manifest.hasComponents) {
+      placeholders.push(...annotate('Components', 'components'))
     }
 
     root.prepend([

@@ -15,10 +15,21 @@ export default class LayoutRule extends AtRule {
 
   constructor (atrule) {
     super(atrule)
+    
+    if (!atrule.nodes) {
+      this.#properties = Object.assign(this.#properties, {
+        x: true,
+        y: true
+      })
+    }
 
     atrule.walkDecls(({ prop, value }) => {
       this.#properties[prop] = value
     })
+  }
+
+  get properties () {
+    return this.#properties
   }
 
   get display () {
