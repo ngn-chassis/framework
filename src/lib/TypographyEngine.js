@@ -78,9 +78,21 @@ export default class TypographyEngine {
 
   processInlineComponentSettings (atrule) {
     let settings = []
-    atrule.walkAtRules('set', setRule => {
-      settings.push(new SetRule(setRule))
-      setRule.remove()
+
+    atrule.nodes.forEach(node => {
+      if (node.type !== 'atrule') {
+        return
+      }
+
+      switch (node.name) {
+        case 'set':
+          settings.push(new Setting(new SetRule(node)))
+          return node.remove()
+
+        case 'state': return this.processInlineComponentSettings(node)
+        default: return
+      }
+
     })
 
     if (settings.length > 0) {
@@ -99,8 +111,7 @@ export default class TypographyEngine {
 
     const cfg = {
       selector: setting.selector,
-      decls: [],
-      includeSelector
+      decls: []
     }
 
     if (setting.typeset) {
@@ -120,7 +131,7 @@ export default class TypographyEngine {
       cfg.decls.push(...this.#getLayoutDecls('padding', setting.padding, fontSize, lineHeight, width, columns))
     }
 
-    const typeset = parser.parse(this.renderTypeset(cfg)).nodes[0]
+    const typeset = parser.parse(this.renderTypeset(cfg))
     // typeset.source = setting.source
 
     // if (typeset.nodes.length === 0) {
@@ -167,7 +178,7 @@ export default class TypographyEngine {
     return rule
   }
 
-  renderTypeset ({ selector, fontSize, lineHeight, decls, includeSelector }) {
+  renderTypeset ({ selector, fontSize, lineHeight, decls }) {
     const rule = CSSUtils.createRule(selector)
 
     if (fontSize) {
@@ -182,7 +193,7 @@ export default class TypographyEngine {
       rule.append(decls)
     }
 
-    return includeSelector ? rule : rule.nodes
+    return rule
   }
 
   renderViewports (root, addHeadings = true, includeRoot = true, settings) {
@@ -231,7 +242,8 @@ export default class TypographyEngine {
       }
 
       (settings ?? [...this.settings.unbounded, ...viewport.settings]).forEach(setting => {
-        query.append(this.renderSetting(setting, viewport.bounds.min, fontSize, columns, !settings))
+        setting = this.renderSetting(setting, viewport.bounds.min, fontSize, columns)
+        query.append(settings ? setting.nodes[0].nodes : setting.nodes[0])
       })
 
       root.append(query)

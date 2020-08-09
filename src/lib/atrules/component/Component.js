@@ -11,7 +11,6 @@ export default class Component extends State {
   constructor (source, parent) {
     super(...arguments)
     this.#source = source
-
     this.#states = this.#source.states.map(stateRule => {
       return new State(stateRule, parent ? parent.getState(stateRule.name) : null)
     })
