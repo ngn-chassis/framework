@@ -73,27 +73,25 @@ export default {
 
     {
       name: 'computer',
+      columns: 3,
       breakpoints: [
         {
           name: 'laptop',
-          fontSize: 21,
-          columns: 3
+          fontSize: 21
         },
 
         1680,
 
         {
           name: 'monitor',
-          fontSize: 25,
-          columns: 3
+          fontSize: 25
         },
 
         1920,
 
         {
           name: 'big-monitor',
-          fontSize: 30,
-          columns: 3
+          fontSize: 30
         }
       ]
     }

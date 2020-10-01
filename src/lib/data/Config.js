@@ -163,9 +163,7 @@ export default class Config {
         cb(null, this.json)
       })
 
-      this.#model.load(this.#process(Object.assign({}, cfg, {
-        breakpoints: Defaults.breakpoints
-      }), cb))
+      this.#model.load(this.#process(cfg, cb))
     })
 
     this.#model.load(defaults)
@@ -209,12 +207,13 @@ export default class Config {
   }
 
   #process = (cfg, cb) => {
-    this.#processObjects(cfg, cb, 'layout', 'typography')
+    let output = Object.assign({}, cfg)
+    delete output.breakpoints
+    
+    this.#processObjects(output, cb, 'layout', 'typography')
+    output.viewports = this.#generateViewports(cfg.breakpoints ?? Defaults.breakpoints, 0, cb)
 
-    cfg.viewports = this.#generateViewports(Reflect.has(cfg, 'breakpoints') ? cfg.breakpoints : Defaults.breakpoints, 0, cb)
-    delete cfg.breakpoints
-
-    return Object.assign({}, cfg, {
+    return Object.assign({}, output, {
       minify: this.#getBooleanValue('minify', cfg.minify),
       sourceMap: this.#getBooleanValue('sourceMap', cfg.sourceMap)
     })
@@ -233,7 +232,7 @@ export default class Config {
 
       if (index > 0 && NGN.typeof(cfg[index - 1]) === type) {
         return reject(ErrorUtils.createError({
-          message: 'Invalid breakpoint configuration. Entries must alternate between type number and type object'
+          message: 'Invalid breakpoint configuration. Entries must alternate between type "number" (breakpoints) and type "object" (viewports)'
         }))
       }
 
@@ -265,6 +264,7 @@ export default class Config {
 
       if (Reflect.has(viewport, 'breakpoints')) {
         viewport.type = 'group'
+        let columns = viewport.columns
 
         set.push(...this.#generateViewports(viewport.breakpoints, min, reject).map(viewport => {
           if (viewport.bounds.min === 0) {
@@ -273,6 +273,10 @@ export default class Config {
 
           if (!viewport.bounds.max) {
             viewport.bounds.max = next ? breakpoints[index + 1] - 1 : this.layout.width.max
+          }
+
+          if (!viewport.columns && columns) {
+            viewport.columns = columns
           }
 
           return viewport

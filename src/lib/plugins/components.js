@@ -32,25 +32,13 @@ export default postcss.plugin('chassis-components', (annotations, components, th
           const rule = CSSUtils.createRule(component.selectorWithExtensions)
           rule.append(component.nodes)
 
-          const states = component.states.reduce((states, state) => {
-            let parentState = states.find(parentState => parentState.name === state.name)
-
-            if (parentState) {
-              states.splice(states.indexOf(parentState), 1, state)
-            } else {
-              states.push(state)
-            }
-
-            return states
-          }, component.parent?.states ?? [])
-
           const theme = themes[component.name]
 
           if (theme) {
             rule.append(theme.nodes)
           }
 
-          states.forEach(state => {
+          ;[...component.inheritedStates, ...component.states].forEach(state => {
             const stateRule = CSSUtils.createRule(state.selector)
 
             if (component.states.some(componentState => componentState.name === state.name)) {

@@ -24,6 +24,10 @@ export default class Class {
     return !!this.#source.superclass
   }
 
+  get lineage () {
+    return [...(this.parent?.lineage ?? []), this.parent].filter(Boolean)
+  }
+
   get name () {
     return this.#source.name
   }

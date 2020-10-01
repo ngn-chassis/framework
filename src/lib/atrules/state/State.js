@@ -14,6 +14,10 @@ export default class State extends Class {
     this.#states = this.#source.states.map(stateRule => new State(stateRule, this))
   }
 
+  get hasStates () {
+    return this.#states.length > 0
+  }
+
   get selector () {
     return this.#source.selector ?? this.parent.selector
   }

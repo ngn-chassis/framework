@@ -227,8 +227,8 @@ export default class TypographyEngine {
         const rule = CSSUtils.createRule(':root')
 
         if (viewport.fontSize) {
+          fontSize = viewport.fontSize
           rule.append(CSSUtils.createDecl('font-size', `${fontSize}px`))
-          fontSize = viewport.fontSize ?? fontSize
         }
 
         rule.append(CSSUtils.createDecl('line-height', `${TypographyUtils.getOptimalLineHeight(fontSize, viewport.bounds.min, columns)}`))

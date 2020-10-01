@@ -22,8 +22,6 @@ export default postcss.plugin('chassis-custom-properties', (annotations, propert
     const numProperties = Object.keys(properties).length
     const rule = CSSUtils.createRule(':root')
 
-    rule.append(generateDecls(properties))
-
     if (includeInternal) {
       rule.append(generateDecls({
         'layout-width-min': `${width.min}px`,
@@ -37,6 +35,8 @@ export default postcss.plugin('chassis-custom-properties', (annotations, propert
         'min-line-height': `${TypographyUtils.minLineHeight}`
       }))
     }
+
+    rule.append(generateDecls(properties))
 
     if (numProperties > 0 || includeInternal) {
       annotations.customProperties.replaceWith(parser.parse(rule, {

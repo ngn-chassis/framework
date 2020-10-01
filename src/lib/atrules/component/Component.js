@@ -16,6 +16,22 @@ export default class Component extends State {
     })
   }
 
+  get hasStates () {
+    return this.#states.length > 0
+  }
+
+  get inheritedStates () {
+    return this.lineage.reverse().reduce((states, ancestor) => {
+      ancestor.states.forEach(state => {
+        if (!this.#states.some(ownState => ownState.name === state.name)) {
+          states.push(state)
+        }
+      })
+
+      return states
+    }, [])
+  }
+
   get not () {
     return this.#source.not
   }

@@ -11,9 +11,14 @@ export default class Theme extends Class {
     super(themeRule)
     this.#source = themeRule
 
-    this.#components = this.#source.components?.nodes.reduce((components, component) => {
+    this.#components = this.#source.components?.nodes.reduce((components, node) => {
+      if (node.type !== 'rule') {
+        // TODO: Throw error unless comment
+        return components
+      }
+
       const states = []
-      const nodes = component.nodes.filter(node => {
+      const nodes = node.nodes.filter(node => {
         if (node.type === 'atrule' && node.name === 'state') {
           states.push(new StateRule(node))
           return false
@@ -22,12 +27,17 @@ export default class Theme extends Class {
         return true
       })
 
-      components[component.selector.trim()] = { nodes, states }
+      components[node.selector.trim()] = { nodes, states }
       return components
     }, {}) ?? {}
 
-    this.#headings = this.#source.headings?.nodes.reduce((headings, heading) => {
-      const { selector, nodes } = heading
+    this.#headings = this.#source.headings?.nodes.reduce((headings, node) => {
+      if (node.type !== 'rule') {
+        // TODO: Throw error unless comment
+        return headings
+      }
+
+      const { selector, nodes } = node
 
       if (selector.includes(',')) {
         selector.split(',').forEach(part => this.#updateHeadingConfig(headings, part, nodes))
@@ -38,8 +48,13 @@ export default class Theme extends Class {
       return headings
     }, {}) ?? {}
 
-    this.#properties = this.#source.properties?.nodes.reduce((properties, property) => {
-      properties[property.prop.replace('--', '')] = property.value
+    this.#properties = this.#source.properties?.nodes.reduce((properties, node) => {
+      if (node.type !== 'decl') {
+        // TODO: Throw error unless comment
+        return properties
+      }
+
+      properties[node.prop.replace('--', '')] = node.value
       return properties
     }, {}) ?? {}
   }
