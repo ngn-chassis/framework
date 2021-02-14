@@ -7,6 +7,7 @@ import input from '../components/input.js'
 import meter from '../components/meter.js'
 import progress from '../components/progress.js'
 import radio from '../components/radio.js'
+import select from '../components/select.js'
 import table from '../components/table.js'
 import tag from '../components/tag.js'
 import textarea from '../components/textarea.js'
@@ -26,6 +27,7 @@ export default class ComponentsModule {
     meter,
     progress,
     radio,
+    select,
     table,
     tag,
     textarea

@@ -111,7 +111,7 @@ export default class Entry extends Stylesheet {
             constraints(annotations),
 
             // constrainRules,
-            // mediaRules,
+            mediaRules,
 
             componentResets(annotations, this.#manifest.components),
             components(annotations, this.#manifest.components, theme.components),

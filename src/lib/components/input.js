@@ -15,6 +15,7 @@ export default `@component input {
             input[type="week"];
 
   /* Reset */
+  line-height: var(--min-line-height);
   background: transparent;
   border: none;
 

@@ -46,21 +46,22 @@
   "homepage": "https://github.com/ngn-chassis/framework#readme",
   "dependencies": {
     "cssnano": "^4.1.10",
-    "fast-glob": "^3.2.4",
+    "fast-glob": "^3.2.5",
     "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
     "ngn": "^0.3.31",
     "ngn-data": "^0.1.11",
     "perfectionist": "^2.4.0",
-    "postcss": "^7.0.27",
+    "postcss": "^7.0.35",
     "postcss-functions": "^3.0.0",
     "postcss-media-minmax": "^4.0.0",
     "postcss-media-query-parser": "^0.2.3",
     "postcss-nesting": "^7.0.1",
     "postcss-preset-env": "^5.2.3",
-    "postcss-scss": "^2.0.0",
+    "postcss-scss": "^2.1.1",
     "postcss-value-parser": "^3.3.1"
   },
   "devDependencies": {
-    "@author.io/dev": "^1.0.24"
+    "@author.io/dev": "^1.1.5"
   }
 }

@@ -52,6 +52,18 @@ const raw = parser.parse(`
         border-radius: 3px;
       }
 
+      select {
+        @set padding y left;
+        padding-right: 2.236em;
+        box-shadow: inset 0 0 0 1px lightgrey;
+        border-radius: 3px;
+        background: white;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right .618em top 50%;
+        background-size: 1em auto;
+      }
+
       table {
         table-layout: fixed;
         width: 100%;
