@@ -1,0 +1,63 @@
+const native = [
+  'charset',
+  'custom-media',
+  'namespace',
+  'media',
+  'supports',
+  'document',
+  'import',
+  'page',
+  'font-face',
+  'keyframes',
+  'viewport',
+  'counter-style',
+  'font-feature-values',
+  'swash',
+  'ornaments',
+  'annotation',
+  'stylistic',
+  'styleset',
+  'character-variant',
+  'viewport'
+]
+
+const chassis = [
+  'apply',
+  'component',
+  'config',
+  'constrain',
+  'export',
+  'extend',
+  'font-size',
+  'import',
+  'line-height',
+  'make',
+  'margin',
+  'media',
+  'mixin',
+  'new',
+  'not',
+  'padding',
+  'reset',
+  'selector',
+  'state',
+  'theme',
+  'typeset',
+  'unset',
+  'z-index'
+]
+
+const children = [
+  'state',
+  'property',
+  'reset',
+  'unset',
+  'not',
+  'typeset',
+  'margin',
+  'padding',
+  'font-size',
+  'line-height',
+  'selector',
+  'state'
+]
