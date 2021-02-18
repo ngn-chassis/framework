@@ -22,8 +22,8 @@ export default class FileResource extends Resource {
   }
 
   resolve (cb) {
-    const files = glob.sync(this.filepath)
-
+    const files = glob.sync(this.filepath.replace(/\\/g, '/'))
+    
     if (files.length === 0) {
       return cb(this.error(`\nNo files found matching "${this.#resource}"`, { word: this.#resource }))
     }
