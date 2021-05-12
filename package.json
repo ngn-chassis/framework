@@ -52,7 +52,7 @@
     "ngn": "^0.3.31",
     "ngn-data": "^0.1.11",
     "perfectionist": "^2.4.0",
-    "postcss": "^7.0.35",
+    "postcss": "^8.2.10",
     "postcss-functions": "^3.0.0",
     "postcss-media-minmax": "^4.0.0",
     "postcss-media-query-parser": "^0.2.3",
