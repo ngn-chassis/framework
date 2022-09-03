@@ -71,7 +71,6 @@ export default postcss.plugin('chassis-constraints', annotations => {
     }
 
     annotations.constraints.replaceWith(parser.parse(raw, { from: 'chassis.constraints' }))
-
     resolve(root)
   })
 })

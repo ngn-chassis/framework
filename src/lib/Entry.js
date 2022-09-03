@@ -4,15 +4,15 @@ import postcss from 'postcss'
 import cssnano from 'cssnano'
 import perfectionist from 'perfectionist'
 import env from 'postcss-preset-env'
-import nesting from 'postcss-nesting'
 
 import annotate from './plugins/annotate.js'
 import charset from './plugins/charset.js'
 import cleanup from './plugins/cleanup.js'
 import componentResets from './plugins/componentResets.js'
 import components from './plugins/components.js'
-import constrainRules from './plugins/atrules/constrain.js'
+// import constrainRules from './plugins/atrules/constrain.js'
 import functions from 'postcss-functions'
+// import functions from './plugins/functions.js'
 import hoist from './plugins/hoist.js'
 import inlineComponents from './plugins/inlineComponents.js'
 import mediaRules from './plugins/atrules/media.js'
@@ -47,6 +47,7 @@ import Partial from './Partial.js'
 import CSSUtils from './utilities/CSSUtils.js'
 import QueueUtils from './utilities/QueueUtils.js'
 
+import TypographyEngine from './TypographyEngine.js'
 import { CONFIG } from '../index.js'
 
 export default class Entry extends Stylesheet {
@@ -82,7 +83,7 @@ export default class Entry extends Stylesheet {
     QueueUtils.run({
       tasks: this.#manifest.versions.map(version => ({
         name: `|  |-- Generating "${version.theme}" theme stylesheet`,
-        callback: next => {
+        callback: async (next) => {
           const theme = this.#manifest.getTheme(version.theme)
 
           if (!theme) {
@@ -97,47 +98,41 @@ export default class Entry extends Stylesheet {
           const annotations = []
           const { reset, customProperties, modifiers, constraints } = CONFIG.modules.internal.core.resources
 
-          postcss([
-            annotate(annotations, theme.properties, this.#manifest),
+          const typographyEngine = new TypographyEngine(theme, CONFIG.viewports)
 
+          const processed = await postcss([
+            annotate(annotations, theme.properties, this.#manifest),
             charset(annotations),
             viewport(annotations),
             hoist(annotations, this.#hoistedNodes),
-
             reset(annotations),
             root(annotations),
             customProperties(annotations, theme.properties, this.#manifest.hasCoreModule('customProperties')),
             modifiers(annotations, this.#manifest.modifiers),
             constraints(annotations),
-
             // constrainRules,
             mediaRules,
-
             componentResets(annotations, this.#manifest.components),
             components(annotations, this.#manifest.components, theme.components),
             inlineComponents(theme),
-
-            functions({ functions: CONFIG.functions }),
+            functions,
             env(CONFIG.env),
-
-            typography(annotations, theme),
-            // nesting,
+            typography(annotations, typographyEngine),
             namespace,
-
             ...post
           ]).process(this.root.clone(), {
             from: this.filepath,
             to: version.path,
             map: { inline: false }
-          }).then(result => {
-            results.push({
-              path: version.path,
-              css: result.css,
-              map: result.map
-            })
-
-            next()
           }).catch(cb)
+
+          results.push({
+            path: version.path,
+            css: processed.css,
+            map: processed.map
+          })
+
+          next()
         }
       }))
     }).then(() => cb(null, results)).catch(cb)

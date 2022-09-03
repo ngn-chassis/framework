@@ -14,7 +14,7 @@ export default class Chassis {
   #cfg = null
 
   constructor (cfg) {
-    this.#cfg = NGN.coalesce(cfg, {})
+    this.#cfg = cfg ?? {}
   }
 
   get entry () {
@@ -48,9 +48,7 @@ export default class Chassis {
             next()
           }, cb)
         }))
-      }).then(() => {
-        this.#writeFiles(files, cb)
-      }).catch(cb)
+      }).then(() => this.#writeFiles(files, cb)).catch(cb)
     })
   }
 
@@ -83,9 +81,7 @@ export default class Chassis {
           next()
         })
       }]
-    }).then(() => {
-      resolve(Array.isArray(output) ? output : [output])
-    }).catch(reject)
+    }).then(() => resolve(Array.isArray(output) ? output : [output])).catch(reject)
   }
 
   #writeFiles = (files, cb) => QueueUtils.run({
